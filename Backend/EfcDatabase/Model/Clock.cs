@@ -12,14 +12,20 @@ public class Clock
     public User Owner { get; set; }
     public Guid OwnerId { get; set; }
 
-    public Alarm alarm { get; set; }
-
+   /* public Alarm alarm { get; set; }
+    public Guid alarmId { get; set; }
+   */
     public Clock(User owner, String name, char timeZone)
     {
         OwnerId = owner.Id;
         Owner = owner;
         Name = name;
         TimeZone = timeZone;
-        alarm = new Alarm();
+        //alarm = new Alarm();
+    }
+    public Clock()
+    {
+        /*alarm = new Alarm();
+        alarmId = alarm.Id;*/
     }
 }

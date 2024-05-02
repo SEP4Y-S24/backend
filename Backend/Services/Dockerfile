@@ -14,3 +14,4 @@ WORKDIR /Services
 EXPOSE 8080
 COPY --from=build-env /Services/out .
 ENTRYPOINT ["dotnet", "DotNet.Docker.dll"]
+
