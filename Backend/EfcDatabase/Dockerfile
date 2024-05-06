@@ -1,16 +1,20 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
-WORKDIR /EfcDatabase
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 8081
+EXPOSE 443
 
-# Copy everything
-COPY . ./
-# Restore as distinct layers
-RUN dotnet restore
-# Build and publish a release
-RUN dotnet publish -c Release -o out
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["EfcDatabase/EfcDatabase.csproj", "EfcDatabase/"]
+RUN dotnet restore "EfcDatabase/EfcDatabase.csproj"
+COPY . .
+WORKDIR "/src/EfcDatabase"
+RUN dotnet build "EfcDatabase.csproj" -c Release -o /app/build
 
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS data-access-image
-WORKDIR /EfcDatabase
-EXPOSE 8080
-COPY --from=build-env /EfcDatabase/out .
+FROM build AS publish
+RUN dotnet publish "EfcDatabase.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS data-access-image
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "EfcDatabase.dll"]

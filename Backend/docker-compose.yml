@@ -16,16 +16,37 @@ services:
     image: 'data-access-image'
     build:
       context: ./   
+      dockerfile: ./EfcDatabase/Dockerfile
     container_name: 'data-access-container'
     ports:
-      - 8080:8080
+      - 8082:8082
     depends_on:
       - db 
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/doc-db
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - Development.Docker
+  bussiness-logic:
+    image: 'services-image'
+    build:
+      context: ./
+      dockerfile: ./Services/Dockerfile
+    container_name: 'services-container'
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+      - data_access
+  web_api:
+    image: 'web-api-image'
+    build:
+      context: ./
+      dockerfile: ./WebApplication1/Dockerfile
+    container_name: 'web-api-container'
+    ports:
+      - 80:80
+    depends_on:
+      - db
+      - data_access
+      - bussiness-logic
 volumes:
   db:
     driver: local
