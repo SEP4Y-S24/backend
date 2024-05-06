@@ -14,7 +14,7 @@ RUN dotnet build "WebApplication1.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "WebApplication1.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM base AS web-api-image
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "WebApplication1.dll"]
