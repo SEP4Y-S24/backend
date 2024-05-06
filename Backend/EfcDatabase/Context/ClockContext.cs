@@ -8,9 +8,8 @@ public class ClockContext: DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Clock> Clocks { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public ClockContext(DbContextOptions<ClockContext> options) : base(options)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Clock;Username=postgres;Password=postgres");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
