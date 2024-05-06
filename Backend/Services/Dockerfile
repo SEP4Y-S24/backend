@@ -17,4 +17,3 @@ RUN dotnet publish "Services.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 FROM base AS services-image
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Services.dll"]

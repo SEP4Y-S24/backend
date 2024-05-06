@@ -12,31 +12,9 @@ services:
       - POSTGRES_DB=sep4
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  data_access:
-    image: 'data-access-image'
-    build:
-      context: ./   
-      dockerfile: ./EfcDatabase/Dockerfile
-    container_name: 'data-access-container'
-    ports:
-      - 8082:8082
-    depends_on:
-      - db 
-    environment:
-      - Development.Docker
-  bussiness-logic:
-    image: 'services-image'
-    build:
-      context: ./
-      dockerfile: ./Services/Dockerfile
-    container_name: 'services-container'
-    ports:
-      - 8081:8081
-    depends_on:
-      - db
-      - data_access
+
   web_api:
-    image: 'web-api-image'
+    image: 'webapplication1'
     build:
       context: ./
       dockerfile: ./WebApplication1/Dockerfile
@@ -45,8 +23,6 @@ services:
       - 80:80
     depends_on:
       - db
-      - data_access
-      - bussiness-logic
 volumes:
   db:
     driver: local

@@ -6,10 +6,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["WebApplication1/WebApplication1.csproj", "WebApplication1/"]
+COPY ["./Services/Services.csproj", "Services/"]
+COPY ["./EfcDatabase/EfcDatabase.csproj", "EfcDatabase/"]
 RUN dotnet restore "WebApplication1/WebApplication1.csproj"
 COPY . .
 WORKDIR "/src/WebApplication1"
 RUN dotnet build "WebApplication1.csproj" -c Release -o /app/build
+RUN dotnet tool install --version 6.0.9 --global dotnet-ef
 
 FROM build AS publish
 RUN dotnet publish "WebApplication1.csproj" -c Release -o /app/publish /p:UseAppHost=false
