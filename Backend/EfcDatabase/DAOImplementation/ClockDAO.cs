@@ -35,6 +35,10 @@ public class ClockDAO: IClockDAO
 
     public Task<Clock?> GetByIdAsync(Guid clockId)
     {
+        if (clockId.Equals(null))
+        {
+            throw new ArgumentNullException("Clock's id is null!");
+        }
         Clock? existing = context.Clocks.FirstOrDefault(t => t.Id == clockId);
         return Task.FromResult(existing);
     }

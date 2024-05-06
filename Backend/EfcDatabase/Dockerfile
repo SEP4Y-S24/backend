@@ -13,4 +13,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /EfcDatabase
 EXPOSE 8080
 COPY --from=build-env /EfcDatabase/out .
-ENTRYPOINT ["dotnet", "DotNet.Docker.dll"]
+ENTRYPOINT ["dotnet", "EfcDatabase.dll"]
