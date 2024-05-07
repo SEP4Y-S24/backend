@@ -1,6 +1,7 @@
 ﻿using Application.DAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Services.Services;
 
@@ -13,9 +14,11 @@ public class ClockDAO: IClockDAO
         this.context = dbContext;
     }
 
-    public Task<Clock> CreateAsync(Clock clock)
+    public async Task<Clock> CreateAsync(Clock clock)
     {
-        throw new NotImplementedException();
+        EntityEntry<Clock> added = await context.Clocks.AddAsync(clock);
+        await context.SaveChangesAsync();
+        return added.Entity;
     }
 
     public Task UpdateAsync(Clock clockToUpdate)
