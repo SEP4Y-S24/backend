@@ -33,23 +33,26 @@ public class TCPServer
         while ((readTotal = stream.Read(buffer, 0, buffer.Length)) != 0)
         {
             receivedData = Encoding.UTF8.GetString(buffer, 0, readTotal);
-            if (receivedData.Length > 2)
+            if (receivedData == "\r\n")
             {
-                IdentifyCommand(receivedData);
-                var response= Encoding.UTF8.GetBytes(receivedData);
-                stream.Write(response, 0, receivedData.Length);
+                Console.WriteLine("Exiting...");
+            }
+            else if (receivedData.Length >= 2)
+            {
+                IdentifyCommand(receivedData, stream, buffer);
+                
             }
         }
     }
     
-    private void IdentifyCommand(string receivedData)
+    private void IdentifyCommand(string receivedData, NetworkStream stream, byte[] buffer)
     {
-        switch (receivedData.Substring(0,2))
+        switch (receivedData.Substring(0,2).ToUpper())
         {
             case "TM":
                 // Time request
                 // handle time request
-                Console.WriteLine("Time request received.");
+                TimeRequestHandle(receivedData, stream, buffer);
                 break;
             case "MS":
                 // Message response
@@ -60,5 +63,14 @@ public class TCPServer
                 // Unknown command
                 throw new InvalidOperationException("Unknown command received.");
         }
+    }
+    
+    private void TimeRequestHandle(string receivedData, NetworkStream stream, byte[] buffer)
+    {
+        var time = DateTime.Now.ToString("HH:mm:ss");
+        var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
+        byte[] timeBytes = Encoding.UTF8.GetBytes(response);
+        stream.Write(timeBytes, 0, timeBytes.Length);
+        Console.WriteLine("Time request received.");
     }
 }
