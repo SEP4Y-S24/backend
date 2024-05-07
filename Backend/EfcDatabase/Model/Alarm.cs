@@ -6,4 +6,9 @@ public class Alarm
 {
     [Key]
     public Guid Id { get; set;}
+
+    public Alarm()
+    {
+        Id = Guid.NewGuid();
+    }
 }
