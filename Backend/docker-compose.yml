@@ -12,20 +12,17 @@ services:
       - POSTGRES_DB=sep4
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  data_access:
-    image: 'data-access-image'
+
+  web_api:
+    image: 'webapplication1'
     build:
-      context: ./   
-    container_name: 'data-access-container'
+      context: ./
+      dockerfile: ./WebApplication1/Dockerfile
+    container_name: 'web-api-container'
     ports:
-      - 8080:8080
+      - 80:80
     depends_on:
-      - db 
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/doc-db
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - db
 volumes:
   db:
     driver: local
