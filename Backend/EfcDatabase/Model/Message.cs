@@ -1,7 +1,23 @@
-﻿namespace EfcDatabase.Model;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EfcDatabase.Model;
 
 public class Message
 {
-    public string message { get; set; }
-    
+    [Key]
+    public Guid Id { get; set;}
+    public DateTime DateOfCreation { get; set; }
+
+    public string Body { get; set; }
+    public User Sender { get; set; }
+    public Guid SenderId { get; set; }
+    public Clock Clock { get; set; }
+    public Guid ClockId { get; set; }
+    public User Reciever { get; set; }
+    public Guid ReceiverId { get; set; }
+
+    public Message()
+    {
+        
+    }
 }

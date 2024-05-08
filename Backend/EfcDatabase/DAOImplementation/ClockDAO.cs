@@ -1,9 +1,9 @@
-﻿using Application.DAO;
+﻿using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Services.Services;
+namespace EfcDatabase.DAOImplementation;
 
 public class ClockDAO: IClockDAO
 {

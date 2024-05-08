@@ -12,13 +12,22 @@ public class ClockContext : DbContext
 */
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=pgsql-container;Port=5432;Database=sep4;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=postgres");
     }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Clock> Clocks { get; set; }
+    public DbSet<Message> Messages { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Message>()
+            .HasOne(m => m.Reciever)
+            .WithMany(u => u.MessagesRecieved)
+            .HasForeignKey(m => m.ReceiverId);
+        modelBuilder.Entity<Message>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.MessagesSent)
+            .HasForeignKey(m => m.SenderId);
         modelBuilder.Entity<User>().HasData(
             new User
             {

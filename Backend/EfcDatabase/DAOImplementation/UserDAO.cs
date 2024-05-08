@@ -1,14 +1,14 @@
-﻿using Application.DAO;
+﻿using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
 
-namespace Services.Services;
+namespace EfcDatabase.DAOImplementation;
 
 public class UserDAO: IUserDAO
 {
-    private readonly UserContext context;
+    private readonly ClockContext context;
 
-    public UserDAO(UserContext dbContext)
+    public UserDAO(ClockContext dbContext)
     {
         context = dbContext;
     }

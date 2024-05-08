@@ -3,6 +3,7 @@ using System;
 using EfcDatabase.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EfcDatabase.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240508084518_AddMessage")]
+    partial class AddMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,13 +67,13 @@ namespace EfcDatabase.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ClockId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("DateOfCreation")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RecieverId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SenderId")
@@ -78,9 +81,7 @@ namespace EfcDatabase.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClockId");
-
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("RecieverId");
 
                     b.HasIndex("SenderId");
 
@@ -117,25 +118,17 @@ namespace EfcDatabase.Migrations
 
             modelBuilder.Entity("EfcDatabase.Model.Message", b =>
                 {
-                    b.HasOne("EfcDatabase.Model.Clock", "Clock")
+                    b.HasOne("EfcDatabase.Model.Clock", "Reciever")
                         .WithMany("Messages")
-                        .HasForeignKey("ClockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EfcDatabase.Model.User", "Reciever")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("ReceiverId")
+                        .HasForeignKey("RecieverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EfcDatabase.Model.User", "Sender")
-                        .WithMany("MessagesSent")
+                        .WithMany("Messages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Clock");
 
                     b.Navigation("Reciever");
 
@@ -149,9 +142,7 @@ namespace EfcDatabase.Migrations
 
             modelBuilder.Entity("EfcDatabase.Model.User", b =>
                 {
-                    b.Navigation("MessagesRecieved");
-
-                    b.Navigation("MessagesSent");
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
