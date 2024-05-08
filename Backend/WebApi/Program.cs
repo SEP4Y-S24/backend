@@ -14,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ClockContext>();
 builder.Services.AddScoped<IClockDAO, ClockDAO>();
+builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<IClockService, ClockService>();
 
 var app = builder.Build();
