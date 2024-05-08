@@ -24,12 +24,18 @@ public class MessageDAO : IMessageDao
                 throw new ArgumentNullException("Sender is missing from message!");
             }
             message.Sender = user;
-            Clock? clock = _context.Set<Clock>().Include(c=>c.Owner).FirstOrDefault(c => c.Id == message.ReceiverId);
+            User? reciever = _context.Set<User>().FirstOrDefault(c => c.Id.Equals(message.ReceiverId));
+            if (reciever is null)
+            {
+                throw new ArgumentNullException("Reciever user is missing from message!");
+            }
+            message.Reciever = reciever;
+            Clock? clock = _context.Set<Clock>().Include(c=>c.Owner).FirstOrDefault(c => c.Id == message.ClockId);
             if (clock is null)
             {
-                throw new ArgumentNullException("Reciever is missing from message");
+                throw new ArgumentNullException("Recieving clock is missing from message");
             }
-            message.Reciever = clock;
+            message.Clock = clock;
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
             return message;

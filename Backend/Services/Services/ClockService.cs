@@ -1,4 +1,4 @@
-using Application.DAO;
+using EfcDatabase.IDAO;
 using EfcDatabase.Model;
 using Services.IServices;
 
@@ -6,7 +6,7 @@ namespace Services.Services;
 
 public class ClockService : IClockService
 {
-    private readonly IClockDAO _clockDao;
+    private readonly  IClockDAO _clockDao;
     private readonly IUserDAO _userDao;
 
     public ClockService(IClockDAO clockDao, IUserDAO userDao)

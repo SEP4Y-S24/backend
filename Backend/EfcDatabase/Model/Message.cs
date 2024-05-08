@@ -11,7 +11,9 @@ public class Message
     public string Body { get; set; }
     public User Sender { get; set; }
     public Guid SenderId { get; set; }
-    public Clock Reciever { get; set; }
+    public Clock Clock { get; set; }
+    public Guid ClockId { get; set; }
+    public User Reciever { get; set; }
     public Guid ReceiverId { get; set; }
 
     public Message()

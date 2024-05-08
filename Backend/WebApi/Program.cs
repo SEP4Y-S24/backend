@@ -1,5 +1,7 @@
-using Application.DAO;
 using EfcDatabase.Context;
+using EfcDatabase.DAOImplementation;
+using EfcDatabase.IDAO;
+using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using Services.Services;
@@ -15,10 +17,26 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ClockContext>();
 builder.Services.AddScoped<IClockDAO, ClockDAO>();
 builder.Services.AddScoped<IUserDAO, UserDAO>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageDao, MessageDAO>();
 builder.Services.AddScoped<IClockService, ClockService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowBlazorOrigin",
+        builder =>
+        {
+            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+        });
+
+});
 
 var app = builder.Build();
-
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
