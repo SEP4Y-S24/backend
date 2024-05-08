@@ -1,6 +1,6 @@
 ﻿namespace Application.DAO;
 
-public class ITaskDAO
+public class IToDoDAO
 {
     
 }

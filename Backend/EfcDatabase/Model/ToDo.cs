@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EfcDatabase.Model;
 
-public class Task
+public class ToDo
 {
     [Key]
     public Guid Id { get; set; }
@@ -14,7 +14,7 @@ public class Task
     public Guid UserId { get; set; }
     public User User { get; set; }
 
-    public Task(User user, string name, string description, DateTime deadline, Status status)
+    public ToDo(User user, string name, string description, DateTime deadline, Status status)
     {
         User = user;
         UserId = user.Id;
