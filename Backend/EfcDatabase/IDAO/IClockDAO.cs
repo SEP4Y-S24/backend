@@ -1,6 +1,6 @@
 ﻿using EfcDatabase.Model;
 
-namespace Application.DAO;
+namespace EfcDatabase.IDAO;
 
 public interface IClockDAO
 { 

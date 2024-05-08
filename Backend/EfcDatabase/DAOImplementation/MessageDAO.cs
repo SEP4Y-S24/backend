@@ -1,9 +1,9 @@
-﻿using Application.DAO;
+﻿using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Services.Services;
+namespace EfcDatabase.DAOImplementation;
 
 public class MessageDAO : IMessageDao
 {
@@ -42,22 +42,29 @@ public class MessageDAO : IMessageDao
         {
             throw new Exception(e.Message);
         }
-
     }
 
-    public Task<IEnumerable<Message>> GetAsync()
+    public async Task<IEnumerable<Message>> GetAll()
     {
-        throw new NotImplementedException();
+        return await _context.Set<Message>().ToListAsync();
     }
 
-    public Task UpdateAsync(Message clock)
+    public async Task UpdateAsync(Message message)
     {
-        throw new NotImplementedException();
+        Message dbEntity = await GetByIdAsync(message.Id);
+
+        if (dbEntity == null)
+        {
+            throw new ArgumentException();
+        }
+        _context.Update(dbEntity);
+
+        await _context.SaveChangesAsync();
     }
 
-    public Task<Message?> GetByIdAsync(Guid messageId)
+    public async Task<Message?> GetByIdAsync(Guid messageId)
     {
-        throw new NotImplementedException();
+        return await _context.Set<Message>().Include(m=>m.Reciever).Include(m=>m.Sender).SingleAsync(e => e.Id == messageId);
     }
 
     public Task DeleteAsync(Guid id)

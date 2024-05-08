@@ -12,7 +12,7 @@ public class ClockContext : DbContext
 */
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=pgsql-container;Port=5432;Database=sep4;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=postgres");
     }
 
     public DbSet<User> Users { get; set; }
