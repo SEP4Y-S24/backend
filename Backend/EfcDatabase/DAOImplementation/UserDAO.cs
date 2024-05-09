@@ -6,9 +6,9 @@ namespace Services.Services;
 
 public class UserDAO: IUserDAO
 {
-    private readonly UserContext context;
+    private readonly ClockContext context;
 
-    public UserDAO(UserContext dbContext)
+    public UserDAO(ClockContext dbContext)
     {
         context = dbContext;
     }

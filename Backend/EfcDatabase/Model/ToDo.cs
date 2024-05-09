@@ -23,6 +23,11 @@ public class ToDo
         Deadline = deadline;
         Status = status;
     }
+
+    public ToDo()
+    {
+        
+    }
     
 
 }
