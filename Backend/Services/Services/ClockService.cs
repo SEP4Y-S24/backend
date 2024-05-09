@@ -56,7 +56,7 @@ public class ClockService : IClockService
         // return created;
 
         Clock clock = new Clock(user, clockToCreate.Name, clockToCreate.TimeZone);
-        Clock created = await _userDao.CreateAsync(clock);
+        Clock created = await _clockDao.CreateAsync(clock);
         return created;
     }
 }

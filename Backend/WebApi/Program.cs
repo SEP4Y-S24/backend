@@ -20,6 +20,8 @@ builder.Services.AddScoped<IClockDAO, ClockDAO>();
 builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMessageDao, MessageDAO>();
+builder.Services.AddScoped<IToDoDAO, ToDoDAO>();
+builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddScoped<IClockService, ClockService>();
 builder.Services.AddCors(options =>
 {
