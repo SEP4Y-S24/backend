@@ -1,7 +1,7 @@
+using System.Configuration;
 using EfcDatabase.Context;
 using EfcDatabase.DAOImplementation;
 using EfcDatabase.IDAO;
-using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using Services.Services;
@@ -14,7 +14,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ClockContext>();
+builder.Services.AddDbContext<ClockContext>(options=>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 builder.Services.AddScoped<IClockDAO, ClockDAO>();
 builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<IMessageService, MessageService>();

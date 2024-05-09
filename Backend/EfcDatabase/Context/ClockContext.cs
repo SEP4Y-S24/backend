@@ -5,14 +5,14 @@ namespace EfcDatabase.Context;
 
 public class ClockContext : DbContext
 {
-/*    public ClockContext(DbContextOptions<ClockContext> options) : base(options)
-   
+    public ClockContext(){}
+    public ClockContext(DbContextOptions<ClockContext> options) : base(options)
     {
     }
-*/
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=331425");
     }
 
     public DbSet<User> Users { get; set; }
