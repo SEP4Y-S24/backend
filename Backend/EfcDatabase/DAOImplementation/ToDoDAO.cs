@@ -52,15 +52,15 @@ public class ToDoDAO: IToDoDAO
         return Task.FromResult(existing);
     }
 
-    public Task DeleteAsync(Guid todoId)
+    public async Task DeleteAsync(Guid todoId)
     {
         if (todoId==null)
         {
             throw new ArgumentNullException("Todo ID is null");
         }
         
-        Task<ToDo?> toDelete = GetByIdAsync(todoId);
-        context.Todos.Remove(toDelete.Result);
-        return Task.CompletedTask;
+        ToDo? toDelete = await GetByIdAsync(todoId);
+        context.Todos.Remove(toDelete);
+        await context.SaveChangesAsync();
     }
 }
