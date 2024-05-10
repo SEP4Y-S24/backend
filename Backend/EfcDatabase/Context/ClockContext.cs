@@ -20,6 +20,7 @@ public class ClockContext : DbContext
     public DbSet<Clock> Clocks { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<ToDo> Todos { get; set; }
+    public DbSet<Alarm> Alarms { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,6 +55,19 @@ public class ClockContext : DbContext
                 Name = "Hello",
                 Description = "hello description",
                 Status = Status.InProgress
+            });
+        modelBuilder.Entity<Alarm>().HasData(
+            new Alarm
+            {
+                Clock = new Clock
+                {
+                    Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
+                    OwnerId = Guid.Parse("5f3bb5af-e982-4a8b-8590-b620597a7360"),
+                    Name = "Test Clock",
+                    TimeZone = 'G',
+                },
+                SetOffTime = DateTime.UtcNow.AddHours(1), // SetOffTime (example: 1 hour from now)
+                IsActive = true // IsActive
             });
         base.OnModelCreating(modelBuilder);
     }
