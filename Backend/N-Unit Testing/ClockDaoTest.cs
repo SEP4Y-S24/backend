@@ -56,13 +56,13 @@ public class ClockDaoTest
             Assert.IsNotNull(result);
             Assert.AreEqual(clock.Id, result.Id);
             Assert.AreEqual(clock.Name, result.Name);
-            Assert.AreEqual(clock.TimeZone, result.TimeZone);
+            Assert.AreEqual(clock.TimeOffset, result.TimeOffset);
 
             // Verify that the clock was added to the database
             var addedClock = await context.Clocks.FindAsync(clock.Id);
             Assert.IsNotNull(addedClock);
             Assert.AreEqual(clock.Name, addedClock.Name);
-            Assert.AreEqual(clock.TimeZone, addedClock.TimeZone);
+            Assert.AreEqual(clock.TimeOffset, addedClock.TimeOffset);
         }
     }
 }
