@@ -46,7 +46,7 @@ public class ClockDaoTest
                 OwnerId = owner.Id,
                 Id = Guid.NewGuid(),
                 Name = "Test Clock",
-                TimeZone = 'C'
+                TimeOffset = '0'
             };
 
             // Act

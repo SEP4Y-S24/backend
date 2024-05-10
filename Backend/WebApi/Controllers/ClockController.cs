@@ -14,11 +14,11 @@ public class ClockController : ControllerBase
         this._clockService = clockService;
     }
     [HttpPatch]
-    public async Task<ActionResult> UpdateAsync(char TimeZone, Guid id)
+    public async Task<ActionResult> UpdateAsync(long timeOffset, Guid id)
     {
         try
         {
-            await _clockService.SetTimeZoneAsync(TimeZone,id);
+            await _clockService.SetTimeZoneAsync(timeOffset,id);
             return Ok();
         }
         catch (Exception e)

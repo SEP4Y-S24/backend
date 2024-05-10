@@ -1,16 +1,20 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using NodaTime;
+using Services.IServices;
+using Services.Services;
 
 namespace IoT_Comm;
 
-public class TCPServer
+public class TcpServer : BackgroundService, IIoTCom
 {
     private TcpListener _tcpListener;
-
-    public TCPServer()
+    // private IClockService _clockService;
+    public TcpServer()
     {
         StartServer();
+        // _clockService = clockService;
     }
 
     private void StartServer()
@@ -32,7 +36,7 @@ public class TCPServer
         
         while ((readTotal = stream.Read(buffer, 0, buffer.Length)) != 0)
         {
-            receivedData = Encoding.UTF8.GetString(buffer, 0, readTotal);
+            receivedData = Encoding.ASCII.GetString(buffer, 0, readTotal);
             if (receivedData == "\r\n")
             {
                 Console.WriteLine("Exiting...");
@@ -40,7 +44,6 @@ public class TCPServer
             else if (receivedData.Length >= 2)
             {
                 IdentifyCommand(receivedData, stream, buffer);
-                
             }
         }
     }
@@ -51,7 +54,6 @@ public class TCPServer
         {
             case "TM":
                 // Time request
-                // handle time request
                 TimeRequestHandle(receivedData, stream, buffer);
                 break;
             case "MS":
@@ -65,12 +67,35 @@ public class TCPServer
         }
     }
     
-    private void TimeRequestHandle(string receivedData, NetworkStream stream, byte[] buffer)
+    private async void TimeRequestHandle(string receivedData, NetworkStream stream, byte[] buffer)
     {
-        var time = DateTime.Now.ToString("HH:mm:ss");
-        var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
-        byte[] timeBytes = Encoding.UTF8.GetBytes(response);
-        stream.Write(timeBytes, 0, timeBytes.Length);
-        Console.WriteLine("Time request received.");
+        try
+        {
+            // var time = await _clockService.GetClockTimeAsync();
+            var time = DateTime.Now.ToString("hh:mm:ss");
+            var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
+            byte[] timeBytes = Encoding.ASCII.GetBytes(response);
+            stream.Write(timeBytes, 0, timeBytes.Length);
+            Console.WriteLine("Time request received.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public void SendMessage(string message)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        StartServer();
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(1_000, stoppingToken);
+        }
     }
 }

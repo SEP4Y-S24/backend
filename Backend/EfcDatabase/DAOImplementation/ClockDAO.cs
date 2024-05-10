@@ -46,6 +46,16 @@ public class ClockDAO: IClockDAO
         return Task.FromResult(existing);
     }
 
+    public Task<long> GetOffsetByIdAsync(Guid clockId)
+    {
+        if (clockId.Equals(null))
+        {
+            throw new ArgumentNullException("Clock's id is null!");
+        }
+        Clock? existing = context.Clocks.FirstOrDefault(t => t.Id == clockId);
+        return Task.FromResult(existing.TimeOffset);;
+    }
+
     public Task DeleteAsync(Guid id)
     {
         throw new NotImplementedException();
