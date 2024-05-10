@@ -11,6 +11,7 @@ public interface IClockDAO
     Task<IEnumerable<Clock>> GetAllBy(Expression<Func<Clock, bool>> filter);
     Task UpdateAsync(Clock clock);
     Task<Clock?> GetByIdAsync(Guid clockId);
+    Task<long> GetOffsetByIdAsync(Guid clockId);
     Task DeleteAsync(Guid id);
     
 }

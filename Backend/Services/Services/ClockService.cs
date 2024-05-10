@@ -15,7 +15,7 @@ public class ClockService : IClockService
         _userDao = userDao;
     }
 
-    public async Task SetTimeZoneAsync(char TimeZone, Guid id)
+    public async Task SetTimeZoneAsync(long timeOffset, Guid id)
     {
         Clock? existing = await _clockDao.GetByIdAsync(id);
 
@@ -35,7 +35,7 @@ public class ClockService : IClockService
         }
         User userToUse = user ?? existing.Owner;
     */
-       existing.TimeZone = TimeZone;
+       existing.TimeOffset = timeOffset;
 
 
         await _clockDao.UpdateAsync(existing);
@@ -55,8 +55,15 @@ public class ClockService : IClockService
         // Post created = await postDao.CreateAsync(post);
         // return created;
 
-        Clock clock = new Clock(user, clockToCreate.Name, clockToCreate.TimeZone);
+        Clock clock = new Clock(user, clockToCreate.Name, clockToCreate.TimeOffset);
         Clock created = await _clockDao.CreateAsync(clock);
         return created;
+    }
+
+    public async Task<string> GetClockTimeAsync()
+    {
+        var offset=await _clockDao.GetOffsetByIdAsync(Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"));//TODO resolve hardcode
+        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm:ss");
+        return await Task.FromResult(time);
     }
 }

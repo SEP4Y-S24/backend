@@ -63,6 +63,14 @@ public class MessageDAO : IMessageDao
         {
             throw new ArgumentException();
         }
+
+        dbEntity.ReceiverId = message.ReceiverId;
+        dbEntity.Reciever = message.Reciever;
+        dbEntity.SenderId = message.SenderId;
+        dbEntity.ClockId = message.ClockId;
+        dbEntity.Clock = message.Clock;
+        dbEntity.Sender = message.Sender;
+        
         _context.Update(dbEntity);
 
         await _context.SaveChangesAsync();

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EfcDatabase.DAOImplementation;
 
-public class ClockDAO: IClockDAO
+public class ClockDAO : IClockDAO
 {
     private readonly ClockContext context;
 
@@ -25,7 +25,7 @@ public class ClockDAO: IClockDAO
 
     public async Task<IEnumerable<Clock>> GetAll()
     {
-        return await context.Set<Clock>().Include(e=> e.Messages).ToListAsync();
+        return await context.Set<Clock>().Include(e => e.Messages).ToListAsync();
 
     }
 
@@ -51,9 +51,9 @@ public class ClockDAO: IClockDAO
         }
 
         context.Clocks.Update(clockToUpdate);
-    
+
         context.SaveChanges();
-    
+
         return Task.CompletedTask;
     }
 
@@ -66,8 +66,17 @@ public class ClockDAO: IClockDAO
         Clock? existing = context.Clocks.FirstOrDefault(t => t.Id == clockId);
         return Task.FromResult(existing);
     }
-
+    public Task<long> GetOffsetByIdAsync(Guid clockId)
+    {
+        if (clockId.Equals(null))
+        {
+            throw new ArgumentNullException("Clock's id is null!");
+        }
+        Clock? existing = context.Clocks.FirstOrDefault(t => t.Id == clockId);
+        return Task.FromResult(existing.TimeOffset); ;
+    }
     public async Task DeleteAsync(Guid id)
+
     {
         var entity = await GetByIdAsync(id);
 
