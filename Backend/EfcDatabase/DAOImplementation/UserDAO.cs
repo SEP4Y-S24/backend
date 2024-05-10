@@ -32,17 +32,29 @@ public class UserDAO: IUserDAO
         return added.Entity;
     }
 
-    public async Task UpdateAsync(Guid userId)  //not full logic
+    public async Task UpdateAsync(User user)  
     {
-        User? toUpdate = await GetByIdAsync(userId);
-        
-        User? existing = context.Users.FirstOrDefault(user => user.Id == userId);
-        if (existing==null)
-        {
-            throw new Exception($"User with id {userId} does not exist.");
-        }
+        User? dbEntity = await GetByIdAsync(user.Id);
 
-        context.Users.Update(toUpdate);
+        if (user==null)
+        {
+            throw new ArgumentNullException();
+        }
+        context.Entry(dbEntity).CurrentValues.SetValues(user);
+
+        context.Update(dbEntity);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Guid userId)
+    {
+        if (userId==null)
+        {
+            throw new ArgumentNullException("User ID is null");
+        }
+        
+        User? toDelete = await GetByIdAsync(userId);
+        context.Users.Remove(toDelete);
         await context.SaveChangesAsync();
     }
 }
