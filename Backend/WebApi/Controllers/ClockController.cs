@@ -27,5 +27,19 @@ public class ClockController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    
+    [HttpPost]
+    public async Task<ActionResult> CreateAsync()
+    {
+        try
+        {
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 
 }

@@ -1,6 +1,8 @@
-﻿using EfcDatabase.IDAO;
+﻿using System.Linq.Expressions;
+using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EfcDatabase.DAOImplementation;
@@ -21,12 +23,31 @@ public class ClockDAO: IClockDAO
         return added.Entity;
     }
 
+    public async Task<IEnumerable<Clock>> GetAll()
+    {
+        return await context.Set<Clock>().Include(e=> e.Messages).ToListAsync();
+
+    }
+
+    public async Task<IEnumerable<Clock>> GetAllBy(Expression<Func<Clock, bool>> filter)
+    {
+        return await context.Set<Clock>().Include(e => e.Messages).Where(filter).ToListAsync();
+
+    }
+
     public Task UpdateAsync(Clock clockToUpdate)
     {
         Clock? existing = context.Clocks.FirstOrDefault(post => post.Id == clockToUpdate.Id);
         if (existing == null)
         {
             throw new Exception($"Clock with id {clockToUpdate.Id} does not exist!");
+        }
+
+        context.Entry(existing).CurrentValues.SetValues(clockToUpdate);
+        existing.Messages = new List<Message>();
+        foreach (var message in clockToUpdate.Messages)
+        {
+            clockToUpdate.Messages.Add(message);
         }
 
         context.Clocks.Update(clockToUpdate);
@@ -46,8 +67,18 @@ public class ClockDAO: IClockDAO
         return Task.FromResult(existing);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await GetByIdAsync(id);
+
+        if (entity == null)
+        {
+            throw new ArgumentException("Clock is null!");
+        }
+
+        context.Remove(entity);
+
+        await context.SaveChangesAsync();
+
     }
 }
