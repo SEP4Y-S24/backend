@@ -28,4 +28,43 @@ public class ToDoService: IToDoService
         ToDo created = await _toDoDao.CreateAsync(todo);
         return created;
     }
+
+    public async Task<ToDo?> GetByIdAsync(Guid todoId)
+    {
+        try
+        {
+            return await _toDoDao.GetByIdAsync(todoId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task UpdateAsync(ToDo todo)
+    {
+        try
+        {
+            await _toDoDao.UpdateAsync(todo);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task DeleteAsync(Guid todoId)
+    {
+        try
+        {
+            await _toDoDao.DeleteAsync(todoId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
