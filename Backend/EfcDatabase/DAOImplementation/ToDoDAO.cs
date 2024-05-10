@@ -21,19 +21,24 @@ public class ToDoDAO: IToDoDAO
         return added.Entity;
     }
 
-    public Task UpdateAsync(Guid todoId)
+    public async Task UpdateAsync(ToDo todo)
     {
-        Task<ToDo?> toUpdate = GetByIdAsync(todoId);
-        
-        ToDo? existing = context.Todos.FirstOrDefault(todo => todo.Id == todoId);
-        if (existing==null)
+        ToDo dbEntity = await GetByIdAsync(todo.Id);
+
+        if (dbEntity == null)
         {
-            throw new Exception($"Todo with id {todoId} does not exist.");
+            throw new ArgumentException();
         }
 
-        context.Todos.Update(toUpdate.Result);
-        context.SaveChanges();
-        return Task.CompletedTask;
+        dbEntity.User = todo.User;
+        dbEntity.UserId = todo.UserId;
+        dbEntity.Name = todo.Name;
+        dbEntity.Deadline = todo.Deadline;
+        dbEntity.Status = todo.Status;
+        
+        context.Update(dbEntity);
+
+        await context.SaveChangesAsync();
     }
 
     public Task<ToDo?> GetByIdAsync(Guid todoId)
@@ -42,7 +47,7 @@ public class ToDoDAO: IToDoDAO
         {
             throw new ArgumentNullException("The given Todo ID is null");
         }
-
+        
         ToDo? existing = context.Todos.FirstOrDefault(todo => todo.Id == todoId);
         return Task.FromResult(existing);
     }
