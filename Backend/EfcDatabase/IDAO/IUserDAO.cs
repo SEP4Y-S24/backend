@@ -5,5 +5,6 @@ namespace EfcDatabase.IDAO;
 public interface IUserDAO
 {
     Task<User?> GetByIdAsync(Guid userId);
-    Task<Clock> CreateAsync(Clock clock);
+    Task<User> CreateAsync(User user);
+    Task UpdateAsync(Guid userId);
 }

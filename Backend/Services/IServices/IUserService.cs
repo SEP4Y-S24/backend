@@ -1,6 +1,8 @@
-﻿namespace Services.IServices;
+﻿using EfcDatabase.Model;
 
-public class IUserService
+namespace Services.IServices;
+
+public interface IUserService
 {
-    
+    Task<User> CreateAsync(User userToCreate);
 }

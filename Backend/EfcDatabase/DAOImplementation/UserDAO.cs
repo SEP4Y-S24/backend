@@ -1,6 +1,7 @@
 ﻿using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EfcDatabase.DAOImplementation;
 
@@ -13,13 +14,35 @@ public class UserDAO: IUserDAO
         context = dbContext;
     }
 
-    public Task<User?> GetByIdAsync(Guid userId)
+    public async Task<User?> GetByIdAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        if (userId==null)
+        {
+            throw new ArgumentNullException("The given user Id is null");
+        }
+
+        User? user = await context.Users.FindAsync(userId);
+        return user;
     }
 
-    public Task<Clock> CreateAsync(Clock clock)
+    public async Task<User> CreateAsync(User user)
     {
-        throw new NotImplementedException();
+        EntityEntry<User> added = await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+        return added.Entity;
+    }
+
+    public async Task UpdateAsync(Guid userId)  //not full logic
+    {
+        User? toUpdate = await GetByIdAsync(userId);
+        
+        User? existing = context.Users.FirstOrDefault(user => user.Id == userId);
+        if (existing==null)
+        {
+            throw new Exception($"User with id {userId} does not exist.");
+        }
+
+        context.Users.Update(toUpdate);
+        await context.SaveChangesAsync();
     }
 }
