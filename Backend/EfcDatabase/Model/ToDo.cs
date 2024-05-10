@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EfcDatabase.Model;
@@ -11,6 +12,8 @@ public class ToDo
     public string Description { get; set; }
     public DateTime Deadline { get; set; }
     public Status Status { get; set; }
+    
+    [ForeignKey("user_Id")]
     public Guid UserId { get; set; }
     public User User { get; set; }
 

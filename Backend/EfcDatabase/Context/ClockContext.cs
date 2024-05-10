@@ -48,8 +48,8 @@ public class ClockContext : DbContext
         modelBuilder.Entity<ToDo>().HasData(
             new ToDo
             {
-                User = new User(),
-                Id = Guid.Parse("f656n17d-63b7-451a-91ee-0e620e652c9e"),
+                Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
+                UserId = Guid.Parse("5f3bb5af-e982-4a8b-8590-b620597a7360"),
                 Deadline = DateTime.UtcNow.AddDays(7),
                 Name = "Hello",
                 Description = "hello description",
