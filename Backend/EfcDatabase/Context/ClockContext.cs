@@ -64,7 +64,7 @@ public class ClockContext : DbContext
                     Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
                     OwnerId = Guid.Parse("5f3bb5af-e982-4a8b-8590-b620597a7360"),
                     Name = "Test Clock",
-                    TimeZone = 'G',
+                    TimeOffset = 'G',
                 },
                 SetOffTime = DateTime.UtcNow.AddHours(1), // SetOffTime (example: 1 hour from now)
                 IsActive = true // IsActive
