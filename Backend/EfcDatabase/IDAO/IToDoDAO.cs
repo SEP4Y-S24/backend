@@ -8,4 +8,5 @@ public interface IToDoDAO
     Task UpdateAsync(ToDo todo);
     Task<ToDo?> GetByIdAsync(Guid todoId);
     Task DeleteAsync(Guid todoId);
+    Task<IEnumerable<ToDo>> GetAllAsync();
 }

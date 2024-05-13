@@ -67,4 +67,17 @@ public class ToDoService: IToDoService
             throw;
         }
     }
+
+    public async Task<IEnumerable<ToDo>> GetAllAsync()
+    {
+        try
+        {
+          return await _toDoDao.GetAllAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

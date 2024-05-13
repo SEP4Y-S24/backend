@@ -1,4 +1,5 @@
-﻿using EfcDatabase.Context;
+﻿using System.Data.Entity;
+using EfcDatabase.Context;
 using EfcDatabase.IDAO;
 using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -62,5 +63,10 @@ public class ToDoDAO: IToDoDAO
         ToDo? toDelete = await GetByIdAsync(todoId);
         context.Todos.Remove(toDelete);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ToDo>> GetAllAsync()
+    {
+        return await context.Set<ToDo>().ToListAsync();
     }
 }
