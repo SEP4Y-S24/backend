@@ -8,4 +8,5 @@ public interface IUserService
     Task<User> GetByIdAsync(Guid userId);
     Task UpdateAsync(User user);
     Task DeleteAsync(Guid userId);
+    Task<List<Clock>> GetClocksByUser(Guid id);
 }

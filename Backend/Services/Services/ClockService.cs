@@ -50,14 +50,36 @@ public class ClockService : IClockService
             throw new Exception($"User with id {clockToCreate.OwnerId} was not found.");
         }
 
-        //ValidateTodo(dto);
-        // Post post = new Post(user.Id, dto.Title, dto.Content);
-        // Post created = await postDao.CreateAsync(post);
-        // return created;
-
-        Clock clock = new Clock(user, clockToCreate.Name, clockToCreate.TimeOffset);
-        Clock created = await _clockDao.CreateAsync(clock);
+        clockToCreate.Owner = user;
+        Clock created = await _clockDao.CreateAsync(clockToCreate);
         return created;
+    }
+
+    public async Task<Clock> UpdateClockAsync(Clock clockToUpdate)
+    {
+        User? user = await _userDao.GetByIdAsync(clockToUpdate.OwnerId);
+        if (user == null)
+        {
+            throw new Exception($"User with id {clockToUpdate.OwnerId} was not found.");
+        }
+
+        clockToUpdate.Owner = user;
+        Clock updated = await _clockDao.UpdateAsync(clockToUpdate);
+        return updated;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        try
+        {
+            Clock clock = await _clockDao.GetByIdAsync(id);
+            await _clockDao.DeleteAsync(id);
+            _userDao.DeleteClock(id, clock.OwnerId);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public async Task<string> GetClockTimeAsync()

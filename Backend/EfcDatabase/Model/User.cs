@@ -8,7 +8,7 @@ public class User
     public Guid Id { get; set;}
     public virtual ICollection<Message> MessagesRecieved { get; set; }
     public virtual ICollection<Message> MessagesSent { get; set; }
-    public Clock? Clock { get; set; }
+    public ICollection<Clock?> Clocks { get; set; }
     public ICollection<ToDo?> Todos { get; set; }
 
 }
