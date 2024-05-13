@@ -66,4 +66,35 @@ public class AlarmService:IAlarmService
             throw;
         }
     }
+
+    public async Task EnableAlarm(Guid alarmId)
+    {
+        try
+        {
+            Alarm? alarm = await _alarmDao.GetByIdAsync(alarmId);
+            alarm.IsActive = true;
+            await _alarmDao.UpdateAsync(alarm);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task DisableAlarm(Guid alarmId)
+    {
+        try
+        {
+            Alarm? alarm = await _alarmDao.GetByIdAsync(alarmId);
+            alarm.IsActive = false;
+            alarm.IsSnoozed = false;
+            await _alarmDao.UpdateAsync(alarm);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

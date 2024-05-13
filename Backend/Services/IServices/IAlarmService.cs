@@ -8,4 +8,6 @@ public interface IAlarmService
     Task<Alarm?> GetByIdAsync(Guid alarmId);
     Task UpdateAsync(Alarm alarm);
     Task DeleteAsync(Guid alarmId);
+    Task EnableAlarm(Guid alarmId);
+    Task DisableAlarm(Guid alarmId);
 }
