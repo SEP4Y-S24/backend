@@ -16,7 +16,7 @@ public class MessageController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> UpdateAsync(SendMessageRequest dto)
+    public async Task<ActionResult> CreateAsync(SendMessageRequest dto)
     {
         try
         {

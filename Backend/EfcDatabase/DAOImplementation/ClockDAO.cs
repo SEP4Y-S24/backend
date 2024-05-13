@@ -29,32 +29,35 @@ public class ClockDAO : IClockDAO
 
     }
 
-    public async Task<IEnumerable<Clock>> GetAllBy(Expression<Func<Clock, bool>> filter)
+    public async Task<IEnumerable<Clock>> GetAllByAsync(Expression<Func<Clock, bool>> filter)
     {
         return await context.Set<Clock>().Include(e => e.Messages).Where(filter).ToListAsync();
 
     }
 
-    public Task UpdateAsync(Clock clockToUpdate)
+    public async Task<Clock> UpdateAsync(Clock clockToUpdate)
     {
-        Clock? existing = context.Clocks.FirstOrDefault(post => post.Id == clockToUpdate.Id);
+        Clock? existing =  context.Clocks.FirstOrDefault(post => post.Id == clockToUpdate.Id);
         if (existing == null)
         {
             throw new Exception($"Clock with id {clockToUpdate.Id} does not exist!");
         }
 
         context.Entry(existing).CurrentValues.SetValues(clockToUpdate);
-        existing.Messages = new List<Message>();
-        foreach (var message in clockToUpdate.Messages)
+        if (clockToUpdate.Messages != null)
         {
-            clockToUpdate.Messages.Add(message);
+            existing.Messages = new List<Message>();
+            foreach (var message in clockToUpdate.Messages)
+            {
+                clockToUpdate.Messages.Add(message);
+            }
         }
 
-        context.Clocks.Update(clockToUpdate);
+        context.Clocks.Update(existing);
 
         context.SaveChanges();
 
-        return Task.CompletedTask;
+        return clockToUpdate;
     }
 
     public Task<Clock?> GetByIdAsync(Guid clockId)

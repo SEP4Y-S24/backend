@@ -1,4 +1,5 @@
-﻿using EfcDatabase.IDAO;
+﻿using System.Data.Entity;
+using EfcDatabase.IDAO;
 using EfcDatabase.Context;
 using EfcDatabase.Model;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -14,15 +15,15 @@ public class UserDAO: IUserDAO
         context = dbContext;
     }
 
-    public async Task<User?> GetByIdAsync(Guid userId)
+    public Task<User?> GetByIdAsync(Guid userId)
     {
         if (userId==null)
         {
             throw new ArgumentNullException("The given user Id is null");
         }
 
-        User? user = await context.Users.FindAsync(userId);
-        return user;
+        User? existing = context.Users.FirstOrDefault(t => t.Id == userId);
+        return Task.FromResult(existing);
     }
 
     public async Task<User> CreateAsync(User user)
@@ -44,5 +45,15 @@ public class UserDAO: IUserDAO
 
         context.Users.Update(toUpdate);
         await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteClock(Guid clockId, Guid userId)
+    {
+        User? user = await GetByIdAsync(userId);
+        Clock? clock = user.Clocks.FirstOrDefault(c => c.Id.Equals(clockId));
+        if (clock != null)
+        {
+            user.Clocks.Remove(clock);
+        }
     }
 }
