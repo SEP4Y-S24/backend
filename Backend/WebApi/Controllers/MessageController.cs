@@ -29,7 +29,7 @@ public class MessageController : ControllerBase
                 ClockId = dto.clockId,
                 Body = dto.message
             };
-            Message result = await _messageService.SendMessage(message);
+            Message result = await _messageService.SendMessageAsync(message);
             return Ok();
         }
         catch (Exception e)

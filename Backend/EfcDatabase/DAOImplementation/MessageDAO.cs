@@ -55,6 +55,32 @@ public class MessageDAO : IMessageDao
         return await _context.Set<Message>().ToListAsync();
     }
 
+    public async Task<IEnumerable<Message>> GetAllSentMessagesByUserIdAsync(Guid userId)
+    {
+        User? user = _context.Set<User>().FirstOrDefault(user => user.Id.Equals(userId));
+        if (user==null)
+        {
+            throw new ArgumentNullException("The user Id is null.");
+        }
+
+        IEnumerable<Message> sentMessages = await _context.Set<Message>()
+            .Where(m => m.SenderId == userId).ToListAsync();
+        return sentMessages;
+    }
+
+    public async Task<IEnumerable<Message>> GetAllReceivedMessagesByUserIdAsync(Guid userId)
+    {
+        User? user = _context.Set<User>().FirstOrDefault(user => user.Id.Equals(userId));
+        if (user==null)
+        {
+            throw new ArgumentNullException("The user Id is null.");
+        }
+
+        IEnumerable<Message> sentMessages = await _context.Set<Message>()
+            .Where(m => m.ReceiverId == userId).ToListAsync();
+        return sentMessages;
+    }
+
     public async Task UpdateAsync(Message message)
     {
         Message dbEntity = await GetByIdAsync(message.Id);
