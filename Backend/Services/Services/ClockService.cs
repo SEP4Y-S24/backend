@@ -90,6 +90,7 @@ public class ClockService : IClockService
     {
         var offset=await _clockDao.GetOffsetByIdAsync(Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"));//TODO resolve hardcode
         var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm:ss");
-        return await Task.FromResult(time);
+        var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
+        return await Task.FromResult(response);
     }
 }

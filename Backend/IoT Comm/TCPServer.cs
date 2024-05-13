@@ -73,9 +73,7 @@ public class TcpServer : BackgroundService
         try
         {
             var time = await _clockService.GetClockTimeAsync();
-            // var time = DateTime.Now.ToString("hh:mm:ss");
-            var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
-            byte[] timeBytes = Encoding.ASCII.GetBytes(response);
+            byte[] timeBytes = Encoding.ASCII.GetBytes(time);
             stream.Write(timeBytes, 0, timeBytes.Length);
             Console.WriteLine("Time request received.");
         }
