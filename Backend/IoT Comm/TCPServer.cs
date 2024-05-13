@@ -21,7 +21,7 @@ public class TcpServer : BackgroundService
     private async void StartServer()
     {
         var port = 13000;
-        var hostAddress = IPAddress.Parse("127.0.0.1");
+        var hostAddress = IPAddress.Parse("10.154.222.61");
         
         _tcpListener = new TcpListener(hostAddress, port);
         _tcpListener.Start();

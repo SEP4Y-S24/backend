@@ -24,20 +24,16 @@ public class ToDoDAO: IToDoDAO
 
     public async Task UpdateAsync(ToDo todo)
     {
-        ToDo dbEntity = await GetByIdAsync(todo.Id);
+        ToDo? dbEntity = await GetByIdAsync(todo.Id);
 
         if (dbEntity == null)
         {
             throw new ArgumentException();
         }
 
-        dbEntity.User = todo.User;
-        dbEntity.UserId = todo.UserId;
-        dbEntity.Name = todo.Name;
-        dbEntity.Deadline = todo.Deadline;
-        dbEntity.Status = todo.Status;
-        
-        context.Update(dbEntity);
+        context.Entry(dbEntity).CurrentValues.SetValues(todo);
+
+        context.Todos.Update(dbEntity);
 
         await context.SaveChangesAsync();
     }
