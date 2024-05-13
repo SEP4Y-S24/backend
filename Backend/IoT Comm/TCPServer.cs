@@ -7,17 +7,18 @@ using Services.Services;
 
 namespace IoT_Comm;
 
-public class TcpServer : BackgroundService, IIoTCom
+public class TcpServer : BackgroundService
 {
     private TcpListener _tcpListener;
-    // private IClockService _clockService;
+    private IClockService _clockService;
+    
     public TcpServer()
     {
+        _clockService = new ClockService();
         StartServer();
-        // _clockService = clockService;
     }
 
-    private void StartServer()
+    private async void StartServer()
     {
         var port = 13000;
         var hostAddress = IPAddress.Parse("127.0.0.1");
@@ -28,7 +29,7 @@ public class TcpServer : BackgroundService, IIoTCom
         byte[] buffer = new byte[256];
         string receivedData;
         
-        using TcpClient client = _tcpListener.AcceptTcpClient();
+        using TcpClient client = await _tcpListener.AcceptTcpClientAsync();
         
         var stream = client.GetStream();
 
@@ -71,8 +72,8 @@ public class TcpServer : BackgroundService, IIoTCom
     {
         try
         {
-            // var time = await _clockService.GetClockTimeAsync();
-            var time = DateTime.Now.ToString("hh:mm:ss");
+            var time = await _clockService.GetClockTimeAsync();
+            // var time = DateTime.Now.ToString("hh:mm:ss");
             var response= "TM\r\n1\r\n8\r\n" + time + "\r\n";
             byte[] timeBytes = Encoding.ASCII.GetBytes(response);
             stream.Write(timeBytes, 0, timeBytes.Length);

@@ -1,3 +1,5 @@
+using EfcDatabase.Context;
+using EfcDatabase.DAOImplementation;
 using EfcDatabase.IDAO;
 using EfcDatabase.Model;
 using Services.IServices;
@@ -6,13 +8,15 @@ namespace Services.Services;
 
 public class ClockService : IClockService
 {
+    private readonly ClockContext _context;
     private readonly  IClockDAO _clockDao;
     private readonly IUserDAO _userDao;
 
-    public ClockService(IClockDAO clockDao, IUserDAO userDao)
+    public ClockService()
     {
-        this._clockDao = clockDao;
-        _userDao = userDao;
+        _context = new ClockContext();
+        this._clockDao = new ClockDAO(_context);
+        _userDao = new UserDAO(_context);
     }
 
     public async Task SetTimeZoneAsync(long timeOffset, Guid id)

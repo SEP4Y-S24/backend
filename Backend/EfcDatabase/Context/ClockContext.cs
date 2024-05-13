@@ -13,7 +13,7 @@ public class ClockContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=25879");
     }
     
     public DbSet<User> Users { get; set; }
@@ -59,13 +59,9 @@ public class ClockContext : DbContext
         modelBuilder.Entity<Alarm>().HasData(
             new Alarm
             {
-                Clock = new Clock
-                {
-                    Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                    OwnerId = Guid.Parse("5f3bb5af-e982-4a8b-8590-b620597a7360"),
-                    Name = "Test Clock",
-                    TimeOffset = 'G',
-                },
+                Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
+                ClockId = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
+                IsSnoozed = false,
                 SetOffTime = DateTime.UtcNow.AddHours(1), // SetOffTime (example: 1 hour from now)
                 IsActive = true // IsActive
             });
