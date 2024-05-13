@@ -97,4 +97,17 @@ public class AlarmService:IAlarmService
             throw;
         }
     }
+
+    public async Task<IEnumerable<Alarm>> GetAllAsync()
+    {
+        try
+        {
+            return await _alarmDao.GetAllAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

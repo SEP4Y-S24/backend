@@ -10,4 +10,5 @@ public interface IAlarmService
     Task DeleteAsync(Guid alarmId);
     Task EnableAlarm(Guid alarmId);
     Task DisableAlarm(Guid alarmId);
+    Task<IEnumerable<Alarm>> GetAllAsync();
 }
