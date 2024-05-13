@@ -21,8 +21,9 @@ public class TcpServer : BackgroundService
     private async void StartServer()
     {
         var port = 13000;
-        var hostAddress = IPAddress.Parse("127.0.0.1");
-        
+        var hostAddress = IPAddress.Parse("192.168.43.202");
+        var local = IPAddress.Parse("127.0.0.1");
+         
         _tcpListener = new TcpListener(hostAddress, port);
         _tcpListener.Start();
 
@@ -30,7 +31,7 @@ public class TcpServer : BackgroundService
         string receivedData;
         
         using TcpClient client = await _tcpListener.AcceptTcpClientAsync();
-        
+        Console.WriteLine("Connected");
         var stream = client.GetStream();
 
         int readTotal;
@@ -38,6 +39,7 @@ public class TcpServer : BackgroundService
         while ((readTotal = stream.Read(buffer, 0, buffer.Length)) != 0)
         {
             receivedData = Encoding.ASCII.GetString(buffer, 0, readTotal);
+            Console.WriteLine(receivedData);
             if (receivedData == "\r\n")
             {
                 Console.WriteLine("Exiting...");
@@ -47,6 +49,7 @@ public class TcpServer : BackgroundService
                 IdentifyCommand(receivedData, stream, buffer);
             }
         }
+        _tcpListener.Stop();
     }
     
     private void IdentifyCommand(string receivedData, NetworkStream stream, byte[] buffer)
@@ -62,9 +65,13 @@ public class TcpServer : BackgroundService
                 // handle message response
                 Console.WriteLine("Message response received.");
                 break;
+            case "AT":
+                break;
             default:
                 // Unknown command
-                throw new InvalidOperationException("Unknown command received.");
+                Console.WriteLine("Unknown data recieved: "+receivedData);
+                //throw new InvalidOperationException("Unknown command received.");
+                break;
         }
     }
     

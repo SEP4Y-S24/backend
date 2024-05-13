@@ -89,8 +89,9 @@ public class ClockService : IClockService
     public async Task<string> GetClockTimeAsync()
     {
         var offset=await _clockDao.GetOffsetByIdAsync(Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"));//TODO resolve hardcode
-        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm:ss");
-        var response= "TM|1|8|" + time + "|";
+        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm");
+        time=time.Replace(":", "");
+        var response= "TM|1|4|" + time + "|";
         return await Task.FromResult(response);
     }
 }
