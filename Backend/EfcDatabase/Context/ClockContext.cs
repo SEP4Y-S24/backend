@@ -6,7 +6,7 @@ namespace EfcDatabase.Context;
 
 public class ClockContext : DbContext
 {
-    public ClockContext(){}
+    public ClockContext() { }
     public ClockContext(DbContextOptions<ClockContext> options) : base(options)
     {
     }
@@ -15,7 +15,7 @@ public class ClockContext : DbContext
     {
         optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=sep4;Username=postgres;Password=postgres");
     }
-    
+
     public DbSet<User> Users { get; set; }
     public DbSet<Clock> Clocks { get; set; }
     public DbSet<Message> Messages { get; set; }
