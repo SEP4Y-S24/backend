@@ -2,7 +2,7 @@ using EfcDatabase.Context;
 using Services.IServices;
 using Services.Services;
 
-namespace IoT_Comm;
+namespace WebApi;
 
 public class Worker : BackgroundService
 {
