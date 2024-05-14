@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N-Unit Testing", "N-Unit Testing\N-Unit Testing.csproj", "{C5669A4C-6361-4261-B8E8-C6D54DF21A0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azure", "Azure\Azure.csproj", "{378392AE-3607-430D-8F60-DECFCB51EF3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C5669A4C-6361-4261-B8E8-C6D54DF21A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5669A4C-6361-4261-B8E8-C6D54DF21A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5669A4C-6361-4261-B8E8-C6D54DF21A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
