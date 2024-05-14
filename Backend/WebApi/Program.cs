@@ -2,10 +2,10 @@ using System.Configuration;
 using EfcDatabase.Context;
 using EfcDatabase.DAOImplementation;
 using EfcDatabase.IDAO;
-using WebApi;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using Services.Services;
+using WebApi.IotCom;
 
 var builder = WebApplication.CreateBuilder(args);
 

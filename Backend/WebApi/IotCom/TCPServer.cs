@@ -1,11 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using NodaTime;
 using Services.IServices;
 using Services.Services;
 
-namespace WebApi;
+namespace WebApi.IotCom;
 
 public class TcpServer : BackgroundService
 {

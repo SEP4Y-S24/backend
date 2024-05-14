@@ -1,8 +1,4 @@
-using EfcDatabase.Context;
-using Services.IServices;
-using Services.Services;
-
-namespace WebApi;
+namespace WebApi.IotCom;
 
 public class Worker : BackgroundService
 {

@@ -68,3 +68,11 @@ public class ClockContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+
+
+// {
+// "message": "<3 <3 <3",
+// "receiverId": "5f3bb5af-e982-4a8b-8590-b620597a7360",
+// "clockId": "f656d97d-63b7-451a-91ee-0e620e652c9e",
+// "userId": "5f3bb5af-e982-4a8b-8590-b620597a7360"
+// }
