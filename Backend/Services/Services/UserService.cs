@@ -64,6 +64,7 @@ public class UserService : IUserService
             Console.WriteLine(e);
             throw;
         }
+
     }
 
     public async Task<List<Clock>> GetClocksByUser(Guid id)

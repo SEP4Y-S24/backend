@@ -15,7 +15,7 @@ public class UserDaoTest
     {
         // Load configuration from appsettings.json
         var configurationBuilder = new ConfigurationBuilder()
-            .AddJsonFile("C:\\Users\\nural\\RiderProjects\\backend\\Backend\\WebApi\\appsettings.json", optional: false, reloadOnChange: true);
+            .AddJsonFile("C:\\Users\\nural\\RiderProjects\\backend\\Backend\\ClockServices\\appsettings.json", optional: false, reloadOnChange: true);
         _configuration = configurationBuilder.Build();
     }
     private ClockContext CreateTestContext()

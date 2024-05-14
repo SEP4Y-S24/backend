@@ -9,6 +9,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N-Unit Testing", "N-Unit Testing\N-Unit Testing.csproj", "{C5669A4C-6361-4261-B8E8-C6D54DF21A0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azure", "Azure\Azure.csproj", "{378392AE-3607-430D-8F60-DECFCB51EF3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockServices", "ClockServices\ClockServices.csproj", "{64E68018-387E-437D-96D7-95F40715E262}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +37,9 @@ Global
 		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{378392AE-3607-430D-8F60-DECFCB51EF3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E68018-387E-437D-96D7-95F40715E262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E68018-387E-437D-96D7-95F40715E262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E68018-387E-437D-96D7-95F40715E262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E68018-387E-437D-96D7-95F40715E262}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
