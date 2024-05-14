@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  db:
+    image: "postgres:14.1-alpine"
+    restart: always
+    container_name: "pgsql-container"
+    ports:
+      - 5432:5432
+    volumes:  
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sep4
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  web_api:
+    image: 'webapplication1'
+    build:
+      context: ./
+      dockerfile: ./WebApplication1/Dockerfile
+    container_name: 'web-api-container'
+    ports:
+      - 80:80
+    depends_on:
+      - db
+volumes:
+  db:
+    driver: local
