@@ -2,6 +2,7 @@
 using EfcDatabase.Model;
 using Microsoft.AspNetCore.Mvc;
 using Services.IServices;
+using WebApi;
 using WebApplication1.Dtos;
 
 namespace WebApplication1.Controllers;
@@ -30,6 +31,7 @@ public class MessageController : ControllerBase
                 Body = dto.message
             };
             Message result = await _messageService.SendMessageAsync(message);
+            TcpServer.GetInstance().MessageResponseHandle(message.Body);
             return Ok();
         }
         catch (Exception e)

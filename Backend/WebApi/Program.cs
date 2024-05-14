@@ -2,6 +2,7 @@ using System.Configuration;
 using EfcDatabase.Context;
 using EfcDatabase.DAOImplementation;
 using EfcDatabase.IDAO;
+using WebApi;
 using Microsoft.EntityFrameworkCore;
 using Services.IServices;
 using Services.Services;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IMessageDao, MessageDAO>();
 builder.Services.AddScoped<IToDoDAO, ToDoDAO>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddScoped<IClockService, ClockService>();
+builder.Services.AddHostedService<Worker>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowBlazorOrigin",

@@ -5,9 +5,9 @@ using NodaTime;
 using Services.IServices;
 using Services.Services;
 
-namespace IoT_Comm;
+namespace WebApi;
 
-public class TcpServer : BackgroundService, IIotCom
+public class TcpServer : BackgroundService
 {
     private static TcpServer _instance;
     private TcpListener _tcpListener;
@@ -28,15 +28,15 @@ public class TcpServer : BackgroundService, IIotCom
     private async void StartServer()
     {
         var port = 13000;
-        var hostAddress = IPAddress.Parse("192.168.43.202");
-        var local = IPAddress.Parse("127.0.0.1");
-
-        _tcpListener = new TcpListener(hostAddress, port);
+        var myIp = IPAddress.Parse("192.168.43.151");
+        var hostAddress = IPAddress.Parse("127.0.0.1");
+        
+        _tcpListener = new TcpListener(myIp, port);
         _tcpListener.Start();
 
         byte[] buffer = new byte[256];
         string receivedData;
-
+        
         using TcpClient client = await _tcpListener.AcceptTcpClientAsync();
         Console.WriteLine("Connected!");
         
@@ -47,7 +47,6 @@ public class TcpServer : BackgroundService, IIotCom
         while ((readTotal = _stream.Read(buffer, 0, buffer.Length)) != 0)
         {
             receivedData = Encoding.ASCII.GetString(buffer, 0, readTotal);
-            Console.WriteLine(receivedData);
             if (receivedData == "\r\n")
             {
                 Console.WriteLine("Exiting...");
@@ -59,10 +58,10 @@ public class TcpServer : BackgroundService, IIotCom
         }
         _tcpListener.Stop();
     }
-
+    
     private void IdentifyCommand(string receivedData, NetworkStream stream, byte[] buffer)
     {
-        switch (receivedData.Substring(0, 2).ToUpper())
+        switch (receivedData.Substring(0,2).ToUpper())
         {
             case "TM":
                 // Time request
@@ -73,13 +72,9 @@ public class TcpServer : BackgroundService, IIotCom
                 // handle message response
                 MessageRequestHandle(receivedData, stream, buffer);
                 break;
-            case "AT":
-                break;
             default:
                 // Unknown command
-                Console.WriteLine("Unknown data recieved: " + receivedData);
-                //throw new InvalidOperationException("Unknown command received.");
-                break;
+                throw new InvalidOperationException("Unknown command received.");
         }
     }
     
@@ -109,7 +104,7 @@ public class TcpServer : BackgroundService, IIotCom
     
     public void MessageResponseHandle(string messageBody)
     {
-        var message = "MS|1|8|" + messageBody + "|";
+        var message = "MS|"+ messageBody.Length +"|" + messageBody + "|";
         _stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
         Console.WriteLine("Message response received.");
     }
