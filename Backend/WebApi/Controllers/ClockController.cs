@@ -15,8 +15,8 @@ public class ClockController : ControllerBase
     {
         this._clockService = clockService;
     }
-    [HttpPatch("timeZone")]
-    public async Task<ActionResult> SetTimeZoneAsync(long timeOffset, Guid id)
+    [HttpPatch("timeOffset")]
+    public async Task<ActionResult> SetTimeOffsetAsync(long timeOffset, Guid id)
     {
         try
         {
@@ -52,7 +52,7 @@ public class ClockController : ControllerBase
         }
     }
     
-    [HttpPatch]
+    [HttpPut]
     public async Task<ActionResult> UpdateAsync(Guid id, CreateClockDTO createClock)
     {
         try
