@@ -31,7 +31,7 @@ public class MessageController : ControllerBase
                 Body = dto.message
             };
             Message result = await _messageService.SendMessageAsync(message);
-            TcpServer.GetInstance().MessageResponseHandle("Message: " + message.Body);
+            TcpServer.GetInstance().MessageResponseHandle(message.Body);
             return Ok();
         }
         catch (Exception e)

@@ -104,7 +104,7 @@ public class TcpServer : BackgroundService
     
     public void MessageResponseHandle(string messageBody)
     {
-        var message = "MS|1|"+ messageBody.Length +"|" + messageBody + "|";
+        var message = "MS|"+ messageBody.Length +"|" + messageBody + "|";
         _stream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
         Console.WriteLine("Message response received.");
     }
