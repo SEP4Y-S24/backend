@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TodoServices.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    [Migration("20240514090751_intialTodo1")]
-    partial class intialTodo1
+    [Migration("20240514120811_intialTodoService")]
+    partial class intialTodoService
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,6 @@ namespace TodoServices.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -123,7 +122,7 @@ namespace TodoServices.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 5, 21, 9, 7, 51, 247, DateTimeKind.Utc).AddTicks(7942),
+                            Deadline = new DateTime(2024, 5, 21, 12, 8, 11, 80, DateTimeKind.Utc).AddTicks(9283),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TodoServices.Migrations
 {
     /// <inheritdoc />
-    public partial class intialTodo1 : Migration
+    public partial class intialTodoService : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,7 @@ namespace TodoServices.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     Deadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -111,7 +111,7 @@ namespace TodoServices.Migrations
             migrationBuilder.InsertData(
                 table: "Todos",
                 columns: new[] { "Id", "Deadline", "Description", "Name", "Status", "UserId" },
-                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 21, 9, 7, 51, 247, DateTimeKind.Utc).AddTicks(7942), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
+                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 21, 12, 8, 11, 80, DateTimeKind.Utc).AddTicks(9283), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clocks_OwnerId",
