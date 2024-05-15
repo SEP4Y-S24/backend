@@ -1,4 +1,5 @@
-﻿using ClockServices.Context;
+﻿using System.Linq.Expressions;
+using ClockServices.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TodoServices.IDAO;
@@ -53,18 +54,18 @@ public class TodoDAO: ITodoDao
 
     public Task<Todo?> GetByIdAsync(Guid todoId)
     {
-        if (todoId.Equals(null))
+        if (todoId.Equals(Guid.Empty))
         {
             throw new ArgumentNullException("The given Todo ID is null");
         }
         
-        Todo? existing = context.Todos.FirstOrDefault(todo => todo.Id == todoId);
+        Todo? existing = context.Todos.Include(t=>t.Tags).FirstOrDefault(todo => todo.Id == todoId);
         return Task.FromResult(existing);
     }
 
     public async Task DeleteAsync(Guid todoId)
     {
-        if (todoId==null)
+        if (todoId.Equals(Guid.Empty))
         {
             throw new ArgumentNullException("Todo ID is null");
         }
@@ -76,6 +77,11 @@ public class TodoDAO: ITodoDao
 
     public async Task<IEnumerable<Todo>> GetAllAsync()
     {
-        return await context.Set<Todo>().ToListAsync();
+        return await context.Set<Todo>().Include(t=>t.Tags).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Todo>> GetAllByAsync(Expression<Func<Todo, bool>> filter)
+    {
+        return await context.Set<Todo>().Include(t=>t.Tags).Where(filter).ToListAsync();
     }
 }

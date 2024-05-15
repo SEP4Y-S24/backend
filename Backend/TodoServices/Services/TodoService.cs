@@ -1,4 +1,5 @@
-﻿using TodoServices.IDAO;
+﻿using Microsoft.AspNetCore.Identity;
+using TodoServices.IDAO;
 using TodoServices.IServices;
 using TodoServices.Model;
 
@@ -8,11 +9,13 @@ public class TodoService: ITodoService
 {
     private readonly ITodoDao _toDoDao;
     private readonly IUserDao _userDao;
+    private readonly ITagDao _tagDao;
 
-    public TodoService(ITodoDao toDoDao, IUserDao userDao)
+    public TodoService(ITodoDao toDoDao, IUserDao userDao, ITagDao tagDao)
     {
         _toDoDao = toDoDao;
         _userDao = userDao;
+        _tagDao = tagDao;
     }
     
     public async Task<Todo> CreateAsync(Todo todoToCreate)
@@ -92,5 +95,23 @@ public class TodoService: ITodoService
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags)
+    {
+        IEnumerable<Tag> t = await _tagDao.GetAllAsync();
+        List<Todo> todos = new List<Todo>();
+        foreach (var tag in t)
+        {
+            if (tags.Where(ta=>ta.name.Equals(tag.name)).Any())
+            {
+                foreach (var todo in tag.Todos)
+                {
+                    todos.Add(todo);
+                }
+            }
+       }
+        todos = todos.Distinct().ToList();
+        return todos;
     }
 }

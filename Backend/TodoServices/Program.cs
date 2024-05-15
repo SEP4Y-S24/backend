@@ -21,6 +21,8 @@ builder.Services.AddScoped<IUserDao, UserDAO>();
 builder.Services.AddScoped<ITodoDao, TodoDAO>();
 builder.Services.AddScoped<IMessageDao, MessageDAO>();
 builder.Services.AddScoped<ITodoService, TodoService>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<ITagDao, TagDao>();
 
 builder.Services.AddCors(options =>
 {
