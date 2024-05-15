@@ -23,7 +23,7 @@ public class TodoService: ITodoService
             throw new Exception($"User with id {todoToCreate.UserId} was not found.");
         }
 
-        Todo todo = new Todo(user, todoToCreate.Name, todoToCreate.Description, todoToCreate.Deadline,
+        Todo todo = new Todo(todoToCreate.UserId, todoToCreate.Name, todoToCreate.Description, todoToCreate.Deadline,
             todoToCreate.Status);
         Todo created = await _toDoDao.CreateAsync(todo);
         return created;
@@ -47,6 +47,19 @@ public class TodoService: ITodoService
         try
         {
             await _toDoDao.UpdateAsync(todo);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task UpdateStatusByIdAsync(Guid todoId, Status status)
+    {
+        try
+        {
+            await _toDoDao.UpdateStatusByIdAsync(todoId, status);
         }
         catch (Exception e)
         {

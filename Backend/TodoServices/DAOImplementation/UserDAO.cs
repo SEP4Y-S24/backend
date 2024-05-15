@@ -58,13 +58,4 @@ public class UserDAO: IUserDao
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteClock(Guid clockId, Guid userId)
-    {
-        User? user = await GetByIdAsync(userId);
-        Clock? clock = user.Clocks.FirstOrDefault(c => c.Id.Equals(clockId));
-        if (clock != null)
-        {
-            user.Clocks.Remove(clock);
-        }
-    }
 }
