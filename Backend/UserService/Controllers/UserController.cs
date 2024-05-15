@@ -45,6 +45,72 @@ public class UserController : ControllerBase
         }
     }
     
+    [HttpGet("{id}/send-messages")]
+    public async Task<ActionResult> GetAllSendMessagesById(Guid id)
+    {
+        try
+        {
+            User user = _userService.GetByIdAsync(id).Result;
+            if (user is null)
+            {
+                throw new ArgumentNullException("No such user!");
+            }
+
+            MessagesResponse response = new MessagesResponse();
+            response.Messages = new List<SendMessageRequest>();
+            foreach (var message in user.MessagesSent)
+            {
+                SendMessageRequest m = new SendMessageRequest()
+                {
+                    userId = user.Id,
+                    receiverId = message.ReceiverId,
+                    message = message.Body,
+                    clockId = message.ClockId
+                };
+                response.Messages.Add(m);
+            }
+
+            response.UserID = user.Id;
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpGet("{id}/received-messages")]
+    public async Task<ActionResult> GetAllRecievedMessagesById(Guid id)
+    {
+        try
+        {
+            User user = _userService.GetByIdAsync(id).Result;
+            if (user is null)
+            {
+                throw new ArgumentNullException("No such user!");
+            }
+
+            MessagesResponse response = new MessagesResponse();
+            response.Messages = new List<SendMessageRequest>();
+            foreach (var message in user.MessagesRecieved)
+            {
+                SendMessageRequest m = new SendMessageRequest()
+                {
+                    userId = user.Id,
+                    receiverId = message.ReceiverId,
+                    message = message.Body,
+                    clockId = message.ClockId
+                };
+                response.Messages.Add(m);
+            }
+
+            response.UserID = user.Id;
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
     [HttpPost("/clocks")]
     public async Task<ActionResult> AddClock(Guid userId, CreateClockDto clockToBeAdded)
     {

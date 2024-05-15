@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using UserService.Context;
 using UserService.IDAO;
 using UserService.Model;
@@ -21,7 +22,7 @@ public class UserDAO: IUserDAO
             throw new ArgumentNullException("The given user Id is null");
         }
 
-        User? existing = context.Users.FirstOrDefault(t => t.Id == userId);
+        User? existing = context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefault(t => t.Id == userId);
         return Task.FromResult(existing);
     }
 
