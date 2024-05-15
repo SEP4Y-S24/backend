@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AlarmServices\AlarmServices.csproj" />
       <ProjectReference Include="..\TodoServices\TodoServices.csproj" />
     </ItemGroup>
 
