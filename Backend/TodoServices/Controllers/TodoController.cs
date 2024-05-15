@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoServices.dtos;
 using TodoServices.IServices;
 using TodoServices.Model;
 
@@ -59,7 +60,34 @@ public class TodoController: ControllerBase
                 return StatusCode(500, e.Message);
             }
         }
-
+        [HttpPost("/tags")]
+        public async Task<ActionResult<Todo>> GetAllByTagsAsync(Tags tags)
+        {
+            try
+            {
+                List<Tag> tagsList = new List<Tag>();
+                foreach (var t in tags.tags)
+                {
+                    Tag tag = new Tag()
+                    {
+                        name = t.Name
+                    };
+                    tagsList.Add(tag);
+                }
+                IEnumerable<Todo>? todo = await _todoService.FilterByTags(tagsList);
+                if (todo == null)
+                {
+                    return NotFound();
+                }
+        
+                return Ok(todo);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, e.Message);
+            }
+        }
         [HttpPatch]
         public async Task<ActionResult<Todo>> UpdateAsync(Todo todo)
         {

@@ -3,6 +3,7 @@ using System;
 using ClockServices.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TodoServices.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240515101716_AddUniqieTagtoTagName")]
+    partial class AddUniqieTagtoTagName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

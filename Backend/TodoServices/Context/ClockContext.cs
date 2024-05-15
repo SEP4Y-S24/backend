@@ -13,13 +13,14 @@ public class ClockContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoService;Username=postgres;Password=331425");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoService;Username=postgres;Password=postgres");
     }
     
     public DbSet<User> Users { get; set; }
     public DbSet<Clock> Clocks { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Todo> Todos { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

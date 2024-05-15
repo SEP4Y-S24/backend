@@ -3,6 +3,7 @@ using System;
 using ClockServices.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TodoServices.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240515080932_AddTagTable")]
+    partial class AddTagTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,7 +117,7 @@ namespace TodoServices.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("TodoServices.Model.Todo", b =>
@@ -149,7 +152,7 @@ namespace TodoServices.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 5, 22, 10, 17, 16, 74, DateTimeKind.Utc).AddTicks(2719),
+                            Deadline = new DateTime(2024, 5, 22, 8, 9, 32, 32, DateTimeKind.Utc).AddTicks(2579),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,

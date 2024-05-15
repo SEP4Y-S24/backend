@@ -9,4 +9,5 @@ public interface ITodoService
     Task UpdateAsync(Todo todo);
     Task DeleteAsync(Guid todoId);
     Task<IEnumerable<Todo>> GetAllAsync();
+    Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags);
 }
