@@ -6,17 +6,16 @@ public class Alarm
 {
     [Key]
     public Guid Id { get; set;}
-    public Clock Clock { get; set; }
+    //public Clock Clock { get; set; }
     public Guid ClockId { get; set; }
     public DateTime SetOffTime { get; set; }
     public bool IsActive { get; set; }
     public bool IsSnoozed { get; set; }
 
-    public Alarm(Clock clock, DateTime setOffTime, bool isActive)
+    public Alarm(Guid clockId, DateTime setOffTime, bool isActive)
     {
         Id = Guid.NewGuid();
-        Clock = clock;
-        ClockId = clock.Id;
+        ClockId = clockId;
         SetOffTime = setOffTime;
         IsActive = isActive;
         IsSnoozed = false;

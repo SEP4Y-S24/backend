@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AlarmServices.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    [Migration("20240514112724_intialAlarmService3")]
-    partial class intialAlarmService3
+    [Migration("20240515082555_intialTodoService")]
+    partial class intialTodoService
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,8 +45,6 @@ namespace AlarmServices.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClockId");
-
                     b.ToTable("Alarms");
 
                     b.HasData(
@@ -56,7 +54,7 @@ namespace AlarmServices.Migrations
                             ClockId = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
                             IsActive = true,
                             IsSnoozed = false,
-                            SetOffTime = new DateTime(2024, 5, 14, 12, 27, 24, 164, DateTimeKind.Utc).AddTicks(4037)
+                            SetOffTime = new DateTime(2024, 5, 15, 9, 25, 55, 521, DateTimeKind.Utc).AddTicks(5062)
                         });
                 });
 
@@ -111,6 +109,9 @@ namespace AlarmServices.Migrations
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("RecieverId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
@@ -118,7 +119,7 @@ namespace AlarmServices.Migrations
 
                     b.HasIndex("ClockId");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("RecieverId");
 
                     b.HasIndex("SenderId");
 
@@ -142,21 +143,10 @@ namespace AlarmServices.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AlarmServices.Model.Alarm", b =>
-                {
-                    b.HasOne("AlarmServices.Model.Clock", "Clock")
-                        .WithMany()
-                        .HasForeignKey("ClockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Clock");
-                });
-
             modelBuilder.Entity("AlarmServices.Model.Clock", b =>
                 {
                     b.HasOne("AlarmServices.Model.User", "Owner")
-                        .WithMany("Clocks")
+                        .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -173,13 +163,13 @@ namespace AlarmServices.Migrations
                         .IsRequired();
 
                     b.HasOne("AlarmServices.Model.User", "Reciever")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("ReceiverId")
+                        .WithMany()
+                        .HasForeignKey("RecieverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AlarmServices.Model.User", "Sender")
-                        .WithMany("MessagesSent")
+                        .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -194,15 +184,6 @@ namespace AlarmServices.Migrations
             modelBuilder.Entity("AlarmServices.Model.Clock", b =>
                 {
                     b.Navigation("Messages");
-                });
-
-            modelBuilder.Entity("AlarmServices.Model.User", b =>
-                {
-                    b.Navigation("Clocks");
-
-                    b.Navigation("MessagesRecieved");
-
-                    b.Navigation("MessagesSent");
                 });
 #pragma warning restore 612, 618
         }

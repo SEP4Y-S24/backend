@@ -18,7 +18,7 @@ public class AlarmDAO: IAlarmDAO
     {
         try
         {
-            if (alarm == null && alarm.Clock == null && alarm.Clock.Owner == null)
+            if (alarm == null && alarm.ClockId == null)
             {
                 throw new ArgumentNullException($"The given Alarm object {alarm} is null");
             }

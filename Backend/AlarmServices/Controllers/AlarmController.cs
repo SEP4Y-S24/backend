@@ -35,7 +35,7 @@ public class AlarmController: ControllerBase
         }
     }
 
-    [HttpPatch]
+    [HttpPut]
     public async Task<ActionResult<Alarm>> UpdateAsync(Alarm alarm)
     {
         try
@@ -55,7 +55,7 @@ public class AlarmController: ControllerBase
         }
     }
 
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<Alarm>>> GetAllAsync()
     {
         try

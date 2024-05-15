@@ -6,11 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AlarmServices.Migrations
 {
     /// <inheritdoc />
-    public partial class intialAlarmService3 : Migration
+    public partial class intialTodoService : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Alarms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClockId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SetOffTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSnoozed = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Alarms", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -43,27 +58,6 @@ namespace AlarmServices.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Alarms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClockId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SetOffTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsSnoozed = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Alarms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Alarms_Clocks_ClockId",
-                        column: x => x.ClockId,
-                        principalTable: "Clocks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
@@ -72,6 +66,7 @@ namespace AlarmServices.Migrations
                     Body = table.Column<string>(type: "text", nullable: false),
                     SenderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClockId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecieverId = table.Column<Guid>(type: "uuid", nullable: false),
                     ReceiverId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -84,8 +79,8 @@ namespace AlarmServices.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_ReceiverId",
-                        column: x => x.ReceiverId,
+                        name: "FK_Messages_Users_RecieverId",
+                        column: x => x.RecieverId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -98,6 +93,11 @@ namespace AlarmServices.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Alarms",
+                columns: new[] { "Id", "ClockId", "IsActive", "IsSnoozed", "SetOffTime" },
+                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, new DateTime(2024, 5, 15, 9, 25, 55, 521, DateTimeKind.Utc).AddTicks(5062) });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 column: "Id",
                 value: new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360"));
@@ -106,16 +106,6 @@ namespace AlarmServices.Migrations
                 table: "Clocks",
                 columns: new[] { "Id", "Name", "OwnerId", "TimeOffset" },
                 values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), "Test Clock", new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360"), 0L });
-
-            migrationBuilder.InsertData(
-                table: "Alarms",
-                columns: new[] { "Id", "ClockId", "IsActive", "IsSnoozed", "SetOffTime" },
-                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, new DateTime(2024, 5, 14, 12, 27, 24, 164, DateTimeKind.Utc).AddTicks(4037) });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Alarms_ClockId",
-                table: "Alarms",
-                column: "ClockId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clocks_OwnerId",
@@ -128,9 +118,9 @@ namespace AlarmServices.Migrations
                 column: "ClockId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ReceiverId",
+                name: "IX_Messages_RecieverId",
                 table: "Messages",
-                column: "ReceiverId");
+                column: "RecieverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_SenderId",
