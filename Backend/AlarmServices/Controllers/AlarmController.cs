@@ -1,4 +1,5 @@
-﻿using AlarmServices.IService;
+﻿using AlarmServices.DTOs;
+using AlarmServices.IService;
 using AlarmServices.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,17 +17,28 @@ public class AlarmController: ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Alarm>> CreateAsync(Alarm alarm)
+    public async Task<ActionResult<AlarmDTO>> CreateAsync(CreateAlarmDTO alarm)
     {
         try
         {
-            if (alarm==null)
+            Alarm alarmToCreate = new Alarm
             {
-                return NotFound();
-            }
-
-            await _alarmService.CreateAsync(alarm);
-            return Ok(alarm);
+                Id = Guid.NewGuid(),
+                ClockId = alarm.ClockId,
+                SetOffTime = alarm.SetOffTime,
+                IsActive = alarm.IsActive,
+                IsSnoozed = alarm.IsSnoozed
+            };
+            Alarm created = await _alarmService.CreateAsync(alarmToCreate);
+            AlarmDTO alarmDto = new AlarmDTO
+            {
+                Id = created.Id,
+                ClockId = created.ClockId,
+                SetOffTime = created.SetOffTime,
+                IsActive = created.IsActive,
+                IsSnoozed = created.IsSnoozed
+            };
+            return Created($"/alarms/{created.Id}", alarmDto);
         }
         catch (Exception e)
         {
@@ -36,17 +48,29 @@ public class AlarmController: ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<Alarm>> UpdateAsync(Alarm alarm)
+    public async Task<ActionResult<AlarmDTO>> UpdateAsync(AlarmDTO alarm)
     {
         try
         {
-            if (alarm==null)
+            Alarm alarmToUpdate = new Alarm()
             {
-                return NotFound();
-            }
+                Id = alarm.Id,
+                ClockId = alarm.ClockId,
+                SetOffTime = alarm.SetOffTime,
+                IsActive = alarm.IsActive,
+                IsSnoozed = alarm.IsSnoozed
+            };
 
-            await _alarmService.UpdateAsync(alarm);
-            return Ok(alarm);
+            await _alarmService.UpdateAsync(alarmToUpdate);
+            AlarmDTO alarmDto = new AlarmDTO()
+            {
+                Id = Guid.NewGuid(),
+                ClockId = alarm.ClockId,
+                SetOffTime = alarm.SetOffTime,
+                IsActive = alarm.IsActive,
+                IsSnoozed = alarm.IsSnoozed
+            };
+            return Ok(alarmDto);
         }
         catch (Exception e)
         {
