@@ -17,7 +17,7 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Todo>> CreateAsync(Todo todo)
+    public async Task<ActionResult<Todo>> CreateAsync(CreateTodo todo)
     {
         try
         {
@@ -25,14 +25,22 @@ public class TodoController : ControllerBase
             {
                 Id = Guid.NewGuid(),
                 Name = todo.Name,
-                User = todo.User,
                 UserId = todo.UserId,
                 Status = todo.Status,
                 Deadline = todo.Deadline,
                 Description = todo.Description
             };
-            Todo created = await _todoService.CreateAsync(todo);
-            return Created($"/todos/{created.Id}", created);
+            Todo created = await _todoService.CreateAsync(todoToCreate);
+            TodoDto todoDto = new TodoDto()
+            {
+                Id = created.Id,
+                Name = created.Name,
+                UserId = created.UserId,
+                Status = created.Status,
+                Deadline = created.Deadline,
+                Description = created.Description
+            };
+            return Created($"/todos/{created.Id}", todoDto);
         }
         catch (Exception e)
         {
@@ -51,8 +59,16 @@ public class TodoController : ControllerBase
             {
                 return NotFound();
             }
-
-            return Ok(todo);
+            TodoDto todoDto = new TodoDto()
+            {
+                Id = todo.Id,
+                Name = todo.Name,
+                UserId = todo.UserId,
+                Status = todo.Status,
+                Deadline = todo.Deadline,
+                Description = todo.Description
+            };
+            return Ok(todoDto);
         }
         catch (Exception e)
         {
@@ -80,8 +96,21 @@ public class TodoController : ControllerBase
             {
                 return NotFound();
             }
-
-            return Ok(todo);
+            TodosDto todosDto = new TodosDto();
+            foreach (var t in todo)
+            {
+                TodoDto todoDto = new TodoDto()
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    UserId = t.UserId,
+                    Status = t.Status,
+                    Deadline = t.Deadline,
+                    Description = t.Description
+                };
+                todosDto.Todos.Add(todoDto);
+            }
+            return Ok(todosDto);
         }
         catch (Exception e)
         {
@@ -89,18 +118,36 @@ public class TodoController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPatch]
-    public async Task<ActionResult<Todo>> UpdateAsync(Todo todo)
+    [HttpPut]
+    public async Task<ActionResult<Todo>> UpdateAsync(TodoDto todo)
     {
         try
         {
+            Todo todoToUpdate = new Todo()
+            {
+                Id = Guid.NewGuid(),
+                Name = todo.Name,
+                UserId = todo.UserId,
+                Status = todo.Status,
+                Deadline = todo.Deadline,
+                Description = todo.Description
+            };
             if (todo == null)
             {
                 return NotFound();
             }
 
-            await _todoService.UpdateAsync(todo);
-            return Ok(todo);
+            await _todoService.UpdateAsync(todoToUpdate);
+            TodoDto todoDto = new TodoDto()
+            {
+                Id = todo.Id,
+                Name = todo.Name,
+                UserId = todo.UserId,
+                Status = todo.Status,
+                Deadline = todo.Deadline,
+                Description = todo.Description
+            };
+            return Ok(todoDto);
         }
         catch (Exception e)
         {
