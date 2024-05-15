@@ -92,8 +92,7 @@ public class AlarmServicesTest
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
             SetOffTime = utcNow.AddDays(2),
-            IsActive = false,
-            IsSnoozed = false
+            IsActive = false
         };
 
         // Add the original alarm to the database
@@ -103,11 +102,10 @@ public class AlarmServicesTest
         // Modify the alarm
         var updatedAlarm = new Alarm
         {
-            Id = Guid.NewGuid(),
-            ClockId = Guid.NewGuid(),
-            SetOffTime = utcNow.AddDays(2),
+            Id = originalAlarm.Id,
+            ClockId = originalAlarm.ClockId,
+            SetOffTime = utcNow.AddDays(4),
             IsActive = true,
-            IsSnoozed = false
         };
 
         // Act
@@ -116,7 +114,7 @@ public class AlarmServicesTest
         // Assert
         var retrievedAlarm = await _context.Alarms.FindAsync(originalAlarm.Id);
         Assert.IsNotNull(retrievedAlarm);
-        Assert.AreEqual(updatedAlarm.Id, retrievedAlarm.Id);
+        // Assert.AreEqual(updatedAlarm.Id, retrievedAlarm.Id);
         Assert.AreEqual(updatedAlarm.ClockId, retrievedAlarm.ClockId); 
         Assert.AreEqual(updatedAlarm.IsActive, retrievedAlarm.IsActive);
         Assert.AreEqual(updatedAlarm.SetOffTime, retrievedAlarm.SetOffTime);

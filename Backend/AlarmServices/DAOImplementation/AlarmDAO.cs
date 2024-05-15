@@ -45,9 +45,9 @@ public class AlarmDAO: IAlarmDAO
 
         if (alarm==null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException("Alarm object is not found in the database");
         }
-        _clockContext.Entry(dbEntity).CurrentValues.SetValues(alarm);
+        _clockContext.Alarms.Entry(dbEntity).CurrentValues.SetValues(alarm);
 
         _clockContext.Update(dbEntity);
         await _clockContext.SaveChangesAsync();
