@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TodoServices.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    [Migration("20240514120811_intialTodoService")]
+    [Migration("20240515080828_intialTodoService")]
     partial class intialTodoService
     {
         /// <inheritdoc />
@@ -76,6 +76,9 @@ namespace TodoServices.Migrations
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("RecieverId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
@@ -83,7 +86,7 @@ namespace TodoServices.Migrations
 
                     b.HasIndex("ClockId");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("RecieverId");
 
                     b.HasIndex("SenderId");
 
@@ -122,7 +125,7 @@ namespace TodoServices.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 5, 21, 12, 8, 11, 80, DateTimeKind.Utc).AddTicks(9283),
+                            Deadline = new DateTime(2024, 5, 22, 8, 8, 28, 313, DateTimeKind.Utc).AddTicks(441),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -150,7 +153,7 @@ namespace TodoServices.Migrations
             modelBuilder.Entity("TodoServices.Model.Clock", b =>
                 {
                     b.HasOne("TodoServices.Model.User", "Owner")
-                        .WithMany("Clocks")
+                        .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -167,13 +170,13 @@ namespace TodoServices.Migrations
                         .IsRequired();
 
                     b.HasOne("TodoServices.Model.User", "Reciever")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("ReceiverId")
+                        .WithMany()
+                        .HasForeignKey("RecieverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TodoServices.Model.User", "Sender")
-                        .WithMany("MessagesSent")
+                        .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -203,12 +206,6 @@ namespace TodoServices.Migrations
 
             modelBuilder.Entity("TodoServices.Model.User", b =>
                 {
-                    b.Navigation("Clocks");
-
-                    b.Navigation("MessagesRecieved");
-
-                    b.Navigation("MessagesSent");
-
                     b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618

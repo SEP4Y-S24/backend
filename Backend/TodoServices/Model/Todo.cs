@@ -17,10 +17,9 @@ public class Todo
     public Guid UserId { get; set; }
     public User User { get; set; }
 
-    public Todo(User user, string name, string? description, DateTime deadline, Status status)
+    public Todo(Guid userId, string name, string? description, DateTime deadline, Status status)
     {
-        User = user;
-        UserId = user.Id;
+        UserId = userId;
         Name = name;
         Description = description;
         Deadline = deadline;

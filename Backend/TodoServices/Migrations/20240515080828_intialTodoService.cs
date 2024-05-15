@@ -73,6 +73,7 @@ namespace TodoServices.Migrations
                     Body = table.Column<string>(type: "text", nullable: false),
                     SenderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClockId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecieverId = table.Column<Guid>(type: "uuid", nullable: false),
                     ReceiverId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -85,8 +86,8 @@ namespace TodoServices.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_ReceiverId",
-                        column: x => x.ReceiverId,
+                        name: "FK_Messages_Users_RecieverId",
+                        column: x => x.RecieverId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -111,7 +112,7 @@ namespace TodoServices.Migrations
             migrationBuilder.InsertData(
                 table: "Todos",
                 columns: new[] { "Id", "Deadline", "Description", "Name", "Status", "UserId" },
-                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 21, 12, 8, 11, 80, DateTimeKind.Utc).AddTicks(9283), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
+                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 22, 8, 8, 28, 313, DateTimeKind.Utc).AddTicks(441), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clocks_OwnerId",
@@ -124,9 +125,9 @@ namespace TodoServices.Migrations
                 column: "ClockId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ReceiverId",
+                name: "IX_Messages_RecieverId",
                 table: "Messages",
-                column: "ReceiverId");
+                column: "RecieverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_SenderId",

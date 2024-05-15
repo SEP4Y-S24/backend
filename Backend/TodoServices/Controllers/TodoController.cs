@@ -60,7 +60,7 @@ public class TodoController: ControllerBase
             }
         }
 
-        [HttpPatch]
+        [HttpPut]
         public async Task<ActionResult<Todo>> UpdateAsync(Todo todo)
         {
             try
@@ -79,6 +79,26 @@ public class TodoController: ControllerBase
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPatch]
+        public async Task<ActionResult> UpdateStatusByIdAsync(Guid todoId, Status status)
+        {
+            try
+            {
+                if (todoId==null)
+                {
+                    return NotFound();
+                }
+
+                await _todoService.UpdateStatusByIdAsync(todoId, status);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        } 
 
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync(Guid todoId)

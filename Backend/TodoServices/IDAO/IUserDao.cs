@@ -8,5 +8,5 @@ public interface IUserDao
     Task<User> CreateAsync(User user);
     Task UpdateAsync(User user);
     Task DeleteAsync(Guid userId);
-    Task DeleteClock(Guid clockId, Guid userId);
+    
 }

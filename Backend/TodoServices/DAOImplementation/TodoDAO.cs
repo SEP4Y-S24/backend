@@ -38,6 +38,19 @@ public class TodoDAO: ITodoDao
         await context.SaveChangesAsync();
     }
 
+    public async Task UpdateStatusByIdAsync(Guid todoId, Status status)
+    {
+        Todo? dbEntity = await GetByIdAsync(todoId);
+        if (dbEntity == null)
+        {
+            throw new ArgumentException();
+        }
+
+        dbEntity.Status = status;
+        context.Todos.Update(dbEntity);
+        await context.SaveChangesAsync();
+    }
+
     public Task<Todo?> GetByIdAsync(Guid todoId)
     {
         if (todoId.Equals(null))
