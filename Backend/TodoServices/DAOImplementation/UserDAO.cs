@@ -7,9 +7,9 @@ namespace TodoServices.DAOImplementation;
 
 public class UserDAO: IUserDao
 {
-    private readonly ClockContext context;
+    private readonly ToDoContext context;
 
-    public UserDAO(ClockContext dbContext)
+    public UserDAO(ToDoContext dbContext)
     {
         context = dbContext;
     }

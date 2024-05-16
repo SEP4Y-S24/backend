@@ -9,9 +9,9 @@ namespace TodoServices.DAOImplementation;
 
 public class ClockDAO: IClockDao
 {
-    private readonly ClockContext context;
+    private readonly ToDoContext context;
 
-    public ClockDAO(ClockContext dbContext)
+    public ClockDAO(ToDoContext dbContext)
     {
         this.context = dbContext;
     }

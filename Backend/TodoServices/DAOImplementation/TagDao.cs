@@ -8,9 +8,9 @@ namespace TodoServices.DAOImplementation;
 
 public class TagDao: ITagDao
 {
-    private readonly ClockContext context;
+    private readonly ToDoContext context;
     
-    public TagDao(ClockContext dbContext)
+    public TagDao(ToDoContext dbContext)
     {
         context = dbContext;
     }

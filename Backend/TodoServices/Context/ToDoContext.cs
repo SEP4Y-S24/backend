@@ -4,10 +4,10 @@ using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace ClockServices.Context;
 
-public class ClockContext : DbContext
+public class ToDoContext : DbContext
 {
-    public ClockContext(){}
-    public ClockContext(DbContextOptions<ClockContext> options) : base(options)
+    public ToDoContext(){}
+    public ToDoContext(DbContextOptions<ToDoContext> options) : base(options)
     {
     }
 

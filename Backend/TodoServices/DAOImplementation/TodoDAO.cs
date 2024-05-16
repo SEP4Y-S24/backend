@@ -9,9 +9,9 @@ namespace TodoServices.DAOImplementation;
 
 public class TodoDAO: ITodoDao
 {
-    private readonly ClockContext context;
+    private readonly ToDoContext context;
     
-    public TodoDAO(ClockContext dbContext)
+    public TodoDAO(ToDoContext dbContext)
     {
         context = dbContext;
     }

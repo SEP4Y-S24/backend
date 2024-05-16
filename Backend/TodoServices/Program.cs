@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // builder.Services.AddDbContext<ClockContext>(options=>
 //     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-builder.Services.AddDbContext<ClockContext>();
+builder.Services.AddDbContext<ToDoContext>();
 builder.Services.AddScoped<IClockDao, ClockDAO>();
 builder.Services.AddScoped<IUserDao, UserDAO>();
 builder.Services.AddScoped<ITodoDao, TodoDAO>();

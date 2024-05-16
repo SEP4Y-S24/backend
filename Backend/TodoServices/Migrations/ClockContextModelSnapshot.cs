@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TodoServices.Migrations
 {
-    [DbContext(typeof(ClockContext))]
+    [DbContext(typeof(ToDoContext))]
     partial class ClockContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

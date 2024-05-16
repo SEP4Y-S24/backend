@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TodoServices.Migrations
 {
-    [DbContext(typeof(ClockContext))]
+    [DbContext(typeof(ToDoContext))]
     [Migration("20240515080932_AddTagTable")]
     partial class AddTagTable
     {

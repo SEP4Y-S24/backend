@@ -42,7 +42,11 @@ public class ClockDAO : IClockDAO
         {
             throw new Exception($"Clock with id {clockToUpdate.Id} does not exist!");
         }
-
+        User? user =  context.Users.FirstOrDefault(u => u.Id.Equals(clockToUpdate.OwnerId));
+        if (user == null)
+        {
+            throw new Exception($"User with id {user.Id} does not exist!");
+        }
         context.Entry(existing).CurrentValues.SetValues(clockToUpdate);
         if (clockToUpdate.Messages != null)
         {

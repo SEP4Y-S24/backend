@@ -7,9 +7,9 @@ namespace TodoServices.DAOImplementation;
 
 public class MessageDAO: IMessageDao
 {
-    private readonly ClockContext _context;
+    private readonly ToDoContext _context;
 
-    public MessageDAO(ClockContext dbContext)
+    public MessageDAO(ToDoContext dbContext)
     {
         this._context = dbContext;
     }

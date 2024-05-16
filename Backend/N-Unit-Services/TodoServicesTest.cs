@@ -10,7 +10,7 @@ namespace N_Unit_Services;
 public class TodoServicesTest
 {
     private ITodoDao _todoDao;
-    private ClockContext _context;
+    private ToDoContext _context;
     private IConfiguration _configuration;
     
     [SetUp]
@@ -36,14 +36,14 @@ public class TodoServicesTest
             throw new Exception("_todoDAO is null");
         }
     }
-    private ClockContext CreateTestContext()
+    private ToDoContext CreateTestContext()
     {
         // Retrieve the connection string from configuration
         var connectionString = _configuration.GetConnectionString("Database");
-        var options = new DbContextOptionsBuilder<ClockContext>()
+        var options = new DbContextOptionsBuilder<ToDoContext>()
             .UseNpgsql(connectionString)
             .Options;
-        return new ClockContext(options);
+        return new ToDoContext(options);
     }
     [Test]
     public async Task CreateAsync_ValidTodo_ReturnsAddedTodo()
