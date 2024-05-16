@@ -22,6 +22,7 @@
       <ProjectReference Include="..\AlarmServices\AlarmServices.csproj" />
       <ProjectReference Include="..\ClockServices\ClockServices.csproj" />
       <ProjectReference Include="..\TodoServices\TodoServices.csproj" />
+      <ProjectReference Include="..\UserService\UserService.csproj" />
     </ItemGroup>
 
 </Project>

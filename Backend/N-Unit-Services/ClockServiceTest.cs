@@ -28,7 +28,7 @@ public class ClockServiceTest
             throw new Exception("_context is null");
         }
 
-        // Ensure _todoDAO is initialized properly
+        // Ensure _clockDAO is initialized properly
         _clockDao = new ClockDAO(_context);
         if (_clockDao == null)
         {
@@ -92,7 +92,7 @@ public class ClockServiceTest
         Assert.AreEqual(clock.Owner, addedClock.Owner);
     }
     [Test]
-    public async Task UpdateAsync_ValidTodo_ShouldUpdateTodo()
+    public async Task UpdateAsync_ValidClock_ShouldUpdateClock()
     {
         var localNow = DateTime.Now;
         var utcNow = localNow.ToUniversalTime();
@@ -113,7 +113,7 @@ public class ClockServiceTest
             Messages = messages
         };
 
-        // Add the original todo to the database
+        // Add the original clock to the database
         var result = await _clockDao.CreateAsync(originalClock);
         var newUser = new User()
         {
@@ -121,11 +121,11 @@ public class ClockServiceTest
         };
         await user_dao.CreateAsync(newUser);
 
-        // Modify the todo
-        var updatedTodo = new Clock()
+        // Modify the clock
+        var updatedclock = new Clock()
         {
             Id = originalClock.Id,
-            Name = "Updated ToDo",
+            Name = "Updated Clock",
             TimeOffset = 5,
             Messages = messages,
             Owner = user,
@@ -133,17 +133,17 @@ public class ClockServiceTest
         };
 
         // Act
-        await _clockDao.UpdateAsync(updatedTodo);
+        await _clockDao.UpdateAsync(updatedclock);
 
         // Assert
         var retrievedClock = await _context.Clocks.FindAsync(originalClock.Id);
         Assert.IsNotNull(retrievedClock);
-        Assert.AreEqual(updatedTodo.Name, retrievedClock.Name);
-        Assert.AreEqual(updatedTodo.TimeOffset, retrievedClock.TimeOffset); // Compare descriptions
+        Assert.AreEqual(updatedclock.Name, retrievedClock.Name);
+        Assert.AreEqual(updatedclock.TimeOffset, retrievedClock.TimeOffset); // Compare descriptions
     }
     // Unit test for GetAllAsync method
     [Test]
-    public async Task GetAllAsync_ShouldReturnAllTodos()
+    public async Task GetAllAsync_ShouldReturnAllClocks()
     {
         // Arrange
         var user = new User { Id = Guid.NewGuid() };
