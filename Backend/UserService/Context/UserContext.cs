@@ -13,7 +13,7 @@ public class UserContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=User;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=User;Username=postgres;Password=25879");
     }
     
     public DbSet<User> Users { get; set; }
