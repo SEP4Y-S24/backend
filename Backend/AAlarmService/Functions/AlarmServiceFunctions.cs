@@ -18,7 +18,7 @@ namespace CoupledClock.AlarmService
         public IActionResult GetAllAlarms([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions!");
+            return new OkObjectResult("Welcome to Azure Functions! This change was made through a workflow!");
         }
         
         [Function("GetAlarms")]
