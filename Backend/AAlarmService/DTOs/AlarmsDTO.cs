@@ -4,5 +4,5 @@ namespace AAlarmServices.DTOs;
 
 public class AlarmsDTO
 {
-    public IEnumerable<AlarmDTO> Alarms { get; set; }
+    public ICollection<AlarmDTO> Alarms { get; set; }
 }

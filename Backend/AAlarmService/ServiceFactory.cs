@@ -24,7 +24,7 @@ public static class ServiceFactory
         {
             // Load configuration from appsettings.json
             var configurationBuilder = new ConfigurationBuilder()
-                .AddJsonFile("C:\\Users\\nural\\RiderProjects\\backend\\Backend\\TodoServices\\appsettings.json",
+                .AddJsonFile("C:\\Users\\denim\\Documents\\VIA\\4-Semester\\SEP4\\backend\\Backend\\AAlarmService\\host.json",
                     optional: false, reloadOnChange: true);
             var configuration = configurationBuilder.Build();
 
@@ -42,35 +42,35 @@ public static class ServiceFactory
     public static IUserDAO GetUserDao()
     {
         if (_userDao == null)
-            _userDao = new UserDAO(_alarmContext);
+            _userDao = new UserDAO(GetAlarmContext());
 
         return _userDao;
     }
     public static IAlarmDAO GetAlarmDAO()
     {
         if (_alarmDao == null)
-            _alarmDao = new AlarmDAO(_alarmContext);
+            _alarmDao = new AlarmDAO(GetAlarmContext());
 
         return _alarmDao;
     }
     public static IClockDAO GetClockDAO()
     {
         if (_clockDao == null)
-            _clockDao = new ClockDAO(_alarmContext);
+            _clockDao = new ClockDAO(GetAlarmContext());
 
         return _clockDao;
     }
     public static IMessageDAO GetMessageDAO()
     {
         if (_messageDao == null)
-            _messageDao = new MessageDAO(_alarmContext);
+            _messageDao = new MessageDAO(GetAlarmContext());
 
         return _messageDao;
     }
     public static IAlarmService GetAlarmService()
     {
         if (_alarmService == null)
-            _alarmService = new AlarmService(_alarmDao);
+            _alarmService = new AlarmService(GetAlarmDAO());
 
         return _alarmService;
     }

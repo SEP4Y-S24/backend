@@ -35,7 +35,7 @@ namespace CoupledClock.AlarmService
                     IsActive = alarm.IsActive,
                     IsSnoozed = alarm.IsSnoozed
                 };
-                alarmsDto.Alarms.Append(alarmDto);
+                alarmsDto.Alarms.Add(alarmDto);
             }
             return new OkObjectResult(alarmsDto);
         }

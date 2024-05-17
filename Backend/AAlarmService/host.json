@@ -8,5 +8,8 @@
             },
             "enableLiveMetricsFilters": true
         }
+    },
+    "ConnectionStrings": {
+        "Database": "Host=clockcontext.postgres.database.azure.com;Port=5432;Database=AlarmService;Username=clockcontext;Password=postgres123!;"
     }
 }
