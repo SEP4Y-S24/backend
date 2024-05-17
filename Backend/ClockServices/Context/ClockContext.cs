@@ -13,7 +13,12 @@ public class ClockContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Clocks;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql(
+            "Host=clockcontext.postgres.database.azure.com;" +
+            "Port=5432;" +
+            "Database=postgres;" +
+            "Username=clockcontext;" +
+            "Password=postgres123!;");
     }
     
     public DbSet<User> Users { get; set; }
