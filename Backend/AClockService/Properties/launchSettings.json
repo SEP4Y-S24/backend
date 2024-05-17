@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AClockService": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 8081",
+      "launchBrowser": false
+    }
+  }
+}
