@@ -1,3 +1,6 @@
+using AAlarmService;
+using AAlarmServices.DTOs;
+using AlarmServices.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -15,10 +18,26 @@ namespace CoupledClock.AlarmService
         }
 
         [Function("GetAllAlarms")]
-        public IActionResult GetAllAlarms([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> GetAllAlarms([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions! Workflow works");
+            var alarmService = ServiceFactory.GetAlarmService();
+            IEnumerable<Alarm> alarms =await alarmService.GetAllAsync();
+            AlarmsDTO alarmsDto = new AlarmsDTO();
+            alarmsDto.Alarms = new List<AlarmDTO>();
+            foreach (var alarm in alarms)
+            {
+                AlarmDTO alarmDto = new AlarmDTO()
+                {
+                    Id = alarm.Id,
+                    ClockId = alarm.ClockId,
+                    SetOffTime = alarm.SetOffTime,
+                    IsActive = alarm.IsActive,
+                    IsSnoozed = alarm.IsSnoozed
+                };
+                alarmsDto.Alarms.Append(alarmDto);
+            }
+            return new OkObjectResult(alarmsDto);
         }
         
         [Function("GetAlarms")]
