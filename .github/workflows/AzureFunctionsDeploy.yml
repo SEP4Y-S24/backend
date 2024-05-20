@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         app-path: ['SEP4-AlarmService', 'SEP4-ClockService']
-        app-name: ['Backend/AAlarmService', 'Backend/AClockService']
+        app-name: ['Backend/AAlarmService/AAlarmService.sln', 'Backend/AClockService/AClockService.sln']
         publish-profile: ['${{ secrets.AZURE_PUBLISH_PROFILE_ALARM_SERVICE }}', '${{ secrets.AZURE_PUBLISH_PROFILE_CLOCK_SERVICE }}']
 
     steps:
