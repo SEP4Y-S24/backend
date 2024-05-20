@@ -101,7 +101,16 @@ namespace CoupledClock.AlarmService
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             ToggleAlarmDto state = JsonConvert.DeserializeObject<ToggleAlarmDto>(requestBody);
+            if (alarmId.Equals(Guid.Empty))
+            {
+                return new BadRequestObjectResult("The given alarm id is not valid");
+            }
+            if(state.state == null)
+            {
+                return new BadRequestObjectResult("The given state is not valid");
+            }
             var alarmService = ServiceFactory.GetAlarmService();
+            
             Alarm alarm = await alarmService.ToggleAlarmAsync(alarmId, state.state);
             AlarmDTO alarmDto = new AlarmDTO
             {
