@@ -11,7 +11,7 @@ public class Clock
     public long TimeOffset { get; set; }
     public User Owner { get; set; }
     public Guid OwnerId { get; set; }
-    public virtual ICollection<Message> Messages { get; set; }
+    //public virtual ICollection<Message> Messages { get; set; }
 
    /* public Alarm alarm { get; set; }
     public Guid alarmId { get; set; }

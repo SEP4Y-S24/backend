@@ -14,7 +14,6 @@ public static class ServiceFactory
     private static AlarmContext _alarmContext = null;
     private static IUserDAO _userDao = null;
     private static IClockDAO _clockDao = null;
-    private static IMessageDAO _messageDao = null;
     private static IAlarmDAO _alarmDao = null;
     private static IAlarmService _alarmService = null;
 
@@ -59,13 +58,6 @@ public static class ServiceFactory
             _clockDao = new ClockDAO(GetAlarmContext());
 
         return _clockDao;
-    }
-    public static IMessageDAO GetMessageDAO()
-    {
-        if (_messageDao == null)
-            _messageDao = new MessageDAO(GetAlarmContext());
-
-        return _messageDao;
     }
     public static IAlarmService GetAlarmService()
     {
