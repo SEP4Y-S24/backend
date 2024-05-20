@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
-namespace AClockService.Model;
+namespace ATodoService.Model;
 
 public class Clock
 {

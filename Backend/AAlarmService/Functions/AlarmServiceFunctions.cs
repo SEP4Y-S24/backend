@@ -1,4 +1,3 @@
-using AAlarmService;
 using AAlarmServices.DTOs;
 using AlarmServices.Model;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +6,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace CoupledClock.AlarmService
+namespace AAlarmService.Functions
 {
     public class AlarmServiceFunctions
     {

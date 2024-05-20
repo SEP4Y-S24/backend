@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "AClockService": {
+    "ATodoService": {
       "commandName": "Project",
-      "commandLineArgs": "--port 8080",
+      "commandLineArgs": "--port 7175",
       "launchBrowser": false
     }
   }

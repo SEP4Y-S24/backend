@@ -1,8 +1,8 @@
-﻿using AClockService.Model;
+﻿using ClockServices.Model;
 using Microsoft.EntityFrameworkCore;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
-namespace AClockService.Context;
+namespace ClockServices.Context;
 
 public class ClockContext : DbContext
 {

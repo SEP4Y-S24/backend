@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace CoupledClock.ClockService
+namespace AUserService.Functions
 {
-    public class ClockServiceFunctions
+    public class UserService
     {
-        private readonly ILogger<ClockServiceFunctions> _logger;
+        private readonly ILogger<UserService> _logger;
 
-        public ClockServiceFunctions(ILogger<ClockServiceFunctions> logger)
+        public UserService(ILogger<UserService> logger)
         {
             _logger = logger;
         }
 
-        [Function("ClockServiceFunctions")]
+        [Function("UserService")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");

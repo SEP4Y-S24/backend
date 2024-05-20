@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ClockServices.Model;
 
-namespace AClockService.Model;
+namespace ClockServices.Model;
 
 public class Message
 {

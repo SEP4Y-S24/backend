@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "AClockService": {
+    "AUserService": {
       "commandName": "Project",
-      "commandLineArgs": "--port 8080",
+      "commandLineArgs": "--port 7174",
       "launchBrowser": false
     }
   }

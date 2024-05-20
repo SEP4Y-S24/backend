@@ -1,6 +1,9 @@
 using ClockServices.IDAO;
 using ClockServices.IServices;
 using ClockServices.Model;
+using EfcDatabase.Model;
+using Clock = ClockServices.Model.Clock;
+using User = ClockServices.Model.User;
 
 namespace ClockServices.Services;
 
@@ -53,6 +56,11 @@ public class ClockService : IClockService
         clockToCreate.Owner = user;
         Clock created = await _clockDao.CreateAsync(clockToCreate);
         return created;
+    }
+
+    Task<Clock> IClockService.UpdateClockAsync(Clock clockToUpdate)
+    {
+        return UpdateClockAsync(clockToUpdate);
     }
 
     public async Task<Clock> UpdateClockAsync(Clock clockToUpdate)

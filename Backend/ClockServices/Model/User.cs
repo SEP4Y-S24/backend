@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AClockService.Model;
+namespace ClockServices.Model;
 
 public class User
 {
