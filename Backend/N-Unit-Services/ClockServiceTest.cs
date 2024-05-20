@@ -178,4 +178,45 @@ public class ClockServiceTest
         Assert.IsNotNull(clocks);
         Assert.AreEqual(21, clocks.Count());
     }
+    
+    [Test]
+    public async Task DeleteAsync_ExistingClockId_ShouldDeleteClock()
+    {
+        var localNow = DateTime.Now;
+        var utcNow = localNow.ToUniversalTime();
+        
+        // Arrange
+        using (var context = CreateTestContext())
+        {
+            var clock_dao = new ClockDAO(_context);
+        }
+        var user_dao = new UserDAO(_context);
+
+        var user = new User()
+        {
+            Id = new Guid()
+        };
+        user_dao.CreateAsync(user);
+        var messages = new List<Message>();
+        var clock = new Clock()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Test Clock",
+            TimeOffset = 4,
+            OwnerId = user.Id,
+            Owner = user,
+            Messages = messages
+        };
+
+        await _context.Clocks.AddAsync(clock);
+        await _context.SaveChangesAsync();
+
+        // Act
+        await _clockDao.DeleteAsync(clock.Id);
+
+        // Assert
+        var deletedClock = await _context.Clocks.FindAsync(clock.Id);
+        Assert.IsNull(deletedClock);
+    }
+    
 }
