@@ -23,7 +23,7 @@ public static class ServiceFactory
         {
             // Load configuration from appsettings.json
             var configurationBuilder = new ConfigurationBuilder()
-                .AddJsonFile("C:\\Users\\denim\\Documents\\VIA\\4-Semester\\SEP4\\backend\\Backend\\AAlarmService\\host.json",
+                .AddJsonFile("./host.json",
                     optional: false, reloadOnChange: true);
             var configuration = configurationBuilder.Build();
 
