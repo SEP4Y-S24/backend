@@ -81,6 +81,62 @@ public class AlarmServicesTest
     }
     
     [Test]
+    public async Task GetByIdAsync_ExistingAlarmId_ShouldReturnAlarm()
+    {
+        var localNow = DateTime.Now;
+        var utcNow = localNow.ToUniversalTime();
+        
+        // Arrange
+        var user = new User { Id = Guid.NewGuid() };
+        var alarm = new Alarm
+        {
+            Id = Guid.NewGuid(),
+            ClockId = Guid.NewGuid(),
+            SetOffTime = utcNow.AddDays(2),
+            IsActive = false
+        };
+
+        await _context.Alarms.AddAsync(alarm);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var retrievedAlarm = await _alarmDao.GetByIdAsync(alarm.Id);
+
+        // Assert
+        Assert.IsNotNull(retrievedAlarm);
+        Assert.AreEqual(alarm.Id, retrievedAlarm.Id);
+        Assert.AreEqual(alarm.ClockId, retrievedAlarm.ClockId);
+        Assert.AreEqual(alarm.IsActive, retrievedAlarm.IsActive);
+    }
+    
+    [Test]
+    public async Task DeleteAsync_ExistingTodoId_ShouldDeleteTodo()
+    {
+        var localNow = DateTime.Now;
+        var utcNow = localNow.ToUniversalTime();
+        
+        // Arrange
+        var user = new User { Id = Guid.NewGuid() };
+        var alarm = new Alarm
+        {
+            Id = Guid.NewGuid(),
+            ClockId = Guid.NewGuid(),
+            SetOffTime = utcNow.AddDays(2),
+            IsActive = false
+        };
+
+        await _context.Alarms.AddAsync(alarm);
+        await _context.SaveChangesAsync();
+
+        // Act
+        await _alarmDao.DeleteAsync(alarm.Id);
+
+        // Assert
+        var deletedAlarm = await _context.Alarms.FindAsync(alarm.Id);
+        Assert.IsNull(deletedAlarm);
+    }
+    
+    [Test]
     public async Task UpdateAsync_ValidAlarm_ShouldUpdateTodo()
     {
         var localNow = DateTime.Now;
