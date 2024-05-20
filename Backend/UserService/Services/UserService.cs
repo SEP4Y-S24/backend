@@ -25,6 +25,11 @@ public class UserServiceImpl : IUserService
         {
             throw new ArgumentNullException("The given user object is null");
         }
+        User? user = await _userDao.GetByAsync(u=>u.Email.Equals(userToCreate.Email));
+        if(user != null)
+        {
+            throw new Exception("User with this email already exists!");
+        }
 
         User created = await _userDao.CreateAsync(userToCreate);
         return created;

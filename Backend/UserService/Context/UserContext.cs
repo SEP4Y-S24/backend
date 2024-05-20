@@ -13,7 +13,7 @@ public class UserContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=User;Username=postgres;Password=25879");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=User;Username=postgres;Password=postgres");
     }
     
     public DbSet<User> Users { get; set; }
@@ -36,6 +36,10 @@ public class UserContext : DbContext
             new User
             {
                 Id = Guid.Parse("5f3bb5af-e982-4a8b-8590-b620597a7360"),
+                Name = "Test User",
+                Email = "email@gmail.com",
+                AvatarId = 1,
+                PasswordHash = "psgzhj,sxzjh",
             });
         modelBuilder.Entity<Clock>().HasData(
             new Clock

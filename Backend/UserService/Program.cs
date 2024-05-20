@@ -1,5 +1,6 @@
 using EfcDatabase.DAOImplementation;
 using Microsoft.EntityFrameworkCore;
+using UserService.Authorization;
 using UserService.Context;
 using UserService.DAOImplementation;
 using UserService.IDAO;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IUserService, UserServiceImpl>();
 builder.Services.AddScoped<IMessageDao, MessageDAO>();
 builder.Services.AddScoped<IToDoDAO, ToDoDAO>();
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowBlazorOrigin",
