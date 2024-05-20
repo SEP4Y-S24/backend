@@ -25,13 +25,13 @@ public class ClockDAO: IClockDAO
 
     public async Task<IEnumerable<Clock>> GetAll()
     {
-        return await _alarmContext.Set<Clock>().Include(e => e.Messages).ToListAsync();
+        return await _alarmContext.Set<Clock>().ToListAsync();
 
     }
 
     public async Task<IEnumerable<Clock>> GetAllByAsync(Expression<Func<Clock, bool>> filter)
     {
-        return await _alarmContext.Set<Clock>().Include(e => e.Messages).Where(filter).ToListAsync();
+        return await _alarmContext.Set<Clock>().ToListAsync();
 
     }
 
@@ -44,14 +44,6 @@ public class ClockDAO: IClockDAO
         }
 
         _alarmContext.Entry(existing).CurrentValues.SetValues(clockToUpdate);
-        if (clockToUpdate.Messages != null)
-        {
-            existing.Messages = new List<Message>();
-            foreach (var message in clockToUpdate.Messages)
-            {
-                clockToUpdate.Messages.Add(message);
-            }
-        }
 
         _alarmContext.Clocks.Update(existing);
 

@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Authorization;
 using UserService.Dtos;
 using UserService.IServices;
 using UserService.Model;
@@ -10,10 +12,13 @@ namespace UserService.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    public UserController(IUserService _userService)
+    private readonly IJwtUtils _jwtUtils;
+    public UserController(IUserService _userService, IJwtUtils _jwtUtils)
     {
         this._userService = _userService;
+        this._jwtUtils = _jwtUtils;
     }
+
 
     [HttpGet("{id}/clocks")]
     public async Task<ActionResult> GetAllById(Guid id)
@@ -105,6 +110,42 @@ public class UserController : ControllerBase
 
             response.UserID = user.Id;
             return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpPost]
+    public async Task<ActionResult> AddUser(CreateUserRequest userToBeAdded)
+    {
+        try
+        {
+            User user = new User()
+            {
+                Name = userToBeAdded.Name,
+                Email = userToBeAdded.Email,
+                AvatarId = userToBeAdded.AvatarId,
+                PasswordHash = Argon2.Hash(userToBeAdded.Password)
+            };
+            User createdUSer = await _userService.CreateAsync(user);
+            string token = _jwtUtils.GenerateJwtToken(createdUSer);
+            return Ok(token);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+    [HttpPost("login")]
+    public async Task<ActionResult> Login(LoginRequest loginRequest)
+    {
+        try
+        {
+
+            User createdUSer = await _userService.Login(loginRequest);
+            string token = _jwtUtils.GenerateJwtToken(createdUSer);
+            return Ok(token);
         }
         catch (Exception e)
         {

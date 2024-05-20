@@ -22,7 +22,7 @@ public class AlarmContext: DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Clock> Clocks { get; set; }
-    public DbSet<Message> Messages { get; set; }
+    
     public DbSet<Alarm> Alarms { get; set; }
 
 

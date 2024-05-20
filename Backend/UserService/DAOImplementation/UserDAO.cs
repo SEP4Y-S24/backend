@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using UserService.Context;
 using UserService.IDAO;
@@ -14,7 +15,10 @@ public class UserDAO: IUserDAO
     {
         context = dbContext;
     }
-
+    public virtual async ValueTask<User?> GetByAsync(Expression<Func<User, bool>> filter)
+    {
+        return await context.Users.Where(filter).FirstOrDefaultAsync();
+    }
     public Task<User?> GetByIdAsync(Guid userId)
     {
         if (userId==Guid.Empty)
@@ -28,6 +32,11 @@ public class UserDAO: IUserDAO
 
     public async Task<User> CreateAsync(User user)
     {
+        user.Clocks = new List<Clock>();
+        user.Todos = new List<ToDo>();
+        user.MessagesRecieved = new List<Message>();
+        user.MessagesSent = new List<Message>();
+        user.Id = Guid.NewGuid();
         EntityEntry<User> added = await context.Users.AddAsync(user);
         await context.SaveChangesAsync();
         return added.Entity;
