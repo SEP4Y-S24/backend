@@ -1,4 +1,4 @@
-﻿name: Deploy ${{ env.AZURE_FUNCTIONAPP_NAME }} to Azure Function App
+﻿name: Deploy Todo Service to Azure Function App
 
 on:
   push:
