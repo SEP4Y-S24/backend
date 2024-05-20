@@ -182,21 +182,14 @@ public class ClockServiceTest
     [Test]
     public async Task DeleteAsync_ExistingClockId_ShouldDeleteClock()
     {
-        var localNow = DateTime.Now;
-        var utcNow = localNow.ToUniversalTime();
         
-        // Arrange
-        using (var context = CreateTestContext())
-        {
-            var clock_dao = new ClockDAO(_context);
-        }
         var user_dao = new UserDAO(_context);
 
         var user = new User()
         {
             Id = new Guid()
         };
-        user_dao.CreateAsync(user);
+        await user_dao.CreateAsync(user);
         var messages = new List<Message>();
         var clock = new Clock()
         {
