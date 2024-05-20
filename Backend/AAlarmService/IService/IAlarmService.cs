@@ -11,4 +11,5 @@ public interface IAlarmService
     Task EnableAlarmAsync(Guid alarmId);
     Task DisableAlarmAsync(Guid alarmId);
     Task<IEnumerable<Alarm>> GetAllAsync();
+    Task<IEnumerable<Alarm>> GetAllByClockAsync(Guid clockId);
 }

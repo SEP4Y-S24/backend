@@ -1,4 +1,5 @@
-﻿using AAlarmServices.IDAO;
+﻿using System.Linq.Expressions;
+using AAlarmServices.IDAO;
 using AlarmServices.Context;
 using AlarmServices.Model;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public class AlarmDAO: IAlarmDAO
     {
         try
         {
-            if (alarm == null && alarm.ClockId == null)
+            DateTime.SpecifyKind(alarm.SetOffTime, DateTimeKind.Utc);            if (alarm == null && alarm.ClockId == null)
             {
                 throw new ArgumentNullException($"The given Alarm object {alarm} is null");
             }
@@ -32,6 +33,10 @@ public class AlarmDAO: IAlarmDAO
             Console.WriteLine(e);
             throw;
         }
+    }
+    public async Task<IEnumerable<Alarm>> GetAllByAsync(Expression<Func<Alarm, bool>> filter)
+    {
+        return await _alarmContext.Set<Alarm>().Where(filter).ToListAsync();
     }
 
     public async Task<IEnumerable<Alarm>> GetAllAsync()

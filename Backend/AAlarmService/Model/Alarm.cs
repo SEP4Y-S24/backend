@@ -2,7 +2,7 @@
 
 namespace AlarmServices.Model;
 
-public class Alarm
+public class  Alarm
 {
     [Key]
     public Guid Id { get; set;}

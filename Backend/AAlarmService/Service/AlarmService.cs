@@ -110,4 +110,16 @@ public class AlarmService: IAlarmService
             throw;
         }
     }
+
+    public async Task<IEnumerable<Alarm>> GetAllByClockAsync(Guid clockId)
+    {
+        try
+        {
+            return await _alarmDao.GetAllByAsync(a=>a.ClockId.Equals(clockId));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }    }
 }
