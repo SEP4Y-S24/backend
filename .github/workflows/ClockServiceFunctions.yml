@@ -1,4 +1,4 @@
-﻿name: Deploy DotNet project to Azure Function App
+﻿name: Deploy ${{ env.AZURE_FUNCTIONAPP_NAME }} to Azure Function App
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
           popd
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
-        id: fa
+        id: ${{ env.AZURE_FUNCTIONAPP_NAME }}
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'

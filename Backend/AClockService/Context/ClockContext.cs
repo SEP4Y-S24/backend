@@ -16,7 +16,7 @@ public class ClockContext : DbContext
         optionsBuilder.UseNpgsql(
             "Host=clockcontext.postgres.database.azure.com;" +
             "Port=5432;" +
-            "Database=postgres;" +
+            "Database=ClockService;" +
             "Username=clockcontext;" +
             "Password=postgres123!;");
     }
