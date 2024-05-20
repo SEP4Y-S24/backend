@@ -12,7 +12,7 @@ jobs:
       matrix:
         app-path: ['SEP4-AlarmService', 'SEP4-ClockService']
         app-name: ['Backend/AAlarmService', 'Backend/AClockService']
-        publish-profile: [${{ secrets.AZURE_PUBLISH_PROFILE_ALARM_SERVICE }}, ${{ secrets.AZURE_PUBLISH_PROFILE_CLOCK_SERVICE }}]
+        publish-profile: ['${{ secrets.AZURE_PUBLISH_PROFILE_ALARM_SERVICE }}', '${{ secrets.AZURE_PUBLISH_PROFILE_CLOCK_SERVICE }}']
 
     steps:
       - name: 'Checkout GitHub Action'
