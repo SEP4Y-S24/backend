@@ -1,4 +1,5 @@
-﻿using UserService.Dtos;
+﻿using Isopoh.Cryptography.Argon2;
+using UserService.Dtos;
 using UserService.IDAO;
 using UserService.IServices;
 using UserService.Model;
@@ -33,6 +34,23 @@ public class UserServiceImpl : IUserService
 
         User created = await _userDao.CreateAsync(userToCreate);
         return created;
+    }
+
+    public async Task<User> Login(LoginRequest loginRequest)
+    {
+        User user = await _userDao.GetByAsync(u => u.Email.Equals(loginRequest.Email));
+        if (user == null)
+        {
+            throw new Exception("User with this email does not exist!");
+        }
+
+        if (!Argon2.Verify(user.PasswordHash, loginRequest.Password))
+        {
+            throw new ArgumentException("Password is incorrect!");
+        }
+
+        return user;
+
     }
 
     public async Task<User> GetByIdAsync(Guid userId)

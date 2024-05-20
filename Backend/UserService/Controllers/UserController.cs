@@ -137,6 +137,21 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpPost("login")]
+    public async Task<ActionResult> Login(LoginRequest loginRequest)
+    {
+        try
+        {
+
+            User createdUSer = await _userService.Login(loginRequest);
+            string token = _jwtUtils.GenerateJwtToken(createdUSer);
+            return Ok(token);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
     [HttpPost("/clocks")]
     public async Task<ActionResult> AddClock(Guid userId, CreateClockDto clockToBeAdded)
     {
