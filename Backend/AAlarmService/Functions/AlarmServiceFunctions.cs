@@ -93,5 +93,26 @@ namespace CoupledClock.AlarmService
             return new OkObjectResult(alarmDto);        
         }
 
+        [Function("ToggleAlarm")]
+        public async Task<IActionResult> ToggleAlarm(
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "alarm/{alarmId}/state")] HttpRequest req,
+            Guid alarmId)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            ToggleAlarmDto state = JsonConvert.DeserializeObject<ToggleAlarmDto>(requestBody);
+            var alarmService = ServiceFactory.GetAlarmService();
+            Alarm alarm = await alarmService.ToggleAlarmAsync(alarmId, state.state);
+            AlarmDTO alarmDto = new AlarmDTO
+            {
+                Id = alarm.Id,
+                ClockId = alarm.ClockId,
+                SetOffTime = alarm.SetOffTime,
+                IsActive = alarm.IsActive,
+                IsSnoozed = alarm.IsSnoozed
+            };
+            return new OkObjectResult(alarmDto);
+        }
+
     }
 }
