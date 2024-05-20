@@ -122,4 +122,17 @@ public class AlarmService: IAlarmService
             Console.WriteLine(e);
             throw;
         }    }
+
+    public async Task<Alarm> ToggleAlarmAsync(Guid alarmId, bool? state)
+    {
+        Alarm? existing = await _alarmDao.GetByIdAsync(alarmId);
+
+        if (existing == null)
+        {
+            throw new Exception($"Alarm with ID {alarmId} not found!");
+        }
+        existing.IsActive = state.Value;
+        await _alarmDao.UpdateAsync(existing);
+        return existing;
+    }
 }
