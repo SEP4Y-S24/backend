@@ -26,7 +26,6 @@ public class ClockDAO : IClockDAO
     public async Task<IEnumerable<Clock>> GetAllByAsync(Expression<Func<Clock, bool>> filter)
     {
         return await context.Set<Clock>().Where(filter).ToListAsync();
-
     }
 
     public Task<Clock?> GetByIdAsync(Guid clockId)
