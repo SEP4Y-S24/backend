@@ -130,7 +130,20 @@ public class UserController : ControllerBase
             };
             User createdUSer = await _userService.CreateAsync(user);
             string token = _jwtUtils.GenerateJwtToken(createdUSer);
-            return Ok(token);
+            
+            UserDto userDto = new UserDto()
+            {
+                UserId = createdUSer.Id,
+                Name = createdUSer.Name,
+                Email = createdUSer.Email,
+                AvatarId = createdUSer.AvatarId
+            };
+            LoginResponse response = new LoginResponse()
+            {
+                Token = token,
+                User = userDto
+            };
+            return Ok(response);
         }
         catch (Exception e)
         {
@@ -144,7 +157,19 @@ public class UserController : ControllerBase
         {
             User createdUSer = await _userService.Login(loginRequest);
             string token = _jwtUtils.GenerateJwtToken(createdUSer);
-            return Ok(token);
+            UserDto userDto = new UserDto()
+            {
+                UserId = createdUSer.Id,
+                Name = createdUSer.Name,
+                Email = createdUSer.Email,
+                AvatarId = createdUSer.AvatarId
+            };
+            LoginResponse response = new LoginResponse()
+            {
+                Token = token,
+                User = userDto
+            };
+            return Ok(response);
         }
         catch (Exception e)
         {
