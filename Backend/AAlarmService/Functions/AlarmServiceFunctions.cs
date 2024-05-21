@@ -85,6 +85,7 @@ namespace AAlarmService.Functions
             {
                 Id = created.Id,
                 ClockId = created.ClockId,
+                Name = created.Name,
                 SetOffTime = created.SetOffTime,
                 IsActive = created.IsActive,
                 IsSnoozed = created.IsSnoozed
