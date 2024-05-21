@@ -1,3 +1,4 @@
+using AAlarmService.DAOImplementation;
 using AAlarmService.DTOs;
 using AAlarmService.Model;
 using Microsoft.AspNetCore.Http;
@@ -77,6 +78,7 @@ namespace AAlarmService.Functions
                 Id = Guid.NewGuid(),
                 ClockId = alarm.ClockId,
                 SetOffTime = alarm.SetOffTime,
+                Name = alarm.Name,
                 IsActive = true,
                 IsSnoozed = false
             };
@@ -117,6 +119,7 @@ namespace AAlarmService.Functions
                 Id = alarm.Id,
                 ClockId = alarm.ClockId,
                 SetOffTime = alarm.SetOffTime,
+                Name = alarm.Name,
                 IsActive = alarm.IsActive,
                 IsSnoozed = alarm.IsSnoozed
             };
