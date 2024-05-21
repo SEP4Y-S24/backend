@@ -1,6 +1,6 @@
-﻿using AlarmServices.Model;
+﻿using AAlarmService.Model;
 
-namespace AAlarmServices.DTOs;
+namespace AAlarmService.DTOs;
 
 public class AlarmsDTO
 {

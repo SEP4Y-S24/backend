@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
-using AAlarmServices.IDAO;
-using AlarmServices.Context;
-using AlarmServices.Model;
+using AAlarmService.IDAO;
+using AAlarmService.Context;
+using AAlarmService.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace AAlarmServices.DAOImplementation;
+namespace AAlarmService.DAOImplementation;
 
 public class AlarmDAO: IAlarmDAO
 {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AAlarmServices.DTOs;
+namespace AAlarmService.DTOs;
 
 public class AlarmDTO
 {
@@ -8,6 +8,8 @@ public class AlarmDTO
     public Guid Id { get; set;}
     [JsonProperty("clock_id")]
     public Guid ClockId { get; set; }
+    [JsonProperty("name")]
+    public string Name { get; set; }
     [JsonProperty("set_of_time")]
     public DateTime SetOffTime { get; set; }
     [JsonProperty("is_active")]

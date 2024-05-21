@@ -16,6 +16,7 @@ namespace AAlarmService.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     ClockId = table.Column<Guid>(type: "uuid", nullable: false),
                     SetOffTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
@@ -57,45 +58,10 @@ namespace AAlarmService.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DateOfCreation = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Body = table.Column<string>(type: "text", nullable: false),
-                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClockId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RecieverId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ReceiverId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Clocks_ClockId",
-                        column: x => x.ClockId,
-                        principalTable: "Clocks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Messages_Users_RecieverId",
-                        column: x => x.RecieverId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Messages_Users_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "Alarms",
-                columns: new[] { "Id", "ClockId", "IsActive", "IsSnoozed", "SetOffTime" },
-                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, new DateTime(2024, 5, 17, 9, 44, 47, 941, DateTimeKind.Utc).AddTicks(417) });
+                columns: new[] { "Id", "ClockId", "IsActive", "IsSnoozed", "Name", "SetOffTime" },
+                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, "Default alarm", new DateTime(2024, 5, 21, 8, 44, 53, 627, DateTimeKind.Utc).AddTicks(3142) });
 
             migrationBuilder.InsertData(
                 table: "Users",
@@ -111,21 +77,6 @@ namespace AAlarmService.Migrations
                 name: "IX_Clocks_OwnerId",
                 table: "Clocks",
                 column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_ClockId",
-                table: "Messages",
-                column: "ClockId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_RecieverId",
-                table: "Messages",
-                column: "RecieverId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_SenderId",
-                table: "Messages",
-                column: "SenderId");
         }
 
         /// <inheritdoc />
@@ -133,9 +84,6 @@ namespace AAlarmService.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Alarms");
-
-            migrationBuilder.DropTable(
-                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Clocks");

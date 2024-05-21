@@ -1,7 +1,7 @@
-﻿using AlarmServices.Model;
+﻿using AAlarmService.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace AlarmServices.Context;
+namespace AAlarmService.Context;
 
 public class AlarmContext: DbContext
 {
@@ -46,6 +46,7 @@ public class AlarmContext: DbContext
             {
                 Id = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
                 ClockId = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
+                Name = "Default alarm",
                 IsSnoozed = false,
                 SetOffTime = DateTime.UtcNow.AddHours(1), // SetOffTime (example: 1 hour from now)
                 IsActive = true // IsActive

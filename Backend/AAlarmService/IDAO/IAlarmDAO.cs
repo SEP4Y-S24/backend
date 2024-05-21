@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using AlarmServices.Model;
+using AAlarmService.Model;
 
-namespace AAlarmServices.IDAO;
+namespace AAlarmService.IDAO;
 
 public interface IAlarmDAO
 {

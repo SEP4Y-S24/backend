@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AAlarmServices.DTOs;
+namespace AAlarmService.DTOs;
 
 public class ToggleAlarmDto
 {

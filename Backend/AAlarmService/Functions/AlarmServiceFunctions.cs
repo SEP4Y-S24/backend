@@ -1,5 +1,5 @@
-using AAlarmServices.DTOs;
-using AlarmServices.Model;
+using AAlarmService.DTOs;
+using AAlarmService.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -85,6 +85,7 @@ namespace AAlarmService.Functions
             {
                 Id = created.Id,
                 ClockId = created.ClockId,
+                Name = created.Name,
                 SetOffTime = created.SetOffTime,
                 IsActive = created.IsActive,
                 IsSnoozed = created.IsSnoozed
