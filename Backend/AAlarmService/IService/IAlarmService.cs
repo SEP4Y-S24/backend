@@ -1,6 +1,6 @@
-﻿using AlarmServices.Model;
+﻿using AAlarmService.Model;
 
-namespace AAlarmServices.IService;
+namespace AAlarmService.IService;
 
 public interface IAlarmService
 {

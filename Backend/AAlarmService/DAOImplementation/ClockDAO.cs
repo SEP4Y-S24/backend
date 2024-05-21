@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
-using AAlarmServices.IDAO;
-using AlarmServices.Context;
-using AlarmServices.Model;
+using AAlarmService.IDAO;
+using AAlarmService.Context;
+using AAlarmService.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace AAlarmServices.DAOImplementation;
+namespace AAlarmService.DAOImplementation;
 
 public class ClockDAO: IClockDAO
 {

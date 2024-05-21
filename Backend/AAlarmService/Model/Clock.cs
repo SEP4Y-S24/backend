@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
-namespace AlarmServices.Model;
+namespace AAlarmService.Model;
 
 public class Clock
 {

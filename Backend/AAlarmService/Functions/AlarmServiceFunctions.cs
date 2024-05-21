@@ -1,5 +1,5 @@
-using AAlarmServices.DTOs;
-using AlarmServices.Model;
+using AAlarmService.DTOs;
+using AAlarmService.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;

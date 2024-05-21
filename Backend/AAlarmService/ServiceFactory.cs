@@ -1,9 +1,9 @@
 ﻿
-using AAlarmServices.DAOImplementation;
-using AAlarmServices.IDAO;
-using AAlarmServices.IService;
-using AAlarmServices.Service;
-using AlarmServices.Context;
+using AAlarmService.DAOImplementation;
+using AAlarmService.IDAO;
+using AAlarmService.IService;
+using AAlarmService.Service;
+using AAlarmService.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
