@@ -5,6 +5,7 @@ using UserService.Helpers;
 using UserService.Model;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using UserService.Dtos;
 
 
 namespace UserService.Authorization
@@ -13,7 +14,7 @@ namespace UserService.Authorization
     {
         public List<Claim> GenerateClaims(User user);
         public string GenerateJwtToken(User user);
-        public string ValidateJwtToken(string token);
+        public UserDto ValidateJwtToken(string token);
      }
 
     public class JwtUtils : IJwtUtils
@@ -48,33 +49,39 @@ namespace UserService.Authorization
 
         public string GenerateJwtToken(User user)
         {
-            List<Claim> claims = GenerateClaims(user);
-    
-            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Secret));
-            SigningCredentials signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-    
-            JwtHeader header = new JwtHeader(signIn);
-    
-            JwtPayload payload = new JwtPayload(
-null,
-null,
-claims, 
-                null,
-                DateTime.UtcNow.AddDays(7));
-    
-            JwtSecurityToken token = new JwtSecurityToken(header, payload);
-    
-            string serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return serializedToken;
+            
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(
+                    new[] 
+                    { 
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        new Claim(ClaimTypes.Name, user.Name),
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim("id", user.Id.ToString()),
+                        new Claim("Name", user.Name),
+                        new Claim("Email", user.Email),
+                        new Claim("avatarId", user.AvatarId.ToString()),
+                    }),
+                Expires = DateTime.UtcNow.AddDays(7),  
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                    SecurityAlgorithms.HmacSha512)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+
         }
 
-        public string ValidateJwtToken(string token)
+        public UserDto ValidateJwtToken(string token)
         {
-            /*if (token == null)
+            if (token == null)
                 return null;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -88,17 +95,20 @@ claims,
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
+                UserDto user = new UserDto();
+                user.UserId = Guid.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                user.Email = jwtToken.Claims.First(x => x.Type.Equals("Email")).Value;
+                user.Name = jwtToken.Claims.First(x => x.Type.Equals("Name")).Value;
+                user.AvatarId = int.Parse(jwtToken.Claims.First(x => x.Type == "avatarId").Value);
+                return user;
 
                 // return user id from JWT token if validation successful
-                return userId;
             }
             catch
             {
                 // return null if validation fails
                 return null;
-            }*/
-            return "";
+            }
         }
     }
 }
