@@ -1,4 +1,4 @@
-﻿using AAlarmService.Model;
+﻿using Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AAlarmService.Context;

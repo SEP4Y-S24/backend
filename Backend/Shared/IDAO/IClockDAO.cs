@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Models;
 
-namespace AAlarmService.IDAO;
+namespace Shared.IDAO;
 
 public interface IClockDAO
 {

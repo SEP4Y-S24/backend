@@ -1,8 +1,8 @@
-﻿using AAlarmService.IDAO;
-using AAlarmService.IService;
-using Models;
+﻿using Models;
+using Shared.IDAO;
+using Shared.IService;
 
-namespace AAlarmService.Service;
+namespace Shared.Service;
 
 public class AlarmService: IAlarmService
 {

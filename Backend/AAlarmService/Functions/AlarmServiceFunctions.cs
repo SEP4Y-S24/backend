@@ -1,10 +1,11 @@
-using AAlarmService.DTOs;
-using AAlarmService.Model;
+using Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shared;
+using Shared.DTOs;
 
 namespace AAlarmService.Functions
 {

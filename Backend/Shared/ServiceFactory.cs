@@ -1,14 +1,14 @@
 ﻿
-using AAlarmService.DAOImplementation;
-using AAlarmService.IDAO;
-using AAlarmService.IService;
-using AAlarmService.Service;
 using Shared.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Shared.DAOImplementation;
+using Shared.IDAO;
+using Shared.IService;
+using Shared.Service;
 
-namespace AAlarmService;
-/*
+namespace Shared;
+
 public static class ServiceFactory
 {
     private static ClockContext _alarmContext = null;
@@ -67,4 +67,4 @@ public static class ServiceFactory
         return _alarmService;
     }
     
-}*/
+}

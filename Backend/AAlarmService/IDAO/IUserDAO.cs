@@ -1,4 +1,4 @@
-﻿using AAlarmService.Model;
+﻿using Models;
 
 namespace AAlarmService.IDAO;
 

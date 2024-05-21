@@ -1,15 +1,15 @@
 ﻿using AAlarmService.IDAO;
-using AAlarmService.Context;
-using AAlarmService.Model;
+using Shared.Context;
+using Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace AAlarmService.DAOImplementation;
 
 public class UserDAO: IUserDAO
 {
-    private readonly AlarmContext _alarmContext;
+    private readonly ClockContext _alarmContext;
 
-    public UserDAO(AlarmContext dbContext)
+    public UserDAO(ClockContext dbContext)
     {
         _alarmContext = dbContext;
     }
