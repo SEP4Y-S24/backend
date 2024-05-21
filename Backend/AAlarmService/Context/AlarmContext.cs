@@ -15,7 +15,7 @@ public class AlarmContext: DbContext
         optionsBuilder.UseNpgsql(
             "Host=clockcontext.postgres.database.azure.com;" +
             "Port=5432;" +
-            "Database=AlarmService;" +
+            "Database=Sep4MicroServices;" +
             "Username=clockcontext;" +
             "Password=postgres123!;");
     }
