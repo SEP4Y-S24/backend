@@ -142,7 +142,6 @@ public class UserController : ControllerBase
     {
         try
         {
-
             User createdUSer = await _userService.Login(loginRequest);
             string token = _jwtUtils.GenerateJwtToken(createdUSer);
             return Ok(token);
@@ -152,7 +151,7 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPost("/clocks")]
+    [HttpPost("clocks")]
     public async Task<ActionResult> AddClock(Guid userId, CreateClockDto clockToBeAdded)
     {
         try
@@ -166,7 +165,7 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    [HttpPost("/todo")]
+    [HttpPost("todo")]
     public async Task<ActionResult> AddTodo(Guid userId, ToDo toDoToBeAdded)
     {
         try
@@ -180,4 +179,22 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpGet("{token}")]
+    public async Task<ActionResult> GetById(string token)
+    {
+        try
+        {
+            UserDto userDto = _jwtUtils.ValidateJwtToken(token);
+            if (userDto is null)
+            {
+                throw new ArgumentNullException("No such user!");
+            }
+            return Ok(userDto);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+
 }
