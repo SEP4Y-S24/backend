@@ -40,7 +40,7 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev", "feature/Github-Action-TestCoverage" ]
   pull_request:
     branches: [ "main" ]
 
