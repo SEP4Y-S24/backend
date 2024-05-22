@@ -1,10 +1,11 @@
-using AClockService.Dtos;
-using AClockService.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Models;
 using Newtonsoft.Json;
+using Shared;
+using Shared.Dtos;
 
 namespace AClockService.Functions
 {
@@ -24,8 +25,8 @@ namespace AClockService.Functions
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-        [Function("SetTimeZone")]
-        public async Task<IActionResult> SetTimeZone(
+        [Function("SetTimeOffset")]
+        public async Task<IActionResult> SetTimeOffset(
             [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "clock/{id}")]
             HttpRequest req, Guid id)
         {
