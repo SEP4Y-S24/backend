@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Shared;
 
 namespace ATodoService.Functions
 {
@@ -20,5 +21,14 @@ namespace ATodoService.Functions
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             return new OkObjectResult("Welcome to Azure Functions!");
         }
+
+        // [Function("GetAllTodos")]
+        // public async Task<IActionResult> GetAllTodos(
+        //     [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req,
+        //     Guid userId)
+        // {
+        //     _logger.LogInformation("C# HTTP trigger function processed a request.");
+        //    //var todoService = ServiceFactory.get
+        // }
     }
 }

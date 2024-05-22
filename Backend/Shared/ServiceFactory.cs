@@ -6,20 +6,26 @@ using Shared.DAOImplementation;
 using Shared.IDAO;
 using Shared.IService;
 using Shared.Service;
+using TodoServices.DAOImplementation;
 
 namespace Shared;
 
 public static class ServiceFactory
 {
-    private static ClockContext _alarmContext = null;
+    private static ClockContext context = null;
     private static IUserDAO _userDao = null;
     private static IClockDAO _clockDao = null;
     private static IAlarmDAO _alarmDao = null;
     private static IAlarmService _alarmService = null;
+    private static ITodoService _todoService = null;
+    private static ITodoDAO _todoDao = null;
+    private static ITagDao _tagDao = null;
+    public static ClockContext _todoContext = null;
+    public static TagService _tagService = null;
 
-    public static ClockContext GetAlarmContext()
+    public static ClockContext GetContext()
     {
-        if (_alarmContext == null)
+        if (context == null)
         {
             // Load configuration from appsettings.json
             var configurationBuilder = new ConfigurationBuilder()
@@ -33,29 +39,30 @@ public static class ServiceFactory
                 .UseNpgsql(connectionString)
                 .Options;
 
-            _alarmContext = new ClockContext(options);
+            context = new ClockContext(options);
 
         }
-        return _alarmContext;
+        return context;
     }
+    
     public static IUserDAO GetUserDao()
     {
         if (_userDao == null)
-            _userDao = new UserDAO(GetAlarmContext());
+            _userDao = new UserDAO(GetContext());
 
         return _userDao;
     }
     public static IAlarmDAO GetAlarmDAO()
     {
         if (_alarmDao == null)
-            _alarmDao = new AlarmDAO(GetAlarmContext());
+            _alarmDao = new AlarmDAO(GetContext());
 
         return _alarmDao;
     }
     public static IClockDAO GetClockDAO()
     {
         if (_clockDao == null)
-            _clockDao = new ClockDAO(GetAlarmContext());
+            _clockDao = new ClockDAO(GetContext());
 
         return _clockDao;
     }
@@ -66,5 +73,41 @@ public static class ServiceFactory
 
         return _alarmService;
     }
-    
+
+    public static ITodoService GetTodoService()
+    {
+        if (_todoService==null)
+        {
+            _todoService = new TodoService(GetTodoDAO(),GetUserDao(),GetTagDAO());
+        }
+
+        return _todoService;
+    }
+
+    public static ITagService GetTagService()
+    {
+        if (_tagService ==null)
+        {
+            _tagService = new TagService(GetTodoDAO(), GetTagDAO());
+        }
+        return _tagService;
+    }
+
+    public static ITagDao GetTagDAO()
+    {
+        if (_tagDao ==null)
+        {
+            _tagDao = new TagDao(GetContext());
+        }
+        return _tagDao;
+    }
+
+    public static ITodoDAO GetTodoDAO()
+    {
+        if (_todoDao==null)
+        {
+            _todoDao = new TodoDao(GetContext());
+        }
+        return _todoDao;
+    }
 }

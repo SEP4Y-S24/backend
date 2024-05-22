@@ -15,7 +15,7 @@ public class TodoService: ITodoService
         _userDao = userDao;
         _tagDao = tagDao;
     }
-    
+
     public async Task<Todo> CreateAsync(Todo todoToCreate)
     {
         User? user = await _userDao.GetByIdAsync(todoToCreate.UserId);
