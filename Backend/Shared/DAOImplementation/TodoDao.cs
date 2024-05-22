@@ -84,6 +84,14 @@ public class TodoDao: ITodoDAO
         return await _context.Set<Todo>().Include(t=>t.Tags).ToListAsync();
     }
 
+    public async Task<IEnumerable<Todo>> GetAllByUserIdAsync(Guid userId)
+    {
+        return await _context.Set<Todo>()
+            .Where(t => t.UserId == userId)
+            .Include(t => t.Tags)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Todo>> GetAllByAsync(Expression<Func<Todo, bool>> filter)
     {
         return await _context.Set<Todo>().Include(t=>t.Tags).Where(filter).ToListAsync();
