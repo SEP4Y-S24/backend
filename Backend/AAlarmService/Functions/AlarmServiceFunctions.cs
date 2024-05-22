@@ -32,7 +32,8 @@ namespace AAlarmService.Functions
                 {
                     Id = alarm.Id,
                     ClockId = alarm.ClockId,
-                    SetOffTime = alarm.SetOffTime,
+                    Hours = alarm.SetOffTime.Hour,
+                    Minutes = alarm.SetOffTime.Minute,
                     IsActive = alarm.IsActive,
                     IsSnoozed = alarm.IsSnoozed
                 };
@@ -51,7 +52,8 @@ namespace AAlarmService.Functions
             {
                 Id = alarm.Id,
                 ClockId = alarm.ClockId,
-                SetOffTime = alarm.SetOffTime,
+                Hours = alarm.SetOffTime.Hour,
+                Minutes = alarm.SetOffTime.Minute,
                 IsActive = alarm.IsActive,
                 IsSnoozed = alarm.IsSnoozed
             };
@@ -80,12 +82,12 @@ namespace AAlarmService.Functions
             {
                 return new BadRequestObjectResult("The given clock id is not found in the database");
             }
-            alarm.SetOffTime.AddMinutes(clock.TimeOffset);
+        //    alarm.SetOffTime.AddMinutes(clock.TimeOffset);
             Alarm alarmToCreate = new Alarm
             {
                 Id = Guid.NewGuid(),
                 ClockId = alarm.ClockId,
-                SetOffTime = alarm.SetOffTime,
+                SetOffTime = new TimeOnly(alarm.Hours, alarm.Minutes),
                 Name = alarm.Name,
                 IsActive = true,
                 IsSnoozed = false
@@ -96,7 +98,8 @@ namespace AAlarmService.Functions
                 Id = created.Id,
                 ClockId = created.ClockId,
                 Name = created.Name,
-                SetOffTime = created.SetOffTime,
+                Hours = created.SetOffTime.Hour,
+                Minutes = created.SetOffTime.Minute,
                 IsActive = created.IsActive,
                 IsSnoozed = created.IsSnoozed
             };
@@ -126,7 +129,8 @@ namespace AAlarmService.Functions
             {
                 Id = alarm.Id,
                 ClockId = alarm.ClockId,
-                SetOffTime = alarm.SetOffTime,
+                Hours = alarm.SetOffTime.Hour,
+                Minutes = alarm.SetOffTime.Minute,
                 Name = alarm.Name,
                 IsActive = alarm.IsActive,
                 IsSnoozed = alarm.IsSnoozed

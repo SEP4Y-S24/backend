@@ -19,7 +19,7 @@ public class AlarmDAO: IAlarmDAO
     {
         try
         {
-            DateTime.SpecifyKind(alarm.SetOffTime, DateTimeKind.Utc);            if (alarm == null && alarm.ClockId == null)
+            if (alarm == null && alarm.ClockId == null)
             {
                 throw new ArgumentNullException($"The given Alarm object {alarm} is null");
             }

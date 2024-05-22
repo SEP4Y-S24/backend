@@ -63,7 +63,7 @@ public class ClockContext: DbContext
                 ClockId = Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"),
                 Name = "Default alarm",
                 IsSnoozed = false,
-                SetOffTime = DateTime.UtcNow.AddHours(1), // SetOffTime (example: 1 hour from now)
+                SetOffTime = new TimeOnly(1,20), // SetOffTime (example: 1 hour from now)
                 IsActive = true // IsActive
             });
         modelBuilder.Entity<Todo>().HasData(

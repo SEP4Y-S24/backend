@@ -10,8 +10,11 @@ public class AlarmDTO
     public Guid ClockId { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }
-    [JsonProperty("set_of_time")]
-    public DateTime SetOffTime { get; set; }
+    [JsonProperty("hours")]
+    public int Hours { get; set; }
+    [JsonProperty("minutes")]
+
+    public int Minutes { get; set; }
     [JsonProperty("is_active")]
     public bool IsActive { get; set; }
     [JsonProperty("is_snoozed")]
