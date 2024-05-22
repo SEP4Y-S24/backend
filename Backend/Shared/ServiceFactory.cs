@@ -3,6 +3,7 @@ using Shared.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Shared.DAOImplementation;
+using Shared.Helpers;
 using Shared.IDAO;
 using Shared.IService;
 using Shared.Service;
@@ -24,7 +25,8 @@ public static class ServiceFactory
     private static IUserService _userService = null;
     private static IClockService _clockService = null;
     private static ITodoService _todoService = null;
-    public static TagService _tagService = null;
+    public static ITagService _tagService = null;
+    public static IJwtUtils _JwtUtils = null;
 
     public static ClockContext GetContext()
     {
@@ -55,6 +57,14 @@ public static class ServiceFactory
 
         return _userDao;
     }
+    public static IJwtUtils GetJwtUtils()
+    {
+        if (_JwtUtils == null)
+            _JwtUtils = new JwtUtils();
+
+        return _JwtUtils;
+    }
+
     public static IAlarmDAO GetAlarmDAO()
     {
         if (_alarmDao == null)

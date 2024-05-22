@@ -18,17 +18,17 @@ public class UserDAO: IUserDAO
 
     public virtual async ValueTask<User?> GetByAsync(Expression<Func<User, bool>> filter)
     {
-        return await _context.Users.Where(filter).FirstOrDefaultAsync();
+        return await _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Where(filter).FirstOrDefaultAsync();
     }
-    public Task<User?> GetByIdAsync(Guid userId)
+    public async Task<User?> GetByIdAsync(Guid userId)
     {
         if (userId==Guid.Empty)
         {
             throw new ArgumentNullException("The given user Id is null");
         }
 
-        User? existing = _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefault(t => t.Id == userId);
-        return Task.FromResult(existing);
+        User? existing = await _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefaultAsync(t => t.Id == userId);
+        return existing;
     }
 
     public async Task<User> CreateAsync(User user)
