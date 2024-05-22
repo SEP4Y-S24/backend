@@ -14,13 +14,16 @@ public static class ServiceFactory
 {
     private static ClockContext context = null;
     private static IUserDAO _userDao = null;
+    private static IMessageDao _messageDao = null;
     private static IClockDAO _clockDao = null;
     private static IAlarmDAO _alarmDao = null;
-    private static IAlarmService _alarmService = null;
-    private static ITodoService _todoService = null;
     private static ITodoDAO _todoDao = null;
     private static ITagDao _tagDao = null;
-    public static ClockContext _todoContext = null;
+    private static IAlarmService _alarmService = null;
+    private static IMessageService _messageService = null;
+    private static IUserService _userService = null;
+    private static IClockService _clockService = null;
+    private static ITodoService _todoService = null;
     public static TagService _tagService = null;
 
     public static ClockContext GetContext()
@@ -44,7 +47,7 @@ public static class ServiceFactory
         }
         return context;
     }
-    
+
     public static IUserDAO GetUserDao()
     {
         if (_userDao == null)
@@ -66,6 +69,34 @@ public static class ServiceFactory
 
         return _clockDao;
     }
+    public static IMessageDao GetMessageDao()
+    {
+        if (_messageDao == null)
+            _messageDao = new MessageDAO(GetContext());
+
+        return _messageDao;
+    }
+    public static IUserService GetUserService()
+    {
+        if (_userService == null)
+            _userService = new UserService(GetUserDao(), GetClockDAO(), GetTodoDAO());
+
+        return _userService;
+    }
+    public static IMessageService GetMessageService()
+    {
+        if (_messageService == null)
+            _messageService = new MessageService(GetMessageDao());
+
+        return _messageService;
+    }
+    public static IClockService GetClockService()
+    {
+        if (_clockService == null)
+            _clockService = new ClockService(GetClockDAO(), GetUserDao());
+
+        return _clockService;
+    }
     public static IAlarmService GetAlarmService()
     {
         if (_alarmService == null)
@@ -76,9 +107,9 @@ public static class ServiceFactory
 
     public static ITodoService GetTodoService()
     {
-        if (_todoService==null)
+        if (_todoService == null)
         {
-            _todoService = new TodoService(GetTodoDAO(),GetUserDao(),GetTagDAO());
+            _todoService = new TodoService(GetTodoDAO(), GetUserDao(), GetTagDAO());
         }
 
         return _todoService;
@@ -86,7 +117,7 @@ public static class ServiceFactory
 
     public static ITagService GetTagService()
     {
-        if (_tagService ==null)
+        if (_tagService == null)
         {
             _tagService = new TagService(GetTodoDAO(), GetTagDAO());
         }
@@ -95,7 +126,7 @@ public static class ServiceFactory
 
     public static ITagDao GetTagDAO()
     {
-        if (_tagDao ==null)
+        if (_tagDao == null)
         {
             _tagDao = new TagDao(GetContext());
         }
@@ -104,7 +135,7 @@ public static class ServiceFactory
 
     public static ITodoDAO GetTodoDAO()
     {
-        if (_todoDao==null)
+        if (_todoDao == null)
         {
             _todoDao = new TodoDao(GetContext());
         }
