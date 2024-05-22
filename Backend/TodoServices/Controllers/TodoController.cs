@@ -77,8 +77,8 @@ public class TodoController : ControllerBase
         }
     }
 
-    [HttpPost("/tags")]
-    public async Task<ActionResult<Todo>> GetAllByTagsAsync(Tags tags)
+    [HttpPost("/user/{userId}/tags")]
+    public async Task<ActionResult<Todo>> GetAllByTagsAsync(Guid userId,Tags tags)
     {
         try
         {
@@ -91,7 +91,7 @@ public class TodoController : ControllerBase
                 };
                 tagsList.Add(tag);
             }
-            IEnumerable<Todo>? todo = await _todoService.FilterByTags(tagsList);
+            IEnumerable<Todo>? todo = await _todoService.FilterByTags(tagsList,userId);
             if (todo == null)
             {
                 return NotFound();

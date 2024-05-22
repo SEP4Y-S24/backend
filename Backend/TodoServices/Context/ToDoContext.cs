@@ -13,7 +13,7 @@ public class ToDoContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoService;Username=postgres;Password=25879");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TodoService;Username=postgres;Password=postgres");
     }
     
     public DbSet<User> Users { get; set; }

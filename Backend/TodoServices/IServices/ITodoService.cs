@@ -10,5 +10,5 @@ public interface ITodoService
     Task UpdateStatusByIdAsync(Guid todoId, Status status);
     Task DeleteAsync(Guid todoId);
     Task<IEnumerable<Todo>> GetAllAsync();
-    Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags);
+    Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags, Guid userId);
 }

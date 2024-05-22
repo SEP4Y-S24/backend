@@ -95,7 +95,7 @@ public class TodoService: ITodoService
         }
     }
 
-    public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags)
+    public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags, Guid userId)
     {
         IEnumerable<Tag> t = await _tagDao.GetAllAsync();
         List<Todo> todos = new List<Todo>();
@@ -105,7 +105,10 @@ public class TodoService: ITodoService
             {
                 foreach (var todo in tag.Todos)
                 {
-                    todos.Add(todo);
+                    if (todo.UserId == userId)
+                    {
+                        todos.Add(todo);
+                    }
                 }
             }
        }
