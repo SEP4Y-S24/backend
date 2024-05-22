@@ -58,6 +58,14 @@ namespace AAlarmService.Functions
             return new OkObjectResult(alarmDto);        
         }
 
+        [Function("DeleteAlarm")]
+        public async Task<IActionResult> DeleteAlarm([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "alarm/{id}")] HttpRequest req, Guid id)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var alarmService = ServiceFactory.GetAlarmService();
+            await alarmService.DeleteAsync(id);
+            return new OkObjectResult("Ok");        
+        }
     
         [Function("CreateAlarm")]
         public async Task<IActionResult> CreateAlarm([HttpTrigger(AuthorizationLevel.Function, "post", Route = "alarm")] HttpRequest req)
