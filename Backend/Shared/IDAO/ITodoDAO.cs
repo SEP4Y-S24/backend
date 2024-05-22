@@ -11,6 +11,7 @@ public interface ITodoDAO
     Task<Todo?> GetByIdAsync(Guid todoId);
     Task DeleteAsync(Guid todoId);
     Task<IEnumerable<Todo>> GetAllAsync();
+    Task<IEnumerable<Todo>> GetAllByUserIdAsync(Guid userId);
     Task<IEnumerable<Todo>> GetAllByAsync(Expression<Func<Todo, bool>> filter);
 
 }

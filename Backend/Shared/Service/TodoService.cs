@@ -95,6 +95,19 @@ public class TodoService: ITodoService
         }
     }
 
+    public async Task<IEnumerable<Todo>> GetAllByUserIdAsync(Guid userId)
+    {
+        try
+        {
+            return await _todoDao.GetAllByUserIdAsync(userId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags, Guid userId)
     {
         IEnumerable<Tag> t = await _tagDao.GetAllAsync();

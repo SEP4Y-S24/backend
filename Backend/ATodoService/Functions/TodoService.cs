@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Models;
 using Shared;
+using Shared.dtos;
 
 namespace ATodoService.Functions
 {
@@ -22,13 +24,31 @@ namespace ATodoService.Functions
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-        // [Function("GetAllTodos")]
-        // public async Task<IActionResult> GetAllTodos(
-        //     [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req,
-        //     Guid userId)
-        // {
-        //     _logger.LogInformation("C# HTTP trigger function processed a request.");
-        //    //var todoService = ServiceFactory.get
-        // }
+        [Function("GetAllTodos")]
+        public async Task<IActionResult> GetAllTodos(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req,
+            Guid userId)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var todoService = ServiceFactory.GetTodoService();
+            IEnumerable<Todo> todos = await todoService.GetAllByUserIdAsync(userId);
+            TodosDto todosDto = new TodosDto();
+            todosDto.Todos = new List<TodoDto>();
+
+            foreach (var todo in todos)
+            {
+                TodoDto todoDto = new TodoDto()
+                {
+                    Name = "Hello azure!",
+                    Description = "asdas",
+                    Deadline = DateTime.UtcNow.AddDays(7),
+                    Status = Status.Started,
+                    UserId = userId
+                };
+                todosDto.Todos.Add(todoDto);
+            }
+
+            return new OkObjectResult(todosDto);
+        }
     }
 }
