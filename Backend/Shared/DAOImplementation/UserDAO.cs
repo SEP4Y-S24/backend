@@ -9,16 +9,16 @@ namespace Shared.DAOImplementation;
 
 public class UserDAO: IUserDAO
 {
-    private readonly ClockContext context;
+    private readonly ClockContext _context;
 
     public UserDAO(ClockContext dbContext)
     {
-        context = dbContext;
+        _context = dbContext;
     }
 
     public virtual async ValueTask<User?> GetByAsync(Expression<Func<User, bool>> filter)
     {
-        return await context.Users.Where(filter).FirstOrDefaultAsync();
+        return await _context.Users.Where(filter).FirstOrDefaultAsync();
     }
     public Task<User?> GetByIdAsync(Guid userId)
     {
@@ -27,7 +27,7 @@ public class UserDAO: IUserDAO
             throw new ArgumentNullException("The given user Id is null");
         }
 
-        User? existing = context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefault(t => t.Id == userId);
+        User? existing = _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefault(t => t.Id == userId);
         return Task.FromResult(existing);
     }
 
@@ -38,8 +38,8 @@ public class UserDAO: IUserDAO
         user.MessagesRecieved = new List<Message>();
         user.MessagesSent = new List<Message>();
         user.Id = Guid.NewGuid();
-        EntityEntry<User> added = await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
+        EntityEntry<User> added = await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
         return added.Entity;
     }
 
@@ -47,14 +47,14 @@ public class UserDAO: IUserDAO
     {
         User? dbEntity = await GetByIdAsync(user.Id);
 
-        if (user==null)
+        if (dbEntity==null)
         {
             throw new ArgumentNullException();
         }
-        context.Entry(dbEntity).CurrentValues.SetValues(user);
+        _context.Entry(dbEntity).CurrentValues.SetValues(user);
 
-        context.Update(dbEntity);
-        await context.SaveChangesAsync();
+        _context.Update(dbEntity);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid userId)
@@ -65,18 +65,27 @@ public class UserDAO: IUserDAO
         }
         
         User? toDelete = await GetByIdAsync(userId);
-        context.Users.Remove(toDelete);
-        await context.SaveChangesAsync();
+        if (toDelete == null)
+        {
+            throw new ArgumentNullException("User does not exist");
+        }
+        _context.Users.Remove(toDelete);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteClock(Guid clockId, Guid userId)
     {
         User? user = await GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new ArgumentNullException("User does not exist");
+        }
         Clock? clock = user.Clocks.FirstOrDefault(c => c.Id.Equals(clockId));
         if (clock != null)
         {
             user.Clocks.Remove(clock);
         }
+        await _context.SaveChangesAsync();
     }
 
 }

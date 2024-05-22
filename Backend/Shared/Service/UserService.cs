@@ -2,9 +2,9 @@
 using Models;
 using Shared.Dtos;
 using Shared.IDAO;
-using Shared.IServices;
+using Shared.IService;
 
-namespace Shared.Services;
+namespace Shared.Service;
 
 public class UserServiceImpl : IUserService
 {
@@ -38,7 +38,7 @@ public class UserServiceImpl : IUserService
 
     public async Task<User> Login(LoginRequest loginRequest)
     {
-        User user = await _userDao.GetByAsync(u => u.Email.Equals(loginRequest.Email));
+        User? user = await _userDao.GetByAsync(u => u.Email.Equals(loginRequest.Email));
         if (user == null)
         {
             throw new Exception("User with this email does not exist!");
@@ -53,7 +53,7 @@ public class UserServiceImpl : IUserService
 
     }
 
-    public async Task<User> GetByIdAsync(Guid userId)
+    public async Task<User?> GetByIdAsync(Guid userId)
     {
         try
         {

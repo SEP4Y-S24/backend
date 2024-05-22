@@ -1,9 +1,9 @@
 using Models;
 using Shared.Dtos;
 using Shared.IDAO;
-using Shared.IServices;
+using Shared.IService;
 
-namespace Shared.Services;
+namespace Shared.Service;
 
 public class ClockService : IClockService
 {
@@ -12,7 +12,7 @@ public class ClockService : IClockService
 
     public ClockService(IClockDAO clockDao, IUserDAO userDao)
     {
-        this._clockDao = clockDao;
+        _clockDao = clockDao;
         _userDao = userDao;
     }
 
@@ -86,9 +86,12 @@ public class ClockService : IClockService
     {
         try
         {
-            Clock clock = await _clockDao.GetByIdAsync(id);
+            Clock? clock = await _clockDao.GetByIdAsync(id);
+            if (clock == null)
+            {
+                throw new Exception($"Clock with ID {id} not found!");
+            }
             await _clockDao.DeleteAsync(id);
-            _userDao.DeleteClock(id, clock.OwnerId);
         }
         catch (Exception e)
         {

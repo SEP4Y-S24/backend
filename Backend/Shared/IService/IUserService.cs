@@ -1,13 +1,13 @@
 ﻿using Models;
 using Shared.Dtos;
 
-namespace Shared.IServices;
+namespace Shared.IService;
 
 public interface IUserService
 {
     Task<User> CreateAsync(User userToCreate);
     Task<User> Login(LoginRequest loginRequest);
-    Task<User> GetByIdAsync(Guid userId);
+    Task<User?> GetByIdAsync(Guid userId);
     Task UpdateAsync(User user);
     Task DeleteAsync(Guid userId);
     Task<List<Clock>> GetClocksByUser(Guid id);

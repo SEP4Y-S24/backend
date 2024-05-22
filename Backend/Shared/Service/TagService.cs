@@ -1,8 +1,8 @@
 ﻿using Models;
 using Shared.IDAO;
-using Shared.IServices;
+using Shared.IService;
 
-namespace Shared.Services;
+namespace Shared.Service;
 
 public class TagService: ITagService
 {
@@ -73,12 +73,12 @@ public class TagService: ITagService
 
     public async Task addTaskToTagAsync(Guid tagId, Guid todoId)
     {
-        Todo t = await _todoDao.GetByIdAsync(todoId);
+        Todo? t = await _todoDao.GetByIdAsync(todoId);
         if (t == null)
         {
             throw new Exception($"Todo with id {t.Id} does not exist!");
         }
-        Tag tag = await _tagDao.GetByIdAsync(tagId);
+        Tag? tag = await _tagDao.GetByIdAsync(tagId);
         if (tag == null)
         {
             throw new Exception($"Tag with id {tag.Id} does not exist!");

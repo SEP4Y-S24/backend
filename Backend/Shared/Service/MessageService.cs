@@ -1,8 +1,8 @@
 ﻿using Models;
 using Shared.IDAO;
-using Shared.IServices;
+using Shared.IService;
 
-namespace Shared.Services;
+namespace Shared.Service;
 
 public class MessageService : IMessageService
 {

@@ -2,7 +2,7 @@
 using Models;
 using Shared.Dtos;
 
-namespace Shared.IServices;
+namespace Shared.IService;
 
 public interface IClockService
 {

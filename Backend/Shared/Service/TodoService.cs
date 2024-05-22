@@ -1,7 +1,7 @@
 ﻿using Models;
 using Shared.IDAO;
-using Shared.IServices;
-namespace Shared.Services;
+using Shared.IService;
+namespace Shared.Service;
 
 public class TodoService: ITodoService
 {
@@ -101,7 +101,7 @@ public class TodoService: ITodoService
         List<Todo> todos = new List<Todo>();
         foreach (var tag in t)
         {
-            if (tags.Where(ta=>ta.Name.Equals(tag.Name)).Any())
+            if (tags.Any(ta=>ta.Name.Equals(tag.Name)))
             {
                 foreach (var todo in tag.Todos)
                 {

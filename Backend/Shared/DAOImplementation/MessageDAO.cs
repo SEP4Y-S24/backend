@@ -18,19 +18,19 @@ public class MessageDAO : IMessageDao
     {
         try
         {
-            User? user = _context.Set<User>().FirstOrDefault(c => c.Id.Equals(message.SenderId));
+            User? user = await _context.Set<User>().FirstOrDefaultAsync(c => c.Id.Equals(message.SenderId));
             if (user is null)
             {
                 throw new ArgumentNullException("Sender is missing from message!");
             }
             message.Sender = user;
-            User? reciever = _context.Set<User>().FirstOrDefault(c => c.Id.Equals(message.ReceiverId));
+            User? reciever = await _context.Set<User>().FirstOrDefaultAsync(c => c.Id.Equals(message.ReceiverId));
             if (reciever is null)
             {
                 throw new ArgumentNullException("Reciever user is missing from message!");
             }
             message.Reciever = reciever;
-            Clock? clock = _context.Set<Clock>().Include(c=>c.Owner).FirstOrDefault(c => c.Id == message.ClockId);
+            Clock? clock = await _context.Set<Clock>().Include(c=>c.Owner).FirstOrDefaultAsync(c => c.Id == message.ClockId);
             if (clock is null)
             {
                 throw new ArgumentNullException("Recieving clock is missing from message");
@@ -50,14 +50,18 @@ public class MessageDAO : IMessageDao
         }
     }
 
-    public async Task<IEnumerable<Message>> GetAll()
+    public async Task<IEnumerable<Message>> GetAllAsync()
     {
         return await _context.Set<Message>().ToListAsync();
     }
 
     public async Task UpdateAsync(Message message)
     {
-        Message dbEntity = await GetByIdAsync(message.Id);
+        if (message==null || message.Id.Equals(null))
+        {
+            throw new ArgumentException();
+        }
+        Message? dbEntity = await GetByIdAsync(message.Id);
 
         if (dbEntity == null)
         {

@@ -9,66 +9,66 @@ namespace Shared.DAOImplementation;
 
 public class ClockDAO: IClockDAO
 {
-    private readonly ClockContext _alarmContext;
+    private readonly ClockContext _context;
 
     public ClockDAO(ClockContext dbContext)
     {
-        this._alarmContext = dbContext;
+        this._context = dbContext;
     }
 
     public async Task<Clock> CreateAsync(Clock clock)
     {
-        EntityEntry<Clock> added = await _alarmContext.Clocks.AddAsync(clock);
-        await _alarmContext.SaveChangesAsync();
+        EntityEntry<Clock> added = await _context.Clocks.AddAsync(clock);
+        await _context.SaveChangesAsync();
         return added.Entity;
     }
 
-    public async Task<IEnumerable<Clock>> GetAll()
+    public async Task<IEnumerable<Clock>> GetAllAsync()
     {
-        return await _alarmContext.Set<Clock>().ToListAsync();
+        return await _context.Set<Clock>().ToListAsync();
 
     }
 
     public async Task<IEnumerable<Clock>> GetAllByAsync(Expression<Func<Clock, bool>> filter)
     {
-        return await _alarmContext.Set<Clock>().ToListAsync();
+        return await _context.Set<Clock>().ToListAsync();
 
     }
 
     public async Task<Clock> UpdateAsync(Clock clockToUpdate)
     {
-        Clock? existing =  _alarmContext.Clocks.FirstOrDefault(post => post.Id == clockToUpdate.Id);
+        Clock? existing =  await _context.Clocks.FirstOrDefaultAsync(post => post.Id == clockToUpdate.Id);
         if (existing == null)
         {
             throw new Exception($"Clock with id {clockToUpdate.Id} does not exist!");
         }
 
-        _alarmContext.Entry(existing).CurrentValues.SetValues(clockToUpdate);
+        _context.Entry(existing).CurrentValues.SetValues(clockToUpdate);
 
-        _alarmContext.Clocks.Update(existing);
+        _context.Clocks.Update(existing);
 
-        _alarmContext.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return clockToUpdate;
     }
 
-    public Task<Clock?> GetByIdAsync(Guid clockId)
+    public async Task<Clock?> GetByIdAsync(Guid clockId)
     {
         if (clockId.Equals(null))
         {
             throw new ArgumentNullException("Clock's id is null!");
         }
-        Clock? existing = _alarmContext.Clocks.FirstOrDefault(t => t.Id == clockId);
-        return Task.FromResult(existing);
+        Clock? existing = await _context.Clocks.FirstOrDefaultAsync(t => t.Id == clockId);
+        return existing;
     }
-    public Task<long> GetOffsetByIdAsync(Guid clockId)
+    public async Task<long> GetOffsetByIdAsync(Guid clockId)
     {
         if (clockId.Equals(null))
         {
             throw new ArgumentNullException("Clock's id is null!");
         }
-        Clock? existing = _alarmContext.Clocks.FirstOrDefault(t => t.Id == clockId);
-        return Task.FromResult(existing.TimeOffset); ;
+        Clock? existing = await _context.Clocks.FirstOrDefaultAsync(t => t.Id == clockId);
+        return existing.TimeOffset;
     }
     public async Task DeleteAsync(Guid id)
 
@@ -80,9 +80,9 @@ public class ClockDAO: IClockDAO
             throw new ArgumentException("Clock is null!");
         }
 
-        _alarmContext.Remove(entity);
+        _context.Remove(entity);
 
-        await _alarmContext.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
     }
 }

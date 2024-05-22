@@ -8,23 +8,23 @@ namespace TodoServices.DAOImplementation;
 
 public class TagDao: ITagDao
 {
-    private readonly ClockContext context;
+    private readonly ClockContext _context;
     
     public TagDao(ClockContext dbContext)
     {
-        context = dbContext;
+        _context = dbContext;
     }
 
 
     public async Task<Tag> CreateAsync(Tag tag)
     {
-        List<Tag> ta= context.Tags.Where(t => t.Name.Equals(tag.Name)).ToList();
+        List<Tag> ta= await _context.Tags.Where(t => t.Name.Equals(tag.Name)).ToListAsync();
         if(ta.Count>0)
         {
             throw new ArgumentException("Tag already exists");
         }
-        EntityEntry<Tag> added = await context.Tags.AddAsync(tag);
-        await context.SaveChangesAsync();
+        EntityEntry<Tag> added = await _context.Tags.AddAsync(tag);
+        await _context.SaveChangesAsync();
         return added.Entity;
 
     }
@@ -38,23 +38,24 @@ public class TagDao: ITagDao
             throw new ArgumentException();
         }
 
-        context.Entry(dbEntity).CurrentValues.SetValues(tag);
+        _context.Entry(dbEntity).CurrentValues.SetValues(tag);
 
-        context.Tags.Update(dbEntity);
+        _context.Tags.Update(dbEntity);
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
     }
 
-    public Task<Tag?> GetByIdAsync(Guid tagId)
+    public async Task<Tag?> GetByIdAsync(Guid tagId)
     {
         if (tagId.Equals(Guid.Empty))
         {
             throw new ArgumentNullException("The given Tag ID is null");
         }
         
-        Tag? existing = context.Tags.Include(t=>t.Todos).FirstOrDefault(todo => todo.Id == tagId);
-        return Task.FromResult(existing);    }
+        Tag? existing = await _context.Tags.Include(t=>t.Todos).FirstOrDefaultAsync(todo => todo.Id == tagId);
+        return existing;
+    }
 
     public async Task DeleteAsync(Guid tagId)
     {
@@ -65,12 +66,16 @@ public class TagDao: ITagDao
         }
         
         Tag? toDelete = await GetByIdAsync(tagId);
-        context.Tags.Remove(toDelete);
-        await context.SaveChangesAsync();
+        if (toDelete == null)
+        {
+            throw new ArgumentNullException("Tag object is not found in the database");
+        }
+        _context.Tags.Remove(toDelete);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Tag>> GetAllAsync()
     {
-        return await context.Set<Tag>().Include(t=>t.Todos).ToListAsync();
+        return await _context.Set<Tag>().Include(t=>t.Todos).ToListAsync();
     }
 }

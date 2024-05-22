@@ -9,17 +9,17 @@ namespace Shared.DAOImplementation;
 
 public class TodoDao: ITodoDAO
 {
-    private readonly ClockContext context;
+    private readonly ClockContext _context;
     
     public TodoDao(ClockContext dbContext)
     {
-        context = dbContext;
+        _context = dbContext;
     }
     
     public async Task<Todo> CreateAsync(Todo todo)
     {
-        EntityEntry<Todo> added = await context.Todos.AddAsync(todo);
-        await context.SaveChangesAsync();
+        EntityEntry<Todo> added = await _context.Todos.AddAsync(todo);
+        await _context.SaveChangesAsync();
         return added.Entity;
     }
 
@@ -32,11 +32,11 @@ public class TodoDao: ITodoDAO
             throw new ArgumentException();
         }
 
-        context.Entry(dbEntity).CurrentValues.SetValues(todo);
+        _context.Entry(dbEntity).CurrentValues.SetValues(todo);
 
-        context.Todos.Update(dbEntity);
+        _context.Todos.Update(dbEntity);
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateStatusByIdAsync(Guid todoId, Status status)
@@ -48,19 +48,19 @@ public class TodoDao: ITodoDAO
         }
 
         dbEntity.Status = status;
-        context.Todos.Update(dbEntity);
-        await context.SaveChangesAsync();
+        _context.Todos.Update(dbEntity);
+        await _context.SaveChangesAsync();
     }
 
-    public Task<Todo?> GetByIdAsync(Guid todoId)
+    public async Task<Todo?> GetByIdAsync(Guid todoId)
     {
         if (todoId.Equals(Guid.Empty))
         {
             throw new ArgumentNullException("The given Todo ID is null");
         }
         
-        Todo? existing = context.Todos.Include(t=>t.Tags).FirstOrDefault(todo => todo.Id == todoId);
-        return Task.FromResult(existing);
+        Todo? existing = await _context.Todos.Include(t=>t.Tags).FirstOrDefaultAsync(todo => todo.Id == todoId);
+        return existing;
     }
 
     public async Task DeleteAsync(Guid todoId)
@@ -71,18 +71,22 @@ public class TodoDao: ITodoDAO
         }
         
         Todo? toDelete = await GetByIdAsync(todoId);
-        context.Todos.Remove(toDelete);
-        await context.SaveChangesAsync();
+        if (toDelete == null)
+        {
+            throw new ArgumentNullException("Todo object is not found in the database");
+        }
+        _context.Todos.Remove(toDelete);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Todo>> GetAllAsync()
     {
-        return await context.Set<Todo>().Include(t=>t.Tags).ToListAsync();
+        return await _context.Set<Todo>().Include(t=>t.Tags).ToListAsync();
     }
 
     public async Task<IEnumerable<Todo>> GetAllByAsync(Expression<Func<Todo, bool>> filter)
     {
-        return await context.Set<Todo>().Include(t=>t.Tags).Where(filter).ToListAsync();
+        return await _context.Set<Todo>().Include(t=>t.Tags).Where(filter).ToListAsync();
     }
     
 }

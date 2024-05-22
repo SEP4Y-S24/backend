@@ -8,11 +8,11 @@ namespace Shared.DAOImplementation;
 
 public class AlarmDAO: IAlarmDAO
 {
-    private readonly ClockContext _alarmContext;
+    private readonly ClockContext _context;
 
     public AlarmDAO(ClockContext dbContext)
     {
-        _alarmContext = dbContext;
+        _context = dbContext;
     }
 
     public async Task<Alarm> CreateAsync(Alarm alarm)
@@ -24,8 +24,8 @@ public class AlarmDAO: IAlarmDAO
                 throw new ArgumentNullException($"The given Alarm object {alarm} is null");
             }
 
-            await _alarmContext.Alarms.AddAsync(alarm);
-            await _alarmContext.SaveChangesAsync();
+            await _context.Alarms.AddAsync(alarm);
+            await _context.SaveChangesAsync();
             return alarm;
         }
         catch (Exception e)
@@ -36,26 +36,30 @@ public class AlarmDAO: IAlarmDAO
     }
     public async Task<IEnumerable<Alarm>> GetAllByAsync(Expression<Func<Alarm, bool>> filter)
     {
-        return await _alarmContext.Set<Alarm>().Where(filter).ToListAsync();
+        return await _context.Set<Alarm>().Where(filter).ToListAsync();
     }
 
     public async Task<IEnumerable<Alarm>> GetAllAsync()
     {
-        return await _alarmContext.Set<Alarm>().ToListAsync();
+        return await _context.Set<Alarm>().ToListAsync();
     }
 
     public async Task UpdateAsync(Alarm alarm)
     {
-        Alarm? dbEntity = await GetByIdAsync(alarm.Id);
-
-        if (alarm==null)
-        {
+       if (alarm==null)
+       {
             throw new ArgumentNullException("Alarm object is not found in the database");
-        }
-        _alarmContext.Alarms.Entry(dbEntity).CurrentValues.SetValues(alarm);
+       }
+       Alarm? dbEntity = await GetByIdAsync(alarm.Id);
+       if (dbEntity == null)
+       {
+           throw new ArgumentNullException("Alarm object is not found in the database");
+       }
+ 
+       _context.Alarms.Entry(dbEntity).CurrentValues.SetValues(alarm);
 
-        _alarmContext.Update(dbEntity);
-        await _alarmContext.SaveChangesAsync();
+       _context.Update(dbEntity);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Alarm?> GetByIdAsync(Guid alarmId)
@@ -65,19 +69,23 @@ public class AlarmDAO: IAlarmDAO
             throw new ArgumentNullException("The given Alarm Id is null");
         }
         
-        Alarm? existing = await _alarmContext.Alarms.FirstOrDefaultAsync(alarm => alarm.Id == alarmId);
+        Alarm? existing = await _context.Alarms.FirstOrDefaultAsync(alarm => alarm.Id == alarmId);
         return existing;
     }
 
     public async Task DeleteAsync(Guid alarmId)
     {
-        if (alarmId==null)
+        if (alarmId.Equals(null))
         {
             throw new ArgumentNullException("Alarm Id is null");
         }
 
         Alarm? toDelete = await GetByIdAsync(alarmId);
-        _alarmContext.Alarms.Remove(toDelete);
-        await _alarmContext.SaveChangesAsync();
+        if(toDelete == null)
+        {
+            throw new ArgumentNullException("Alarm object is not found in the database");
+        }
+        _context.Alarms.Remove(toDelete);
+        await _context.SaveChangesAsync();
     }
 }

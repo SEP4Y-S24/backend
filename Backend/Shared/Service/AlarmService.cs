@@ -72,6 +72,8 @@ public class AlarmService: IAlarmService
         try
         {
             Alarm? alarm = await _alarmDao.GetByIdAsync(alarmId);
+            if (alarm == null)
+                throw new Exception($"Alarm with ID {alarmId} not found!");
             alarm.IsActive = true;
             await _alarmDao.UpdateAsync(alarm);
         }
@@ -87,6 +89,8 @@ public class AlarmService: IAlarmService
         try
         {
             Alarm? alarm = await _alarmDao.GetByIdAsync(alarmId);
+            if (alarm == null)
+                throw new Exception($"Alarm with ID {alarmId} not found!");
             alarm.IsActive = false;
             alarm.IsSnoozed = false;
             await _alarmDao.UpdateAsync(alarm);
@@ -130,6 +134,10 @@ public class AlarmService: IAlarmService
         if (existing == null)
         {
             throw new Exception($"Alarm with ID {alarmId} not found!");
+        }
+        if(state.Equals(null))
+        {
+            throw new Exception("The given state is not valid");
         }
         existing.IsActive = state.Value;
         await _alarmDao.UpdateAsync(existing);

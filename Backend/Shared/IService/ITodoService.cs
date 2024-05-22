@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace Shared.IServices;
+namespace Shared.IService;
 
 public interface ITodoService
 {
