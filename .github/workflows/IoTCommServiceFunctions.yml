@@ -45,4 +45,4 @@ jobs:
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_IOTCOMM_SERVICE }}
       - name: Trigger Durable Function
         run: |
-          curl -X POST "https://<your-function-app>.azurewebsites.net/api/orchestrators/<orchestration-function-name>"
+          curl -X POST "https://sep4-iotcomm.azurewebsites.net/api/orchestrators/ConnectToDevice"
