@@ -1,16 +1,17 @@
-﻿using ClockServices.Context;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using TodoServices.DAOImplementation;
-using TodoServices.IDAO;
-using TodoServices.Model;
+using Models;
+using Shared.Context;
+using Shared.DAOImplementation;
+using Shared.IDAO;
 
 namespace N_Unit_Services;
 
 public class TodoServicesTest
 {
-    private ITodoDao _todoDao;
-    private ToDoContext _context;
+    private ITodoDAO _todoDao;
+    private ClockContext _context;
     private IConfiguration _configuration;
     
     [SetUp]
@@ -30,20 +31,20 @@ public class TodoServicesTest
         }
 
         // Ensure _todoDAO is initialized properly
-        _todoDao = new TodoDAO(_context);
+        _todoDao = new TodoDao(_context);
         if (_todoDao == null)
         {
             throw new Exception("_todoDAO is null");
         }
     }
-    private ToDoContext CreateTestContext()
+    private ClockContext CreateTestContext()
     {
         // Retrieve the connection string from configuration
         var connectionString = _configuration.GetConnectionString("Database");
-        var options = new DbContextOptionsBuilder<ToDoContext>()
+        var options = new DbContextOptionsBuilder<ClockContext>()
             .UseNpgsql(connectionString)
             .Options;
-        return new ToDoContext(options);
+        return new ClockContext(options);
     }
     [Test]
     public async Task CreateAsync_ValidTodo_ReturnsAddedTodo()
@@ -51,7 +52,7 @@ public class TodoServicesTest
         // Arrange
         using (var context = CreateTestContext())
         {
-            var dao = new TodoDAO(context);
+            var dao = new TodoDao(context);
             var user = new User
             {
                 Id = Guid.NewGuid(),
