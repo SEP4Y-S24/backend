@@ -1,4 +1,4 @@
-﻿name: Deploy Alarm Service to Azure Function App
+﻿name: Deploy IoTComm Service to Azure Function App
 
 on:
   push:

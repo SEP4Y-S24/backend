@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{C6FF1065-E3D2-4855-9561-8E51347F3916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIoTComm", "AIoTComm\AIoTComm.csproj", "{7E0384B3-AF5D-47C2-87B5-DCA2BADE03B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIoTCommService", "AIoTCommService\AIoTCommService.csproj", "{7E0384B3-AF5D-47C2-87B5-DCA2BADE03B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
