@@ -28,14 +28,14 @@ namespace AUserService.Functions
 
         [Function("GetAllClocks")]
         public async Task<IActionResult> GetAllClocks(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/clocks/{clockId}")]
-            HttpRequest req, Guid clockId)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{userId}/clocks")]
+            HttpRequest req, Guid userId)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 var userService = ServiceFactory.GetUserService();
-                IEnumerable<Clock> clocks = await userService.GetClocksByUser(clockId);
+                IEnumerable<Clock> clocks = await userService.GetClocksByUser(userId);
                 if (clocks is null)
                 {
                     throw new ArgumentNullException("No available clocks!");
@@ -46,7 +46,8 @@ namespace AUserService.Functions
                 {
                     ClockDTO clockDto = new ClockDTO()
                     {
-                        UserId = clock.Id,
+                        UserId = clock.OwnerId,
+                        TimeOffset = clock.TimeOffset,
                         Name = clock.Name,
                         Id = clock.Id
                     };
@@ -83,7 +84,7 @@ namespace AUserService.Functions
                 {
                     throw new ArgumentNullException("No correct activity!");
                 }
-
+ 
                 MessagesResponse response = new MessagesResponse();
                 response.Messages = new List<SendMessageRequest>();
                 List<Message> ms = new List<Message>();
@@ -140,7 +141,7 @@ namespace AUserService.Functions
                 var jwtUtils = ServiceFactory.GetJwtUtils();
 
                 string token = jwtUtils.GenerateJwtToken(createdUSer);
-
+ 
                 UserDto userDto = new UserDto()
                 {
                     UserId = createdUSer.Id,
