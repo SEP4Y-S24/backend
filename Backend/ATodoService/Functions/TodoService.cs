@@ -28,12 +28,12 @@ namespace ATodoService.Functions
 
         [Function("GetAllTodos")]
         public async Task<IActionResult> GetAllTodos(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req,
-            Guid userId)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req, Guid userId)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var todoService = ServiceFactory.GetTodoService();
             IEnumerable<Todo> todos = await todoService.GetAllByUserIdAsync(userId);
+
             TodosDto todosDto = new TodosDto();
             todosDto.Todos = new List<TodoDto>();
 
@@ -41,16 +41,17 @@ namespace ATodoService.Functions
             {
                 TodoDto todoDto = new TodoDto()
                 {
-                    Name = "Hello azure!",
-                    Description = "asdas",
-                    Deadline = DateTime.UtcNow.AddDays(7),
-                    Status = Status.Started,
-                    UserId = userId
+                    Name = todo.Name,  // Mapping the existing properties
+                    Description = todo.Description,
+                    Deadline = todo.Deadline,
+                    Status = todo.Status,
+                    UserId = todo.UserId
                 };
                 todosDto.Todos.Add(todoDto);
             }
             return new OkObjectResult(todosDto);
         }
+
 
         [Function("CreateTodo")]
         public async Task<IActionResult> CreateAlarm(
