@@ -27,7 +27,7 @@ public class ClockContext: DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Todo> Todos { get; set; }
     public DbSet<Tag> Tags { get; set; }
-
+    public DbSet<Measurement> Measurements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,6 +76,7 @@ public class ClockContext: DbContext
                 Description = "hello description",
                 Status = Status.InProgress
             });
+        
         base.OnModelCreating(modelBuilder);
     }
 }
