@@ -20,12 +20,14 @@ public static class ServiceFactory
     private static IAlarmDAO _alarmDao = null;
     private static ITodoDAO _todoDao = null;
     private static ITagDao _tagDao = null;
+    private static IMeasurementDAO _measurementDao = null;
     private static IAlarmService _alarmService = null;
     private static IMessageService _messageService = null;
     private static IUserService _userService = null;
     private static IClockService _clockService = null;
     private static ITodoService _todoService = null;
     public static ITagService _tagService = null;
+    public static IMeasurementService _measurementService = null;
     public static IJwtUtils _JwtUtils = null;
 
     public static ClockContext GetContext()
@@ -57,6 +59,14 @@ public static class ServiceFactory
 
         return _userDao;
     }
+    public static IMeasurementDAO GetMeasurementDao()
+    {
+        if (_measurementDao == null)
+            _measurementDao = new MeasurementDAO(GetContext());
+
+        return _measurementDao;
+    }
+
     public static IJwtUtils GetJwtUtils()
     {
         if (_JwtUtils == null)
@@ -92,6 +102,13 @@ public static class ServiceFactory
             _userService = new UserService(GetUserDao(), GetClockDAO(), GetTodoDAO());
 
         return _userService;
+    }
+    public static IMeasurementService GetMeasurementService()
+    {
+        if (_measurementService == null)
+            _measurementService = new MeasurementService( GetClockDAO(),GetMeasurementDao());
+
+        return _measurementService;
     }
     public static IMessageService GetMessageService()
     {
