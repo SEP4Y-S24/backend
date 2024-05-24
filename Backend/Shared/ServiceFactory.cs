@@ -19,14 +19,14 @@ public static class ServiceFactory
     private static IClockDAO _clockDao = null;
     private static IAlarmDAO _alarmDao = null;
     private static ITodoDAO _todoDao = null;
-    private static ICategoryDao _categoryDao = null;
+    private static ITagDao _tagDao = null;
     private static IMeasurementDAO _measurementDao = null;
     private static IAlarmService _alarmService = null;
     private static IMessageService _messageService = null;
     private static IUserService _userService = null;
     private static IClockService _clockService = null;
     private static ITodoService _todoService = null;
-    public static ICategoryervice Categoryervice = null;
+    public static ITagService TagService = null;
     public static IMeasurementService _measurementService = null;
     public static IJwtUtils _JwtUtils = null;
 
@@ -142,22 +142,22 @@ public static class ServiceFactory
         return _todoService;
     }
 
-    public static ICategoryervice GetTagService()
+    public static ITagService GetTagService()
     {
-        if (Categoryervice == null)
+        if (TagService == null)
         {
-            Categoryervice = new CategoryService(GetTodoDAO(), GetTagDAO());
+            TagService = new TagService(GetTodoDAO(), GetTagDAO());
         }
-        return Categoryervice;
+        return TagService;
     }
 
-    public static ICategoryDao GetTagDAO()
+    public static ITagDao GetTagDAO()
     {
-        if (_categoryDao == null)
+        if (_tagDao == null)
         {
-            _categoryDao = new CategoryDao(GetContext());
+            _tagDao = new TagDao(GetContext());
         }
-        return _categoryDao;
+        return _tagDao;
     }
 
     public static ITodoDAO GetTodoDAO()

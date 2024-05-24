@@ -6,11 +6,11 @@ using Shared.IDAO;
 
 namespace TodoServices.DAOImplementation;
 
-public class CategoryDao: ICategoryDao
+public class TagDao: ITagDao
 {
     private readonly ClockContext _context;
     
-    public CategoryDao(ClockContext dbContext)
+    public TagDao(ClockContext dbContext)
     {
         _context = dbContext;
     }

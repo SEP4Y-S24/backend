@@ -8,4 +8,5 @@ public class Tag
     [System.ComponentModel.DataAnnotations.Schema.Index(IsUnique=true)]
     public string Name { get; set; }
     public ICollection<Todo> Todos { get; set; }
+    public ICollection<Event> Events { get; set; }
 }
