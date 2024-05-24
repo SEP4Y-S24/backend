@@ -2,7 +2,7 @@
 
 namespace Models;
 
-public class Category
+public class Tag
 {
     public Guid Id { get; set; }
     [System.ComponentModel.DataAnnotations.Schema.Index(IsUnique=true)]

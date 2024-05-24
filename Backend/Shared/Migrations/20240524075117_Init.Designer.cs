@@ -12,8 +12,8 @@ using Shared.Context;
 namespace Shared.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    [Migration("20240523103855_AddMeasurement")]
-    partial class AddMeasurement
+    [Migration("20240524075117_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,38 @@ namespace Shared.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Models.Event", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("Models.Measurement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -159,11 +191,16 @@ namespace Shared.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Tags");
                 });
@@ -200,7 +237,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 5, 30, 10, 38, 54, 974, DateTimeKind.Utc).AddTicks(8894),
+                            Deadline = new DateTime(2024, 5, 31, 7, 51, 16, 968, DateTimeKind.Utc).AddTicks(3543),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -270,6 +307,17 @@ namespace Shared.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Models.Event", b =>
+                {
+                    b.HasOne("Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Models.Measurement", b =>
                 {
                     b.HasOne("Models.Clock", "Clock")
@@ -308,6 +356,13 @@ namespace Shared.Migrations
                     b.Navigation("Sender");
                 });
 
+            modelBuilder.Entity("Models.Tag", b =>
+                {
+                    b.HasOne("Models.Event", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("EventId");
+                });
+
             modelBuilder.Entity("Models.Todo", b =>
                 {
                     b.HasOne("Models.User", "User")
@@ -339,6 +394,11 @@ namespace Shared.Migrations
                     b.Navigation("Measurements");
 
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Models.Event", b =>
+                {
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("Models.User", b =>

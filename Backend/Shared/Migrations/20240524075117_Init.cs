@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shared.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,25 +18,13 @@ namespace Shared.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ClockId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SetOffTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SetOffTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     IsSnoozed = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Alarms", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,6 +63,29 @@ namespace Shared.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Events",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Events_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Todos",
                 columns: table => new
                 {
@@ -92,6 +103,27 @@ namespace Shared.Migrations
                         name: "FK_Todos_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Measurements",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    TimeOfReading = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Value = table.Column<double>(type: "double precision", nullable: false),
+                    ClockId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Measurements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Measurements_Clocks_ClockId",
+                        column: x => x.ClockId,
+                        principalTable: "Clocks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -131,6 +163,24 @@ namespace Shared.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    EventId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tags_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TagTodo",
                 columns: table => new
                 {
@@ -143,7 +193,7 @@ namespace Shared.Migrations
                     table.ForeignKey(
                         name: "FK_TagTodo_Tags_TagsId",
                         column: x => x.TagsId,
-                        principalTable: "Categories",
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -157,7 +207,7 @@ namespace Shared.Migrations
             migrationBuilder.InsertData(
                 table: "Alarms",
                 columns: new[] { "Id", "ClockId", "IsActive", "IsSnoozed", "Name", "SetOffTime" },
-                values: new object[] { new Guid("ac96066e-c7da-4b53-9203-d1bf4b5a88b9"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, "Default alarm", new DateTime(2024, 5, 21, 12, 32, 31, 836, DateTimeKind.Utc).AddTicks(4785) });
+                values: new object[] { new Guid("ac96066e-c7da-4b53-9203-d1bf4b5a88b9"), new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), true, false, "Default alarm", new TimeOnly(1, 20, 0) });
 
             migrationBuilder.InsertData(
                 table: "Users",
@@ -172,12 +222,22 @@ namespace Shared.Migrations
             migrationBuilder.InsertData(
                 table: "Todos",
                 columns: new[] { "Id", "Deadline", "Description", "Name", "Status", "UserId" },
-                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 28, 11, 32, 31, 836, DateTimeKind.Utc).AddTicks(4802), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
+                values: new object[] { new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"), new DateTime(2024, 5, 31, 7, 51, 16, 968, DateTimeKind.Utc).AddTicks(3543), "hello description", "Hello", 1, new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clocks_OwnerId",
                 table: "Clocks",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_UserId",
+                table: "Events",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Measurements_ClockId",
+                table: "Measurements",
+                column: "ClockId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ClockId",
@@ -193,6 +253,11 @@ namespace Shared.Migrations
                 name: "IX_Messages_SenderId",
                 table: "Messages",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_EventId",
+                table: "Tags",
+                column: "EventId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TagTodo_TodosId",
@@ -212,6 +277,9 @@ namespace Shared.Migrations
                 name: "Alarms");
 
             migrationBuilder.DropTable(
+                name: "Measurements");
+
+            migrationBuilder.DropTable(
                 name: "Messages");
 
             migrationBuilder.DropTable(
@@ -221,10 +289,13 @@ namespace Shared.Migrations
                 name: "Clocks");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Todos");
+
+            migrationBuilder.DropTable(
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "Users");

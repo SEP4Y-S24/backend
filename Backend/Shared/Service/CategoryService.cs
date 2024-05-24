@@ -15,17 +15,17 @@ public class CategoryService: ICategoryervice
         _categoryDao = categoryDao;
     }
 
-    public async Task<Category> CreateAsync(Category category)
+    public async Task<Tag> CreateAsync(Tag tag)
     {
-        Category created = await _categoryDao.CreateAsync(category);
+        Tag created = await _categoryDao.CreateAsync(tag);
         return created;
     }
 
-    public async Task UpdateAsync(Category category)
+    public async Task UpdateAsync(Tag tag)
     {
         try
         {
-            await _categoryDao.UpdateAsync(category);
+            await _categoryDao.UpdateAsync(tag);
         }
         catch (Exception e)
         {
@@ -34,7 +34,7 @@ public class CategoryService: ICategoryervice
         }
     }
 
-    public async Task<Category?> GetByIdAsync(Guid tagId)
+    public async Task<Tag?> GetByIdAsync(Guid tagId)
     {
         try
         {
@@ -59,7 +59,7 @@ public class CategoryService: ICategoryervice
         }    
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<IEnumerable<Tag>> GetAllAsync()
     {
         try
         {
@@ -78,7 +78,7 @@ public class CategoryService: ICategoryervice
         {
             throw new Exception($"Todo with id {t.Id} does not exist!");
         }
-        Category? tag = await _categoryDao.GetByIdAsync(tagId);
+        Tag? tag = await _categoryDao.GetByIdAsync(tagId);
         if (tag == null)
         {
             throw new Exception($"Tag with id {tag.Id} does not exist!");

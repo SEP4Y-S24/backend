@@ -4,10 +4,10 @@ namespace Shared.IService;
 
 public interface ICategoryervice
 {
-    Task<Category> CreateAsync(Category category);
-    Task UpdateAsync(Category category);
-    Task<Category?> GetByIdAsync(Guid tagId);
+    Task<Tag> CreateAsync(Tag tag);
+    Task UpdateAsync(Tag tag);
+    Task<Tag?> GetByIdAsync(Guid tagId);
     Task DeleteAsync(Guid tagId);
-    Task<IEnumerable<Category>> GetAllAsync();
+    Task<IEnumerable<Tag>> GetAllAsync();
     Task addTaskToTagAsync(Guid tagId, Guid taskId);
 }

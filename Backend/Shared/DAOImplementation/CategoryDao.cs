@@ -16,29 +16,29 @@ public class CategoryDao: ICategoryDao
     }
 
 
-    public async Task<Category> CreateAsync(Category category)
+    public async Task<Tag> CreateAsync(Tag tag)
     {
-        List<Category> ta= await _context.Tags.Where(t => t.Name.Equals(category.Name)).ToListAsync();
+        List<Tag> ta= await _context.Tags.Where(t => t.Name.Equals(tag.Name)).ToListAsync();
         if(ta.Count>0)
         {
             throw new ArgumentException("Tag already exists");
         }
-        EntityEntry<Category> added = await _context.Tags.AddAsync(category);
+        EntityEntry<Tag> added = await _context.Tags.AddAsync(tag);
         await _context.SaveChangesAsync();
         return added.Entity;
 
     }
 
-    public async Task UpdateAsync(Category category)
+    public async Task UpdateAsync(Tag tag)
     {
-        Category? dbEntity = await GetByIdAsync(category.Id);
+        Tag? dbEntity = await GetByIdAsync(tag.Id);
 
         if (dbEntity == null)
         {
             throw new ArgumentException();
         }
 
-        _context.Entry(dbEntity).CurrentValues.SetValues(category);
+        _context.Entry(dbEntity).CurrentValues.SetValues(tag);
 
         _context.Tags.Update(dbEntity);
 
@@ -46,14 +46,14 @@ public class CategoryDao: ICategoryDao
 
     }
 
-    public async Task<Category?> GetByIdAsync(Guid tagId)
+    public async Task<Tag?> GetByIdAsync(Guid tagId)
     {
         if (tagId.Equals(Guid.Empty))
         {
             throw new ArgumentNullException("The given Tag ID is null");
         }
         
-        Category? existing = await _context.Tags.Include(t=>t.Todos).FirstOrDefaultAsync(todo => todo.Id == tagId);
+        Tag? existing = await _context.Tags.Include(t=>t.Todos).FirstOrDefaultAsync(todo => todo.Id == tagId);
         return existing;
     }
 
@@ -65,7 +65,7 @@ public class CategoryDao: ICategoryDao
             throw new ArgumentNullException("Tag ID is null");
         }
         
-        Category? toDelete = await GetByIdAsync(tagId);
+        Tag? toDelete = await GetByIdAsync(tagId);
         if (toDelete == null)
         {
             throw new ArgumentNullException("Tag object is not found in the database");
@@ -74,8 +74,8 @@ public class CategoryDao: ICategoryDao
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<IEnumerable<Tag>> GetAllAsync()
     {
-        return await _context.Set<Category>().Include(t=>t.Todos).ToListAsync();
+        return await _context.Set<Tag>().Include(t=>t.Todos).ToListAsync();
     }
 }

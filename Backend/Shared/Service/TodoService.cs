@@ -108,9 +108,9 @@ public class TodoService: ITodoService
         }
     }
 
-    public async Task<IEnumerable<Todo>> FilterByTags(List<Category> tags, Guid userId)
+    public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags, Guid userId)
     {
-        IEnumerable<Category> t = await _categoryDao.GetAllAsync();
+        IEnumerable<Tag> t = await _categoryDao.GetAllAsync();
         List<Todo> todos = new List<Todo>();
         foreach (var tag in t)
         {
