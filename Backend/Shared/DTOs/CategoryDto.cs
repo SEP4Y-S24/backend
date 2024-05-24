@@ -1,6 +1,6 @@
 ﻿namespace Shared.dtos;
 
-public class TagDto
+public class CategoryDto
 {
     public string Name { get; set; }
 }

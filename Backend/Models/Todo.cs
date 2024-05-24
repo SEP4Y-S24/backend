@@ -15,7 +15,7 @@ public class Todo
     [ForeignKey("user_Id")]
     public Guid UserId { get; set; }
     public User User { get; set; }
-    public ICollection<Tag> Tags { get; set; }
+    public ICollection<Category> Tags { get; set; }
 
     public Todo(Guid userId, string name, string? description, DateTime deadline, Status status)
     {

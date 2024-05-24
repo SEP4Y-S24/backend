@@ -26,7 +26,7 @@ public class ClockContext: DbContext
     public DbSet<Alarm> Alarms { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Todo> Todos { get; set; }
-    public DbSet<Tag> Tags { get; set; }
+    public DbSet<Category> Tags { get; set; }
     public DbSet<Measurement> Measurements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

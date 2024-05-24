@@ -162,7 +162,7 @@ namespace Shared.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Models.Todo", b =>

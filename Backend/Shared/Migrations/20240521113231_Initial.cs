@@ -28,7 +28,7 @@ namespace Shared.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -143,7 +143,7 @@ namespace Shared.Migrations
                     table.ForeignKey(
                         name: "FK_TagTodo_Tags_TagsId",
                         column: x => x.TagsId,
-                        principalTable: "Tags",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -221,7 +221,7 @@ namespace Shared.Migrations
                 name: "Clocks");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Todos");

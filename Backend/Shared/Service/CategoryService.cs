@@ -4,28 +4,28 @@ using Shared.IService;
 
 namespace Shared.Service;
 
-public class TagService: ITagService
+public class CategoryService: ICategoryervice
 {
     private readonly ITodoDAO _todoDao;
-    private readonly ITagDao _tagDao;
+    private readonly ICategoryDao _categoryDao;
 
-    public TagService(ITodoDAO todoDao, ITagDao tagDao)
+    public CategoryService(ITodoDAO todoDao, ICategoryDao categoryDao)
     {
         _todoDao = todoDao;
-        _tagDao = tagDao;
+        _categoryDao = categoryDao;
     }
 
-    public async Task<Tag> CreateAsync(Tag tag)
+    public async Task<Category> CreateAsync(Category category)
     {
-        Tag created = await _tagDao.CreateAsync(tag);
+        Category created = await _categoryDao.CreateAsync(category);
         return created;
     }
 
-    public async Task UpdateAsync(Tag tag)
+    public async Task UpdateAsync(Category category)
     {
         try
         {
-            await _tagDao.UpdateAsync(tag);
+            await _categoryDao.UpdateAsync(category);
         }
         catch (Exception e)
         {
@@ -34,11 +34,11 @@ public class TagService: ITagService
         }
     }
 
-    public async Task<Tag?> GetByIdAsync(Guid tagId)
+    public async Task<Category?> GetByIdAsync(Guid tagId)
     {
         try
         {
-            return await _tagDao.GetByIdAsync(tagId);
+            return await _categoryDao.GetByIdAsync(tagId);
         }
         catch (Exception e)
         {
@@ -50,7 +50,7 @@ public class TagService: ITagService
     {
         try
         {
-            await _tagDao.DeleteAsync(tagId);
+            await _categoryDao.DeleteAsync(tagId);
         }
         catch (Exception e)
         {
@@ -59,11 +59,11 @@ public class TagService: ITagService
         }    
     }
 
-    public async Task<IEnumerable<Tag>> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
         try
         {
-            return await _tagDao.GetAllAsync();
+            return await _categoryDao.GetAllAsync();
         }
         catch (Exception e)
         {
@@ -78,7 +78,7 @@ public class TagService: ITagService
         {
             throw new Exception($"Todo with id {t.Id} does not exist!");
         }
-        Tag? tag = await _tagDao.GetByIdAsync(tagId);
+        Category? tag = await _categoryDao.GetByIdAsync(tagId);
         if (tag == null)
         {
             throw new Exception($"Tag with id {tag.Id} does not exist!");
@@ -86,6 +86,6 @@ public class TagService: ITagService
         t.Tags.Add(tag);
         await _todoDao.UpdateAsync(t);
         tag.Todos.Add(t);
-        await _tagDao.UpdateAsync(tag);
+        await _categoryDao.UpdateAsync(tag);
     }
 }

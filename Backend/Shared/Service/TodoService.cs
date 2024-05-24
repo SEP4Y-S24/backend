@@ -7,13 +7,13 @@ public class TodoService: ITodoService
 {
     private readonly ITodoDAO _todoDao;
     private readonly IUserDAO _userDao;
-    private readonly ITagDao _tagDao;
+    private readonly ICategoryDao _categoryDao;
 
-    public TodoService(ITodoDAO todoDao, IUserDAO userDao, ITagDao tagDao)
+    public TodoService(ITodoDAO todoDao, IUserDAO userDao, ICategoryDao categoryDao)
     {
         _todoDao = todoDao;
         _userDao = userDao;
-        _tagDao = tagDao;
+        _categoryDao = categoryDao;
     }
 
     public async Task<Todo> CreateAsync(Todo todoToCreate)
@@ -108,9 +108,9 @@ public class TodoService: ITodoService
         }
     }
 
-    public async Task<IEnumerable<Todo>> FilterByTags(List<Tag> tags, Guid userId)
+    public async Task<IEnumerable<Todo>> FilterByTags(List<Category> tags, Guid userId)
     {
-        IEnumerable<Tag> t = await _tagDao.GetAllAsync();
+        IEnumerable<Category> t = await _categoryDao.GetAllAsync();
         List<Todo> todos = new List<Todo>();
         foreach (var tag in t)
         {
