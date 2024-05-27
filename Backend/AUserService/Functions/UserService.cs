@@ -94,7 +94,7 @@ namespace AUserService.Functions
                 }
 
                 MessagesResponse response = new MessagesResponse();
-                response.Messages = new List<SendMessageRequest>();
+                response.Messages = new List<MessageResponseDTO>();
                 List<Message> ms = new List<Message>();
                 if (activity.ToLower().Equals("sent"))
                 {
@@ -108,12 +108,16 @@ namespace AUserService.Functions
 
                 foreach (var message in ms)
                 {
-                    SendMessageRequest m = new SendMessageRequest()
+                    MessageResponseDTO m = new MessageResponseDTO
                     {
                         userId = user.Id,
                         receiverId = message.ReceiverId,
                         message = message.Body,
-                        clockId = message.ClockId
+                        clockId = message.ClockId,
+                        senderEmail = message.Sender.Email,
+                        senderAvatarId = message.Sender.AvatarId,
+                        receiverEmail = message.Reciever.Email,
+                        receiverAvatarId = message.Reciever.AvatarId
                     };
                     response.Messages.Add(m);
                 }
