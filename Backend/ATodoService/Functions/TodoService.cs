@@ -151,5 +151,18 @@ namespace ATodoService.Functions
             await todoService.UpdateStatusByIdAsync(id, statusUpdateDto.Status);
             return new OkResult();
         }
+
+        [Function("AddTagToTask")]
+        public async Task<IActionResult> AddTagToTask([HttpTrigger(AuthorizationLevel.Function, "patch", 
+            Route = "todo/tag/{id}")] HttpRequest req, Guid id)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            
+            AddTagDTO addTagDTO = JsonConvert.DeserializeObject<AddTagDTO>(requestBody);
+            var tagService = ServiceFactory.GetTagService();
+            await tagService.addTaskToTagAsync(addTagDTO.Tag.Id, id);
+            return new OkResult();
+        }
     }
 }
