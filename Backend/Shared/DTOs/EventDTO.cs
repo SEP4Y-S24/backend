@@ -1,4 +1,5 @@
 ﻿using Models;
+using Shared.dtos;
 
 namespace Shared.DTOs;
 
@@ -10,6 +11,7 @@ public class EventDTO
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
     public Status Status { get; set; }
+    public List<TagDto> tags { get; set; }
     public Guid UserId { get; set; }
 
 }
