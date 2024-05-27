@@ -141,7 +141,7 @@ namespace ATodoService.Functions
 
         [Function("UpdateTodoStatus")]
         public async Task<IActionResult> UpdateTodoStatus(
-            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "todo/{id}/status")] HttpRequest req, Guid id)
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "todo/tag/{id}/status")] HttpRequest req, Guid id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

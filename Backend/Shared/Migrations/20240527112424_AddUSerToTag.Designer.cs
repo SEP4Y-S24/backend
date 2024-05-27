@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Context;
@@ -11,9 +12,11 @@ using Shared.Context;
 namespace Shared.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240527112424_AddUSerToTag")]
+    partial class AddUSerToTag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,12 +239,7 @@ namespace Shared.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
@@ -278,7 +276,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 6, 3, 7, 6, 5, 900, DateTimeKind.Utc).AddTicks(8967),
+                            Deadline = new DateTime(2024, 6, 3, 11, 24, 24, 621, DateTimeKind.Utc).AddTicks(7143),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -431,17 +429,6 @@ namespace Shared.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Models.Tag", b =>
-                {
-                    b.HasOne("Models.User", "Owner")
-                        .WithMany("Tags")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("Models.Todo", b =>
                 {
                     b.HasOne("Models.User", "User")
@@ -484,9 +471,8 @@ namespace Shared.Migrations
                     b.Navigation("MessagesRecieved");
 
                     b.Navigation("MessagesSent");
-                    b.Navigation("Requester");
 
-                    b.Navigation("Tags");
+                    b.Navigation("Requester");
 
                     b.Navigation("Todos");
                 });

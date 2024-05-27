@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Context;
@@ -11,9 +12,11 @@ using Shared.Context;
 namespace Shared.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240527112602_AddUserToTag1")]
+    partial class AddUserToTag1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,7 +281,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 6, 3, 7, 6, 5, 900, DateTimeKind.Utc).AddTicks(8967),
+                            Deadline = new DateTime(2024, 6, 3, 11, 26, 2, 417, DateTimeKind.Utc).AddTicks(2670),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -484,6 +487,7 @@ namespace Shared.Migrations
                     b.Navigation("MessagesRecieved");
 
                     b.Navigation("MessagesSent");
+
                     b.Navigation("Requester");
 
                     b.Navigation("Tags");

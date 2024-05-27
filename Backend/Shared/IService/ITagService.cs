@@ -10,4 +10,6 @@ public interface ITagService
     Task DeleteAsync(Guid tagId);
     Task<IEnumerable<Tag>> GetAllAsync();
     Task addTaskToTagAsync(Guid tagId, Guid taskId);
+    Task<IEnumerable<Tag>> GetAllByUserIdAsync(Guid userId);
+
 }

@@ -18,5 +18,6 @@ public class User
     public virtual ICollection<Contact> Addressee { get; set; }
     public ICollection<Clock?> Clocks { get; set; }
     public ICollection<Todo?> Todos { get; set; }
+    public ICollection<Tag?> Tags { get; set; }
 
 }

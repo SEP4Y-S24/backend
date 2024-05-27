@@ -26,9 +26,9 @@ namespace AEventService.Functions
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-         [Function("GetAllEvents")]
+        [Function("GetAllEvents")]
         public async Task<IActionResult> GetAllEvents(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/users/{userId}")] HttpRequest req, Guid userId)
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/users/{userId}")] HttpRequest req, Guid userId)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var eventService = ServiceFactory.GetEventService();
@@ -41,6 +41,7 @@ namespace AEventService.Functions
             {
                 EventDTO todoDto = new EventDTO()
                 {
+                    Id = ev.Id,
                     Name = ev.Name,  // Mapping the existing properties
                     Description = ev.Description,
                     Start = ev.StartDate,
@@ -58,36 +59,54 @@ namespace AEventService.Functions
         public async Task<IActionResult> CreateEvent(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "events")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            CreateEventDto ev = JsonConvert.DeserializeObject<CreateEventDto>(requestBody);
-            var eventService = ServiceFactory.GetEventService();
-            Event eventToCreate = new Event
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = ev.Name,
-                Description = ev.Description,
-                StartDate = ev.Start,
-                EndDate = ev.End,
-                Status = ev.Status,
-                UserId = ev.UserId
-            };
-            Event created = await eventService.CreateAsync(eventToCreate);
-            EventDTO eventDto = new EventDTO
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                CreateEventDto ev = JsonConvert.DeserializeObject<CreateEventDto>(requestBody);
+                if (ev.Start == DateTime.MinValue)
+                {
+                    throw new Exception("Start date is required!");
+                }
+                if (ev.End == DateTime.MinValue)
+                {
+                    throw new Exception("End date is required!");
+                }
+                var eventService = ServiceFactory.GetEventService();
+                Event eventToCreate = new Event
+                {
+                    Id = Guid.NewGuid(),
+                    Name = ev.Name,
+                    Description = ev.Description,
+                    StartDate = ev.Start,
+                    EndDate = ev.End,
+                    Status = ev.Status,
+                    UserId = ev.UserId
+                };
+                Event created = await eventService.CreateAsync(eventToCreate);
+                EventDTO eventDto = new EventDTO
+                {
+                    Id = created.Id,
+                    Name = created.Name,
+                    Description = created.Description,
+                    Start = created.StartDate,
+                    End = created.EndDate,
+                    Status = created.Status,
+                    UserId = created.UserId
+                };
+                return new OkObjectResult(eventDto);
+
+            }
+            catch (Exception e)
             {
-                Name = created.Name,
-                Description = created.Description,
-                Start = created.StartDate,
-                End = created.EndDate,
-                Status = created.Status,
-                UserId = created.UserId
-            };
-            return new OkObjectResult(eventDto);
+                Console.WriteLine(e);
+                return new BadRequestObjectResult(e.Message);
+            }
         }
 
         [Function("GetEvent")]
         public async Task<IActionResult> GetEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "alarm/{id}")] HttpRequest req, Guid id)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/{id}")] HttpRequest req, Guid id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var eventService = ServiceFactory.GetEventService();
@@ -95,6 +114,7 @@ namespace AEventService.Functions
 
             EventDTO eventDto = new EventDTO
             {
+                Id = ev.Id,
                 Name = ev.Name,
                 Description = ev.Description,
                 Start = ev.StartDate,
@@ -104,7 +124,7 @@ namespace AEventService.Functions
             };
             return new OkObjectResult(eventDto);
         }
-        
+
         [Function("UpdateEvent")]
         public async Task<IActionResult> UpdateEvent(
             [HttpTrigger(AuthorizationLevel.Function, "put", Route = "events/{id}")] HttpRequest req, Guid id)
@@ -121,6 +141,7 @@ namespace AEventService.Functions
             }
 
             existingEvent.Name = eventDto.Name;
+            existingEvent.Id = eventDto.Id;
             existingEvent.Description = eventDto.Description;
             existingEvent.StartDate = eventDto.Start;
             existingEvent.EndDate = eventDto.End;
@@ -131,7 +152,7 @@ namespace AEventService.Functions
 
             return new OkObjectResult(eventDto);
         }
-        
+
         [Function("DeleteEvent")]
         public async Task<IActionResult> DeleteEvent(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "events/{id}")] HttpRequest req, Guid id)
