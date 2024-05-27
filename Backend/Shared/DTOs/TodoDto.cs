@@ -11,5 +11,6 @@ public class TodoDto
     public DateTime Deadline { get; set; }
     public Status Status { get; set; }
     public Guid UserId { get; set; }
+    public ICollection<Tag> Tags { get; set; }
 
 }

@@ -45,7 +45,8 @@ namespace ATodoService.Functions
                     Description = todo.Description,
                     Deadline = todo.Deadline,
                     Status = todo.Status,
-                    UserId = todo.UserId
+                    UserId = todo.UserId,
+                    Tags = todo.Tags
                 };
                 todosDto.Todos.Add(todoDto);
             }
@@ -98,7 +99,8 @@ namespace ATodoService.Functions
                 Description = todo.Description,
                 Deadline = todo.Deadline,
                 Status = todo.Status,
-                UserId = todo.UserId
+                UserId = todo.UserId,
+                Tags = todo.Tags
             };
             return new OkObjectResult(todoDto);
         }
