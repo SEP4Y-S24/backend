@@ -46,8 +46,18 @@ namespace ATodoService.Functions
                     Deadline = todo.Deadline,
                     Status = todo.Status,
                     UserId = todo.UserId,
-                    Tags = todo.Tags
+                    
                 };
+                foreach (var tag in todo.Tags)
+                {
+                    TagDto tagDto = new TagDto()
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                        UserId = tag.UserId
+                    };
+                    todoDto.Tags.tags.Add(tagDto);
+                }
                 todosDto.Todos.Add(todoDto);
             }
             return new OkObjectResult(todosDto);
@@ -99,9 +109,19 @@ namespace ATodoService.Functions
                 Description = todo.Description,
                 Deadline = todo.Deadline,
                 Status = todo.Status,
-                UserId = todo.UserId,
-                Tags = todo.Tags
+                UserId = todo.UserId
             };
+            todoDto.Tags = new Tags();
+            foreach (var tag in todo.Tags)
+            {
+                TagDto tagDto = new TagDto()
+                {
+                    Id = tag.Id,
+                    Name = tag.Name,
+                    UserId = tag.UserId
+                };
+                todoDto.Tags.tags.Add(tagDto);
+            }
             return new OkObjectResult(todoDto);
         }
         
@@ -164,10 +184,9 @@ namespace ATodoService.Functions
             Tags tags = JsonConvert.DeserializeObject<Tags>(requestBody);
             var tagService = ServiceFactory.GetTagService();
 
-            foreach (var tag in tags.tags)
-            {
-                await tagService.addTaskToTagAsync(tag.Id, id);
-            }
+     
+            await tagService.addTaskToTagAsync(tags.tags, id);
+            
             return new OkResult();
         }
     }

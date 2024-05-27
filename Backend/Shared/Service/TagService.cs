@@ -1,4 +1,5 @@
 ﻿using Models;
+using Shared.dtos;
 using Shared.IDAO;
 using Shared.IService;
 
@@ -85,21 +86,26 @@ public class TagService: ITagService
             throw;
         }    }
 
-    public async Task addTaskToTagAsync(Guid tagId, Guid todoId)
+    public async Task addTaskToTagAsync(List<TagDto> tagDTOs, Guid todoId)
     {
         Todo? t = await _todoDao.GetByIdAsync(todoId);
         if (t == null)
         {
             throw new Exception($"Todo with id {t.Id} does not exist!");
         }
-        Tag? tag = await _tagDao.GetByIdAsync(tagId);
-        if (tag == null)
+
+        t.Tags = new List<Tag>();
+
+        foreach (var tagDTO in tagDTOs)
         {
-            throw new Exception($"Tag with id {tag.Id} does not exist!");
+            Tag? tag = await _tagDao.GetByIdAsync(tagDTO.UserId);
+            if (tag == null)
+            {
+                throw new Exception($"Tag with id {tag.Id} does not exist!");
+            }
+            t.Tags.Add(tag);
         }
-        t.Tags.Add(tag);
+        
         await _todoDao.UpdateAsync(t);
-        tag.Todos.Add(t);
-        await _tagDao.UpdateAsync(tag);
     }
 }
