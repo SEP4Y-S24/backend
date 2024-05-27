@@ -21,6 +21,7 @@ public static class ServiceFactory
     private static ITodoDAO _todoDao = null;
     private static ITagDao _tagDao = null;
     private static IContactDAO _contactDao = null;
+    private static IEventDAO _eventDao = null;
     private static IMeasurementDAO _measurementDao = null;
     private static IAlarmService _alarmService = null;
     private static IMessageService _messageService = null;
@@ -29,6 +30,7 @@ public static class ServiceFactory
     private static ITodoService _todoService = null;
     private static IContactService _contactService = null;
     public static ITagService TagService = null;
+    public static IEventService _eventService = null;
     public static IMeasurementService _measurementService = null;
     public static IJwtUtils _JwtUtils = null;
 
@@ -75,6 +77,13 @@ public static class ServiceFactory
 
         return _measurementDao;
     }
+    public static IEventDAO GetEventDao()
+    {
+        if (_eventDao == null)
+            _eventDao = new EventDAO(GetContext());
+
+        return _eventDao;
+    }
 
     public static IJwtUtils GetJwtUtils()
     {
@@ -115,73 +124,79 @@ public static class ServiceFactory
     public static IMeasurementService GetMeasurementService()
     {
         if (_measurementService == null)
-            _measurementService = new MeasurementService( GetClockDAO(),GetMeasurementDao());
+            _measurementService = new MeasurementService(GetClockDAO(), GetMeasurementDao());
 
         return _measurementService;
     }
     public static IContactService GetContactService()
     {
         if (_contactService == null)
-            _contactService = new ContactService( GetContactDao(),GetUserDao());
+            _contactService = new ContactService(GetContactDao(), GetUserDao());
 
         return _contactService;
-    }
-    public static IMessageService GetMessageService()
-    {
-        if (_messageService == null)
-            _messageService = new MessageService(GetMessageDao());
-
-        return _messageService;
-    }
-    public static IClockService GetClockService()
-    {
-        if (_clockService == null)
-            _clockService = new ClockService(GetClockDAO(), GetUserDao());
-
-        return _clockService;
-    }
-    public static IAlarmService GetAlarmService()
-    {
-        if (_alarmService == null)
-            _alarmService = new AlarmService(GetAlarmDAO());
-
-        return _alarmService;
-    }
-
-    public static ITodoService GetTodoService()
-    {
-        if (_todoService == null)
+        public static IEventService GetEventService()
         {
-            _todoService = new TodoService(GetTodoDAO(), GetUserDao(), GetTagDAO());
+            if (_eventService == null)
+                _eventService = new EventService(GetEventDao(), GetUserDao(), GetTagDAO());
+
+            return _eventService;
+        }
+        public static IMessageService GetMessageService()
+        {
+            if (_messageService == null)
+                _messageService = new MessageService(GetMessageDao());
+
+            return _messageService;
+        }
+        public static IClockService GetClockService()
+        {
+            if (_clockService == null)
+                _clockService = new ClockService(GetClockDAO(), GetUserDao());
+
+            return _clockService;
+        }
+        public static IAlarmService GetAlarmService()
+        {
+            if (_alarmService == null)
+                _alarmService = new AlarmService(GetAlarmDAO());
+
+            return _alarmService;
         }
 
-        return _todoService;
-    }
-
-    public static ITagService GetTagService()
-    {
-        if (TagService == null)
+        public static ITodoService GetTodoService()
         {
-            TagService = new TagService(GetTodoDAO(), GetTagDAO());
-        }
-        return TagService;
-    }
+            if (_todoService == null)
+            {
+                _todoService = new TodoService(GetTodoDAO(), GetUserDao(), GetTagDAO());
+            }
 
-    public static ITagDao GetTagDAO()
-    {
-        if (_tagDao == null)
-        {
-            _tagDao = new TagDao(GetContext());
+            return _todoService;
         }
-        return _tagDao;
-    }
 
-    public static ITodoDAO GetTodoDAO()
-    {
-        if (_todoDao == null)
+        public static ITagService GetTagService()
         {
-            _todoDao = new TodoDao(GetContext());
+            if (TagService == null)
+            {
+                TagService = new TagService(GetTodoDAO(), GetTagDAO());
+            }
+            return TagService;
         }
-        return _todoDao;
+
+        public static ITagDao GetTagDAO()
+        {
+            if (_tagDao == null)
+            {
+                _tagDao = new TagDao(GetContext());
+            }
+            return _tagDao;
+        }
+
+        public static ITodoDAO GetTodoDAO()
+        {
+            if (_todoDao == null)
+            {
+                _todoDao = new TodoDao(GetContext());
+            }
+            return _todoDao;
+        }
     }
-}
