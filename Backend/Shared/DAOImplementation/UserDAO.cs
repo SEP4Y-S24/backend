@@ -18,7 +18,7 @@ public class UserDAO: IUserDAO
 
     public virtual async ValueTask<User?> GetByAsync(Expression<Func<User, bool>> filter)
     {
-        return await _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Where(filter).FirstOrDefaultAsync();
+        return await _context.Users.Include(u=>u.Requester).Include(u=>u.Addressee).Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Where(filter).FirstOrDefaultAsync();
     }
     public async Task<User?> GetByIdAsync(Guid userId)
     {
@@ -27,8 +27,8 @@ public class UserDAO: IUserDAO
             throw new ArgumentNullException("The given user Id is null");
         }
 
-        User? existing = await _context.Users.Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefaultAsync(t => t.Id == userId);
-        return existing;
+        User? existing = await _context.Users.Include(u=>u.Requester).Include(u=>u.Addressee).Include(u=>u.MessagesSent).Include(u=>u.MessagesRecieved).Include(u=>u.Clocks).Include(u=>u.Todos).FirstOrDefaultAsync(t => t.Id == userId);
+         return existing;
     }
 
     public async Task<User> CreateAsync(User user)

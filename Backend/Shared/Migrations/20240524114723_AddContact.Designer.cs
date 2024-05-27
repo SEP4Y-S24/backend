@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Context;
@@ -11,9 +12,11 @@ using Shared.Context;
 namespace Shared.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240524114723_AddContact")]
+    partial class AddContact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,35 +108,6 @@ namespace Shared.Migrations
                             OwnerId = new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360"),
                             TimeOffset = 0L
                         });
-                });
-
-            modelBuilder.Entity("Models.Contact", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Email1")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email2")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("User1id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("User2id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("User1id");
-
-                    b.HasIndex("User2id");
-
-                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("Models.Event", b =>
@@ -273,7 +247,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 6, 3, 7, 6, 5, 900, DateTimeKind.Utc).AddTicks(8967),
+                            Deadline = new DateTime(2024, 5, 31, 11, 47, 22, 823, DateTimeKind.Utc).AddTicks(1575),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -302,7 +276,12 @@ namespace Shared.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Users");
 
@@ -356,25 +335,6 @@ namespace Shared.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Models.Contact", b =>
-                {
-                    b.HasOne("Models.User", "User1")
-                        .WithMany("Addressee")
-                        .HasForeignKey("User1id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.User", "User2")
-                        .WithMany("Requester")
-                        .HasForeignKey("User2id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User1");
-
-                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("Models.Event", b =>
@@ -437,6 +397,13 @@ namespace Shared.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Models.User", b =>
+                {
+                    b.HasOne("Models.User", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("TagTodo", b =>
                 {
                     b.HasOne("Models.Tag", null)
@@ -461,15 +428,13 @@ namespace Shared.Migrations
 
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Navigation("Addressee");
-
                     b.Navigation("Clocks");
+
+                    b.Navigation("Contacts");
 
                     b.Navigation("MessagesRecieved");
 
                     b.Navigation("MessagesSent");
-
-                    b.Navigation("Requester");
 
                     b.Navigation("Todos");
                 });

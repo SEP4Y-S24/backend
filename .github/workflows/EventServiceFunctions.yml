@@ -1,4 +1,4 @@
-﻿name: Deploy Alarm Service to Azure Function App
+﻿name: Deploy Event Service to Azure Function App
 
 on:
   push:
@@ -13,16 +13,16 @@ on:
 #
 # 2. Change these variables for your configuration:
 env:
-  AZURE_FUNCTIONAPP_NAME: 'SEP4-AlarmService'   # set this to your function app name on Azure
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'Backend/AAlarmService'       # set this to the path to your function app project, defaults to the repository root
-  DOTNET_VERSION: '8.0.x'                   # set this to the dotnet version to use (e.g. '2.1.x', '3.1.x', '5.0.x')
+  AZURE_FUNCTIONAPP_NAME: "SEP4-EventService" # set this to your function app name on Azure
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "Backend/AEventService" # set this to the path to your function app project, defaults to the repository root
+  DOTNET_VERSION: "8.0.x" # set this to the dotnet version to use (e.g. '2.1.x', '3.1.x', '5.0.x')
 
 jobs:
   build-and-deploy:
     runs-on: windows-latest
     environment: dev
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: "Checkout GitHub Action"
         uses: actions/checkout@v4
 
       - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
@@ -30,16 +30,16 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 'Resolve Project Dependencies Using Dotnet'
+      - name: "Resolve Project Dependencies Using Dotnet"
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
-      - name: 'Run Azure Functions Action'
+      - name: "Run Azure Functions Action"
         uses: Azure/functions-action@v1
         id: alarm-service
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_ALARM_SERVICE }}
+          package: "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output"
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_EVENT_SERVICE }}

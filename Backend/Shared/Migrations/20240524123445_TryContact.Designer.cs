@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shared.Context;
@@ -11,9 +12,11 @@ using Shared.Context;
 namespace Shared.Migrations
 {
     [DbContext(typeof(ClockContext))]
-    partial class ClockContextModelSnapshot : ModelSnapshot
+    [Migration("20240524123445_TryContact")]
+    partial class TryContact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,27 +116,19 @@ namespace Shared.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Email1")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email2")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("User1id")
+                    b.Property<Guid>("User1Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("User2id")
+                    b.Property<Guid>("User2Id")
                         .HasColumnType("uuid");
 
                     b.HasKey("id");
 
-                    b.HasIndex("User1id");
+                    b.HasIndex("User1Id");
 
-                    b.HasIndex("User2id");
+                    b.HasIndex("User2Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contact");
                 });
 
             modelBuilder.Entity("Models.Event", b =>
@@ -165,7 +160,7 @@ namespace Shared.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Event");
                 });
 
             modelBuilder.Entity("Models.Measurement", b =>
@@ -273,7 +268,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-                            Deadline = new DateTime(2024, 6, 3, 7, 6, 5, 900, DateTimeKind.Utc).AddTicks(8967),
+                            Deadline = new DateTime(2024, 5, 31, 12, 34, 45, 672, DateTimeKind.Utc).AddTicks(712),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -362,13 +357,13 @@ namespace Shared.Migrations
                 {
                     b.HasOne("Models.User", "User1")
                         .WithMany("Addressee")
-                        .HasForeignKey("User1id")
+                        .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.User", "User2")
                         .WithMany("Requester")
-                        .HasForeignKey("User2id")
+                        .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

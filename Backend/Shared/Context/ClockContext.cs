@@ -29,9 +29,18 @@ public class ClockContext: DbContext
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Measurement> Measurements { get; set; }
     public DbSet<Event> Events { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Contact>()
+            .HasOne(m => m.User1)
+            .WithMany(u => u.Addressee)
+            .HasForeignKey(m => m.User1id);
+        modelBuilder.Entity<Contact>()
+            .HasOne(m => m.User2)
+            .WithMany(u => u.Requester)
+            .HasForeignKey(m => m.User2id);
         modelBuilder.Entity<Message>()
             .HasOne(m => m.Reciever)
             .WithMany(u => u.MessagesRecieved)
