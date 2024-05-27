@@ -86,7 +86,7 @@ namespace ATodoService.Functions
 
         [Function("GetTodo")]
         public async Task<IActionResult> GetTodo(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "alarm/{id}")] HttpRequest req, Guid id)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todo/{id}")] HttpRequest req, Guid id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var todoService = ServiceFactory.GetTodoService();
