@@ -154,14 +154,18 @@ namespace ATodoService.Functions
 
         [Function("AddTagToTask")]
         public async Task<IActionResult> AddTagToTask([HttpTrigger(AuthorizationLevel.Function, "patch", 
-            Route = "todo/tag/{id}")] HttpRequest req, Guid id)
+            Route = "todo/{todoId}/tag")] HttpRequest req, Guid id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             
-            AddTagDTO addTagDTO = JsonConvert.DeserializeObject<AddTagDTO>(requestBody);
+            Tags tags = JsonConvert.DeserializeObject<Tags>(requestBody);
             var tagService = ServiceFactory.GetTagService();
-            await tagService.addTaskToTagAsync(addTagDTO.Tag.Id, id);
+
+            foreach (var tag in tags.tags)
+            {
+                await tagService.addTaskToTagAsync(tag.Id, id);
+            }
             return new OkResult();
         }
     }

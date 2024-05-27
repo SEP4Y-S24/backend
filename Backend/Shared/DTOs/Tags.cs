@@ -2,5 +2,5 @@
 
 public class Tags
 {
-    public List<TagDto> tags { get; set; }
+    public IEnumerable<TagDto> tags { get; set; }
 }
