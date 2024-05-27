@@ -34,6 +34,7 @@ namespace ATodoService.Functions
             {
                 TodoDto todoDto = new TodoDto()
                 {
+                    Id = todo.Id,
                     Name = todo.Name,  // Mapping the existing properties
                     Description = todo.Description,
                     Deadline = todo.Deadline,
@@ -80,6 +81,7 @@ namespace ATodoService.Functions
             Todo created = await todoService.CreateAsync(todoToCreate);
             TodoDto todoDto = new TodoDto
             {
+                Id = created.Id,
                 Name = created.Name,
                 Description = created.Description,
                 Deadline = created.Deadline,
@@ -99,6 +101,7 @@ namespace ATodoService.Functions
 
             TodoDto todoDto = new TodoDto
             {
+                Id = todo.Id,
                 Name = todo.Name,
                 Description = todo.Description,
                 Deadline = todo.Deadline,

@@ -77,7 +77,7 @@ public class TagService
         _logger.LogInformation("C# HTTP trigger function processed a request.");
         var tagService = ServiceFactory.GetTagService();
         await tagService.DeleteAsync(id);
-        return new OkResult();
+        return new OkObjectResult("Deleted successfully!");
     }
 
 }
