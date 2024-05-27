@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging;
 
 namespace AEventService.Functions
 {
-    public class ClockService
+    public class EventService
     {
-        private readonly ILogger<ClockService> _logger;
+        private readonly ILogger<EventService> _logger;
 
-        public ClockService(ILogger<ClockService> logger)
+        public EventService(ILogger<EventService> logger)
         {
             _logger = logger;
         }
