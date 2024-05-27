@@ -18,16 +18,24 @@ public class TagDao: ITagDao
 
     public async Task<Tag> CreateAsync(Tag tag)
     {
-        List<Tag> ta= await _context.Tags.Where(t => t.Name.Equals(tag.Name)).ToListAsync();
-        if(ta.Count>0)
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == tag.UserId);
+        if(user == null)
         {
-            throw new ArgumentException("Tag already exists");
+            throw new ArgumentException("User does not exist");
         }
         EntityEntry<Tag> added = await _context.Tags.AddAsync(tag);
         await _context.SaveChangesAsync();
         return added.Entity;
 
     }
+    public async Task<IEnumerable<Tag>> GetAllByUserIdAsync(Guid userId)
+    {
+        return await _context.Set<Tag>()
+            .Where(t => t.UserId == userId)
+            .Include(t => t.Owner)
+            .ToListAsync();
+    }
+
 
     public async Task UpdateAsync(Tag tag)
     {

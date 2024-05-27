@@ -9,5 +9,8 @@ public interface ITagDao
     Task<Tag?> GetByIdAsync(Guid tagId);
     Task DeleteAsync(Guid tagId);
     Task<IEnumerable<Tag>> GetAllAsync();
+    Task<IEnumerable<Tag>> GetAllByUserIdAsync(Guid userId);
+
+
 
 }

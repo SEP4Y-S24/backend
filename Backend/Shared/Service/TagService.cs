@@ -44,7 +44,21 @@ public class TagService: ITagService
         {
             Console.WriteLine(e);
             throw;
-        }    }
+        }    
+    }
+    public async Task<IEnumerable<Tag>> GetAllByUserIdAsync(Guid userId)
+    {
+        try
+        {
+            return await _tagDao.GetAllByUserIdAsync(userId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 
     public async Task DeleteAsync(Guid tagId)
     {
