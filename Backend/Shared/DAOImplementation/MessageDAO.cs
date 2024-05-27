@@ -52,7 +52,7 @@ public class MessageDAO : IMessageDao
 
     public async Task<IEnumerable<Message>> GetAllAsync()
     {
-        return await _context.Set<Message>().ToListAsync();
+        return await _context.Set<Message>().Include(m=>m.Reciever).Include(m=>m.Sender).ToListAsync();
     }
 
     public async Task UpdateAsync(Message message)

@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using UserService.Context;
-using UserService.DAOImplementation;
-using UserService.IDAO;
-using UserService.Model;
+using Models;
+using Shared.Context;
+using Shared.DAOImplementation;
+using Shared.IDAO;
+
+
 
 namespace N_Unit_Services;
 
@@ -11,7 +14,7 @@ public class UserServicesTest
 {
     private IUserDAO _userDao;
     private IMessageDao _messageDao;
-    private UserContext _context;
+    private ClockContext _context;
     private IConfiguration _configuration;
     [SetUp]
     public void Setup()
@@ -38,14 +41,14 @@ public class UserServicesTest
         _messageDao = new MessageDAO(_context);
 
     }
-    private UserContext CreateTestContext()
+    private ClockContext CreateTestContext()
     {
         // Retrieve the connection string from configuration
         var connectionString = _configuration.GetConnectionString("Database");
-        var options = new DbContextOptionsBuilder<UserContext>()
+        var options = new DbContextOptionsBuilder<ClockContext>()
             .UseNpgsql(connectionString)
             .Options;
-        return new UserContext(options);
+        return new ClockContext(options);
     }
     [Test]
     public async Task CreateAsync_ValidUser()

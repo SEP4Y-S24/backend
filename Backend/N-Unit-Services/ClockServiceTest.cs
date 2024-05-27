@@ -1,9 +1,11 @@
-﻿using ClockServices.Context;
-using ClockServices.DAOImplementation;
+﻿
 using Microsoft.Extensions.Configuration;
-using ClockServices.IDAO;
-using ClockServices.Model;
+
 using Microsoft.EntityFrameworkCore;
+using Models;
+using Shared.Context;
+using Shared.DAOImplementation;
+using Shared.IDAO;
 
 namespace N_Unit_Services;
 
@@ -172,7 +174,7 @@ public class ClockServiceTest
         await _context.SaveChangesAsync();
 
         // Act
-        var clocks = await _clockDao.GetAll();
+        var clocks = await _clockDao.GetAllAsync();
 
         // Assert
         Assert.IsNotNull(clocks);

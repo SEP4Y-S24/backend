@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Isopoh.Cryptography.Argon2;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -7,6 +9,9 @@ using Models;
 using Newtonsoft.Json;
 using Shared;
 using Shared.Dtos;
+using Shared.DTOs;
+using Shared.Helpers;
+using Shared.Migrations;
 
 namespace AUserService.Functions
 {
@@ -26,16 +31,18 @@ namespace AUserService.Functions
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
+        [ClaimRequirement(ClaimTypes.Role, "User")]
+        [Authorize]
         [Function("GetAllClocks")]
         public async Task<IActionResult> GetAllClocks(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/clocks/{clockId}")]
-            HttpRequest req, Guid clockId)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{userId}/clocks")]
+            HttpRequest req, Guid userId)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 var userService = ServiceFactory.GetUserService();
-                IEnumerable<Clock> clocks = await userService.GetClocksByUser(clockId);
+                IEnumerable<Clock> clocks = await userService.GetClocksByUser(userId);
                 if (clocks is null)
                 {
                     throw new ArgumentNullException("No available clocks!");
@@ -46,7 +53,8 @@ namespace AUserService.Functions
                 {
                     ClockDTO clockDto = new ClockDTO()
                     {
-                        UserId = clock.Id,
+                        UserId = clock.OwnerId,
+                        TimeOffset = clock.TimeOffset,
                         Name = clock.Name,
                         Id = clock.Id
                     };
@@ -64,6 +72,7 @@ namespace AUserService.Functions
             }
         }
 
+        [ClaimRequirement(ClaimTypes.Role, "User")]
         [Function("GetAllMessages")]
         public async Task<ActionResult> GetAllMessagesById(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{userId}/messages")]
@@ -85,7 +94,7 @@ namespace AUserService.Functions
                 }
 
                 MessagesResponse response = new MessagesResponse();
-                response.Messages = new List<SendMessageRequest>();
+                response.Messages = new List<MessageResponseDTO>();
                 List<Message> ms = new List<Message>();
                 if (activity.ToLower().Equals("sent"))
                 {
@@ -99,12 +108,16 @@ namespace AUserService.Functions
 
                 foreach (var message in ms)
                 {
-                    SendMessageRequest m = new SendMessageRequest()
+                    MessageResponseDTO m = new MessageResponseDTO
                     {
                         userId = user.Id,
                         receiverId = message.ReceiverId,
                         message = message.Body,
-                        clockId = message.ClockId
+                        clockId = message.ClockId,
+                        senderEmail = message.Sender.Email,
+                        senderAvatarId = message.Sender.AvatarId,
+                        receiverEmail = message.Reciever.Email,
+                        receiverAvatarId = message.Reciever.AvatarId
                     };
                     response.Messages.Add(m);
                 }
@@ -189,6 +202,84 @@ namespace AUserService.Functions
                     User = userDto
                 };
                 return new OkObjectResult(response);
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(e.Message);
+            }
+        }
+
+        [Function("AddContact")]
+        public async Task<IActionResult> AddContact(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "users/contact")]
+            HttpRequest req)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var service = ServiceFactory.GetContactService();
+                AddContactDto contactDto = JsonConvert.DeserializeObject<AddContactDto>(requestBody);
+                Contact contact = new Contact()
+                {
+                    id = Guid.NewGuid(),
+                    Email1 = contactDto.Email1,
+                    Email2 = contactDto.Email2,
+                };
+                await service.CreateAsync(contact);
+                //  u.Contacts.Add(u2);
+                return new OkObjectResult("Contact added!");
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(e.Message);
+            }
+        }
+        [Function("DeleteContact")]
+        public async Task<IActionResult> DeleteContact(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "users/contact")]
+            HttpRequest req)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var service = ServiceFactory.GetContactDao();
+                AddContactDto contactDto = JsonConvert.DeserializeObject<AddContactDto>(requestBody);
+                await service.DeleteAsync(contactDto.Email1, contactDto.Email2);
+                //  u.Contacts.Add(u2);
+                return new OkObjectResult("Contact deleted!");
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(e.Message);
+            }
+        }
+        [Function("GetContacts")]
+        public async Task<IActionResult> GetContacts(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{userEmail}/contact")]
+            HttpRequest req, string userEmail)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                var service = ServiceFactory.GetContactService();
+                IEnumerable<User> users = await service.GetAllContactsByUserIdAsync(userEmail);
+                UsersDto usersDto = new UsersDto();
+                usersDto.Users = new List<UserDto>();
+                foreach (var u in users)
+                {
+                    UserDto us = new UserDto()
+                    {
+                        AvatarId = u.AvatarId,
+                        Email = u.Email,
+                        Name = u.Name,
+                        UserId = u.Id
+                    };
+                    usersDto.Users.Add(us);
+                }
+                //  u.Contacts.Add(u2);
+                return new OkObjectResult(usersDto);
             }
             catch (Exception e)
             {

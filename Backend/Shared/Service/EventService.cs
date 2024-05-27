@@ -23,14 +23,14 @@ public class EventService : IEventService
         try
         {
             User? user = await _userDao.GetByIdAsync(eventToCreate.UserId);
-            if (user==null)
+            if (user == null)
             {
                 throw new Exception($"User with id {eventToCreate.UserId} was not found.");
             }
 
             Event e = new Event
             {
-                Id =   Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 UserId = eventToCreate.UserId,
                 Name = eventToCreate.Name,
                 Description = eventToCreate.Description,
@@ -59,7 +59,7 @@ public class EventService : IEventService
         {
             Console.WriteLine(e);
             throw;
-        }    
+        }
     }
 
     public async Task UpdateAsync(Event ev)
@@ -135,7 +135,7 @@ public class EventService : IEventService
             List<Event> events = new List<Event>();
             foreach (var tag in t)
             {
-                if (events.Any(ta=>ta.Name.Equals(tag.Name)))
+                if (events.Any(ta => ta.Name.Equals(tag.Name)))
                 {
                     foreach (var e in tag.Events)
                     {

@@ -31,7 +31,7 @@ public class ClockDAO: IClockDAO
 
     public async Task<IEnumerable<Clock>> GetAllByAsync(Expression<Func<Clock, bool>> filter)
     {
-        return await _context.Set<Clock>().ToListAsync();
+        return await _context.Set<Clock>().Where(filter).ToListAsync();
 
     }
 

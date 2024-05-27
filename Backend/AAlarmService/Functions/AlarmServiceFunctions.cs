@@ -31,6 +31,7 @@ namespace AAlarmService.Functions
                 AlarmDTO alarmDto = new AlarmDTO()
                 {
                     Id = alarm.Id,
+                    Name = alarm.Name,
                     ClockId = alarm.ClockId,
                     Hours = alarm.SetOffTime.Hour,
                     Minutes = alarm.SetOffTime.Minute,
@@ -51,6 +52,7 @@ namespace AAlarmService.Functions
             AlarmDTO alarmDto = new AlarmDTO()
             {
                 Id = alarm.Id,
+                Name = alarm.Name,
                 ClockId = alarm.ClockId,
                 Hours = alarm.SetOffTime.Hour,
                 Minutes = alarm.SetOffTime.Minute,

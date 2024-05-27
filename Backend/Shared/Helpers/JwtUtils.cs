@@ -42,6 +42,7 @@ namespace Shared.Helpers
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "User"),
                 new Claim("id", user.Id.ToString()),
                 new Claim("Email", user.Email),
                 new Claim("avatarId", user.AvatarId.ToString()),

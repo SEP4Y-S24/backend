@@ -1,9 +1,9 @@
-﻿using AlarmServices.Context;
-using AlarmServices.DAOImplementation;
-using AlarmServices.IDAO;
-using AlarmServices.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Models;
+using Shared.Context;
+using Shared.DAOImplementation;
+using Shared.IDAO;
 
 namespace N_Unit_Services;
 
@@ -62,7 +62,7 @@ public class AlarmServicesTest
         {
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
-            SetOffTime = utcNow.AddDays(2),
+            SetOffTime = new TimeOnly(14, 30),
             IsActive = false
         };
         var result = await _alarmDao.CreateAsync(alarm);
@@ -92,7 +92,7 @@ public class AlarmServicesTest
         {
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
-            SetOffTime = utcNow.AddDays(2),
+            SetOffTime = new TimeOnly(14, 30),
             IsActive = false
         };
 
@@ -121,7 +121,7 @@ public class AlarmServicesTest
         {
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
-            SetOffTime = utcNow.AddDays(2),
+            SetOffTime = new TimeOnly(14, 30),
             IsActive = false
         };
 
@@ -147,7 +147,7 @@ public class AlarmServicesTest
         {
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
-            SetOffTime = utcNow.AddDays(2),
+            SetOffTime = new TimeOnly(14, 30),
             IsActive = false
         };
 
@@ -160,7 +160,7 @@ public class AlarmServicesTest
         {
             Id = originalAlarm.Id,
             ClockId = originalAlarm.ClockId,
-            SetOffTime = utcNow.AddDays(4),
+            SetOffTime = new TimeOnly(14, 30),
             IsActive = true,
         };
 

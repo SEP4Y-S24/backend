@@ -10,4 +10,5 @@ public class Tag
     public Guid UserId { get; set; }
     public User Owner { get; set; }
     public ICollection<Todo> Todos { get; set; }
+    public ICollection<Event> Events { get; set; }
 }

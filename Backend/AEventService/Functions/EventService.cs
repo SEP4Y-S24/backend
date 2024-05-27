@@ -26,9 +26,9 @@ namespace AEventService.Functions
             return new OkObjectResult("Welcome to Azure Functions!");
         }
 
-         [Function("GetAllEvents")]
+        [Function("GetAllEvents")]
         public async Task<IActionResult> GetAllEvents(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/users/{userId}")] HttpRequest req, Guid userId)
+           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/users/{userId}")] HttpRequest req, Guid userId)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var eventService = ServiceFactory.GetEventService();
@@ -97,7 +97,7 @@ namespace AEventService.Functions
                 return new OkObjectResult(eventDto);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return new BadRequestObjectResult(e.Message);
@@ -124,7 +124,7 @@ namespace AEventService.Functions
             };
             return new OkObjectResult(eventDto);
         }
-        
+
         [Function("UpdateEvent")]
         public async Task<IActionResult> UpdateEvent(
             [HttpTrigger(AuthorizationLevel.Function, "put", Route = "events/{id}")] HttpRequest req, Guid id)
@@ -152,7 +152,7 @@ namespace AEventService.Functions
 
             return new OkObjectResult(eventDto);
         }
-        
+
         [Function("DeleteEvent")]
         public async Task<IActionResult> DeleteEvent(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "events/{id}")] HttpRequest req, Guid id)

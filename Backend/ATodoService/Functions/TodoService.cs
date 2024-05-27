@@ -54,7 +54,7 @@ namespace ATodoService.Functions
 
 
         [Function("CreateTodo")]
-        public async Task<IActionResult> CreateAlarm(
+        public async Task<IActionResult> CreateTodo(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "todo")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");

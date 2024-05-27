@@ -22,6 +22,21 @@ namespace Shared.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EventTag", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EventsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoriesId", "EventsId");
+
+                    b.HasIndex("EventsId");
+
+                    b.ToTable("EventTag");
+                });
+
             modelBuilder.Entity("Models.Alarm", b =>
                 {
                     b.Property<Guid>("Id")
@@ -90,6 +105,92 @@ namespace Shared.Migrations
                             OwnerId = new Guid("5f3bb5af-e982-4a8b-8590-b620597a7360"),
                             TimeOffset = 0L
                         });
+                });
+
+            modelBuilder.Entity("Models.Contact", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email1")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email2")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("User1id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("User2id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("User1id");
+
+                    b.HasIndex("User2id");
+
+                    b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("Models.Event", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("Models.Measurement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClockId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("TimeOfReading")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClockId");
+
+                    b.ToTable("Measurements");
                 });
 
             modelBuilder.Entity("Models.Message", b =>
@@ -177,11 +278,7 @@ namespace Shared.Migrations
                         new
                         {
                             Id = new Guid("f656d97d-63b7-451a-91ee-0e620e652c9e"),
-<<<<<<< Updated upstream
-                            Deadline = new DateTime(2024, 5, 29, 11, 17, 29, 283, DateTimeKind.Utc).AddTicks(4940),
-=======
-                            Deadline = new DateTime(2024, 6, 3, 11, 26, 2, 417, DateTimeKind.Utc).AddTicks(2670),
->>>>>>> Stashed changes
+                            Deadline = new DateTime(2024, 6, 3, 7, 6, 5, 900, DateTimeKind.Utc).AddTicks(8967),
                             Description = "hello description",
                             Name = "Hello",
                             Status = 1,
@@ -240,6 +337,21 @@ namespace Shared.Migrations
                     b.ToTable("TagTodo");
                 });
 
+            modelBuilder.Entity("EventTag", b =>
+                {
+                    b.HasOne("Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Event", null)
+                        .WithMany()
+                        .HasForeignKey("EventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Models.Clock", b =>
                 {
                     b.HasOne("Models.User", "Owner")
@@ -249,6 +361,47 @@ namespace Shared.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Models.Contact", b =>
+                {
+                    b.HasOne("Models.User", "User1")
+                        .WithMany("Addressee")
+                        .HasForeignKey("User1id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.User", "User2")
+                        .WithMany("Requester")
+                        .HasForeignKey("User2id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("Models.Event", b =>
+                {
+                    b.HasOne("Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Models.Measurement", b =>
+                {
+                    b.HasOne("Models.Clock", "Clock")
+                        .WithMany("Measurements")
+                        .HasForeignKey("ClockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clock");
                 });
 
             modelBuilder.Entity("Models.Message", b =>
@@ -317,24 +470,24 @@ namespace Shared.Migrations
 
             modelBuilder.Entity("Models.Clock", b =>
                 {
+                    b.Navigation("Measurements");
+
                     b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Models.User", b =>
                 {
+                    b.Navigation("Addressee");
+
                     b.Navigation("Clocks");
 
                     b.Navigation("MessagesRecieved");
 
                     b.Navigation("MessagesSent");
-
-<<<<<<< Updated upstream
-=======
                     b.Navigation("Requester");
 
                     b.Navigation("Tags");
 
->>>>>>> Stashed changes
                     b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
