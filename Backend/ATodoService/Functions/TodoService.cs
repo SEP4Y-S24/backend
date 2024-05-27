@@ -28,7 +28,7 @@ namespace ATodoService.Functions
 
         [Function("GetAllTodos")]
         public async Task<IActionResult> GetAllTodos(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todos/users/{userId}")] HttpRequest req, Guid userId)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todo/users/{userId}")] HttpRequest req, Guid userId)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var todoService = ServiceFactory.GetTodoService();
@@ -48,6 +48,7 @@ namespace ATodoService.Functions
                     UserId = todo.UserId,
                     
                 };
+                todoDto.Tags = new List<TagDto>();
                 foreach (var tag in todo.Tags)
                 {
                     TagDto tagDto = new TagDto()
@@ -56,7 +57,7 @@ namespace ATodoService.Functions
                         Name = tag.Name,
                         UserId = tag.UserId
                     };
-                    todoDto.Tags.tags.Add(tagDto);
+                    todoDto.Tags.Add(tagDto);
                 }
                 todosDto.Todos.Add(todoDto);
             }
@@ -111,7 +112,7 @@ namespace ATodoService.Functions
                 Status = todo.Status,
                 UserId = todo.UserId
             };
-            todoDto.Tags = new Tags();
+            todoDto.Tags = new List<TagDto>();
             foreach (var tag in todo.Tags)
             {
                 TagDto tagDto = new TagDto()
@@ -120,7 +121,7 @@ namespace ATodoService.Functions
                     Name = tag.Name,
                     UserId = tag.UserId
                 };
-                todoDto.Tags.tags.Add(tagDto);
+                todoDto.Tags.Add(tagDto);
             }
             return new OkObjectResult(todoDto);
         }
@@ -174,9 +175,9 @@ namespace ATodoService.Functions
             return new OkResult();
         }
 
-        [Function("AddTagToTask")]
-        public async Task<IActionResult> AddTagToTask([HttpTrigger(AuthorizationLevel.Function, "patch", 
-            Route = "todo/{todoId}/tag")] HttpRequest req, Guid id)
+        [Function("UpdateTagToTask")]
+        public async Task<IActionResult> UpdateTagToTask([HttpTrigger(AuthorizationLevel.Function, "patch", 
+            Route = "todo/{todoId}/tag")] HttpRequest req, Guid todoId)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -185,9 +186,9 @@ namespace ATodoService.Functions
             var tagService = ServiceFactory.GetTagService();
 
      
-            await tagService.addTaskToTagAsync(tags.tags, id);
+            await tagService.addTaskToTagAsync(tags.tags, todoId);
             
-            return new OkResult();
+            return new OkObjectResult("Tags added to task");
         }
     }
 }

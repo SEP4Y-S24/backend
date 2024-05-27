@@ -53,7 +53,7 @@ public class TagService
         };
         return new OkObjectResult(respone);
     }
-    [Function("GetAllTodos")]
+    [Function("GetAllTags")]
     public async Task<IActionResult> GetAllTags(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "tag/users/{userId}")] HttpRequest req, Guid userId)
     {

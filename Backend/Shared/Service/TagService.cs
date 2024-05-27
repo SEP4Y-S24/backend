@@ -98,7 +98,7 @@ public class TagService: ITagService
 
         foreach (var tagDTO in tagDTOs)
         {
-            Tag? tag = await _tagDao.GetByIdAsync(tagDTO.UserId);
+            Tag? tag = await _tagDao.GetByIdAsync(tagDTO.Id);
             if (tag == null)
             {
                 throw new Exception($"Tag with id {tag.Id} does not exist!");
