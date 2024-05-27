@@ -11,6 +11,6 @@ public class TodoDto
     public DateTime Deadline { get; set; }
     public Status Status { get; set; }
     public Guid UserId { get; set; }
-    public Tags Tags { get; set; }
+    public List<TagDto> Tags { get; set; }
 
 }
