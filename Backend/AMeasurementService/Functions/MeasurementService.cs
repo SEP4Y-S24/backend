@@ -29,6 +29,7 @@ public class MeasurementService
         return new OkObjectResult("Welcome to Azure Functions!");
     }
 
+    
     [Function("CreateMeasurement")]
     public async Task<IActionResult> CreateMeasurement(
         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
