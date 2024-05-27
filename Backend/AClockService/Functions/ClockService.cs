@@ -115,5 +115,26 @@ namespace AClockService.Functions
                 return new BadRequestObjectResult("Error creating clock!");
             }
         }
+        [Function("DeleteClock")]
+        public async Task<IActionResult> DeleteClock(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "clock/{id}")]
+            HttpRequest req, Guid id)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var persistenceService = ServiceFactory.GetClockService();
+                await persistenceService.DeleteAsync(id);
+                return new OkObjectResult("Clock deleted!");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new BadRequestObjectResult("Error creating clock!");
+            }
+        }
+
     }
 }

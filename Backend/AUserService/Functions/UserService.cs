@@ -15,7 +15,7 @@ using Shared.Migrations;
 
 namespace AUserService.Functions
 {
-     public class UserService
+    public class UserService
     {
         private readonly ILogger<UserService> _logger;
 
@@ -30,7 +30,7 @@ namespace AUserService.Functions
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             return new OkObjectResult("Welcome to Azure Functions!");
         }
-        
+
         [ClaimRequirement(ClaimTypes.Role, "User")]
         [Authorize]
         [Function("GetAllClocks")]
@@ -227,7 +227,7 @@ namespace AUserService.Functions
                     Email2 = contactDto.Email2,
                 };
                 await service.CreateAsync(contact);
-              //  u.Contacts.Add(u2);
+                //  u.Contacts.Add(u2);
                 return new OkObjectResult("Contact added!");
             }
             catch (Exception e)
@@ -246,7 +246,7 @@ namespace AUserService.Functions
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 var service = ServiceFactory.GetContactDao();
                 AddContactDto contactDto = JsonConvert.DeserializeObject<AddContactDto>(requestBody);
-                await service.DeleteAsync(contactDto.Email1,contactDto.Email2);
+                await service.DeleteAsync(contactDto.Email1, contactDto.Email2);
                 //  u.Contacts.Add(u2);
                 return new OkObjectResult("Contact deleted!");
             }
@@ -264,7 +264,7 @@ namespace AUserService.Functions
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 var service = ServiceFactory.GetContactService();
-                IEnumerable<User> users =  await service.GetAllContactsByUserIdAsync(userEmail);
+                IEnumerable<User> users = await service.GetAllContactsByUserIdAsync(userEmail);
                 UsersDto usersDto = new UsersDto();
                 usersDto.Users = new List<UserDto>();
                 foreach (var u in users)
