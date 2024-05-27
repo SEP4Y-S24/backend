@@ -128,13 +128,16 @@ public static class ServiceFactory
 
         return _measurementService;
     }
+
     public static IContactService GetContactService()
     {
         if (_contactService == null)
             _contactService = new ContactService(GetContactDao(), GetUserDao());
 
         return _contactService;
-        public static IEventService GetEventService()
+    }
+
+    public static IEventService GetEventService()
         {
             if (_eventService == null)
                 _eventService = new EventService(GetEventDao(), GetUserDao(), GetTagDAO());
