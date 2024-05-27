@@ -9,13 +9,14 @@ public class TagService: ITagService
 {
     private readonly ITodoDAO _todoDao;
     private readonly ITagDao _tagDao;
+    private readonly IEventDAO _eventDao;
 
-    public TagService(ITodoDAO todoDao, ITagDao tagDao)
+    public TagService(ITodoDAO todoDao, ITagDao tagDao, IEventDAO eventDao)
     {
         _todoDao = todoDao;
         _tagDao = tagDao;
+        _eventDao = eventDao;
     }
-
     public async Task<Tag> CreateAsync(Tag tag)
     {
         Tag created = await _tagDao.CreateAsync(tag);
@@ -107,5 +108,27 @@ public class TagService: ITagService
         }
         
         await _todoDao.UpdateAsync(t);
+    }
+    
+    public async Task addEventToTagAsync(List<TagDto> tagDtos, Guid eventId)
+    {
+        Event? t = await _eventDao.GetByIdAsync(eventId);
+        if (t == null)
+        {
+            throw new Exception($"Todo with id {t.Id} does not exist!");
+        }
+
+        t.Categories = new List<Tag>();
+        foreach (var tagDto in tagDtos)
+        {
+            Tag? tag = await _tagDao.GetByIdAsync(tagDto.Id);
+            if (tag == null)
+            {
+                throw new Exception($"Tag with id {tag.Id} does not exist!");
+            }
+            t.Categories.Add(tag);
+
+        }
+        await _eventDao.UpdateAsync(t);
     }
 }

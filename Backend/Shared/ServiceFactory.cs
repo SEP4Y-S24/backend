@@ -29,10 +29,10 @@ public static class ServiceFactory
     private static IClockService _clockService = null;
     private static ITodoService _todoService = null;
     private static IContactService _contactService = null;
-    public static ITagService TagService = null;
-    public static IEventService _eventService = null;
-    public static IMeasurementService _measurementService = null;
-    public static IJwtUtils _JwtUtils = null;
+    private static ITagService _tagService = null;
+    private static IEventService _eventService = null;
+    private static IMeasurementService _measurementService = null;
+    private static IJwtUtils _JwtUtils = null;
 
     public static ClockContext GetContext()
     {
@@ -178,11 +178,11 @@ public static class ServiceFactory
 
         public static ITagService GetTagService()
         {
-            if (TagService == null)
+            if (_tagService == null)
             {
-                TagService = new TagService(GetTodoDAO(), GetTagDAO());
+                _tagService = new TagService(GetTodoDAO(), GetTagDAO(),GetEventDao());
             }
-            return TagService;
+            return _tagService;
         }
 
         public static ITagDao GetTagDAO()

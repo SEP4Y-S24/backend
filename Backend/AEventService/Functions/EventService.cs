@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Models;
 using Newtonsoft.Json;
 using Shared;
+using Shared.dtos;
 using Shared.DTOs;
 
 
@@ -34,12 +35,12 @@ namespace AEventService.Functions
             var eventService = ServiceFactory.GetEventService();
             IEnumerable<Event> events = await eventService.GetAllByUserIdAsync(userId);
 
-            EventsDto todosDto = new EventsDto();
-            todosDto.Events = new List<EventDTO>();
+            EventsDto eventsDto = new EventsDto();
+            eventsDto.Events = new List<EventDTO>();
 
             foreach (var ev in events)
             {
-                EventDTO todoDto = new EventDTO()
+                EventDTO eventDto = new EventDTO()
                 {
                     Id = ev.Id,
                     Name = ev.Name,  // Mapping the existing properties
@@ -49,9 +50,21 @@ namespace AEventService.Functions
                     Status = ev.Status,
                     UserId = ev.UserId
                 };
-                todosDto.Events.Add(todoDto);
+                eventDto.tags = new List<TagDto>();
+                foreach (var tag in ev.Categories)
+                {
+                    TagDto tagDto = new TagDto()
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                        UserId = tag.UserId
+                    };
+                    eventDto.tags.Add(tagDto);
+                }
+
+                eventsDto.Events.Add(eventDto);
             }
-            return new OkObjectResult(todosDto);
+            return new OkObjectResult(eventsDto);
         }
 
 
@@ -94,6 +107,18 @@ namespace AEventService.Functions
                     Status = created.Status,
                     UserId = created.UserId
                 };
+                eventDto.tags = new List<TagDto>();
+                foreach (var tag in created.Categories)
+                {
+                    TagDto tagDto = new TagDto()
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                        UserId = tag.UserId
+                    };
+                    eventDto.tags.Add(tagDto);
+                }
+
                 return new OkObjectResult(eventDto);
 
             }
@@ -122,6 +147,17 @@ namespace AEventService.Functions
                 Status = ev.Status,
                 UserId = ev.UserId
             };
+            eventDto.tags = new List<TagDto>();
+            foreach (var tag in ev.Categories)
+            {
+                TagDto tagDto = new TagDto()
+                {
+                    Id = tag.Id,
+                    Name = tag.Name,
+                    UserId = tag.UserId
+                };
+                eventDto.tags.Add(tagDto);
+            }
             return new OkObjectResult(eventDto);
         }
 
@@ -139,7 +175,6 @@ namespace AEventService.Functions
             {
                 return new NotFoundResult();
             }
-
             existingEvent.Name = eventDto.Name;
             existingEvent.Id = eventDto.Id;
             existingEvent.Description = eventDto.Description;
@@ -163,5 +198,27 @@ namespace AEventService.Functions
             return new OkResult();
         }
 
+        [Function("UpdateTagsToEvent")]
+        public async Task<IActionResult> UpdateTagsToEvent(
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "events/{id}")]
+            HttpRequest req, Guid id)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                Tags tags = JsonConvert.DeserializeObject<Tags>(requestBody);
+                var tagService = ServiceFactory.GetTagService();
+
+                    await tagService.addEventToTagAsync(tags.tags, id);
+                return new OkObjectResult("Added");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(e.Message);
+            }
+        }
     }
+
 }
