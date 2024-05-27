@@ -18,14 +18,7 @@ namespace ATodoService.Functions
         {
             _logger = logger;
         }
-
-        [Function("TodoService")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
-        {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions!");
-        }
-
+        
         [Function("GetAllTodos")]
         public async Task<IActionResult> GetAllTodos(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "todo/users/{userId}")] HttpRequest req, Guid userId)

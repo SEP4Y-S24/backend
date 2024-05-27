@@ -22,12 +22,6 @@ public class TagService
         _logger = loggerFactory.CreateLogger<TagService>();
     }
 
-    [Function("TagService")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
-    {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
-        return new OkObjectResult("Welcome to Azure Functions!");
-    }
 
     [Function("CreateTag")]
     public async Task<IActionResult> CreateTag(
