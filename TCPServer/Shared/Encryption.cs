@@ -45,7 +45,7 @@ public class Encryption
     }
 
     // Encrypt a message using AES-128-CBC
-    public (byte[] cipherText, byte[] iv) Encrypt(string plainText)
+    public byte[] Encrypt(string plainText)
     {
         using (Aes aes = Aes.Create())
         {
@@ -62,17 +62,28 @@ public class Encryption
                     cs.Write(plainTextBytes, 0, plainTextBytes.Length);
                     cs.FlushFinalBlock();
 
-                    return (ms.ToArray(), aes.IV);
+                    byte[] cipherText = ms.ToArray();
+                    byte[] result = new byte[aes.IV.Length + cipherText.Length];
+                    Buffer.BlockCopy(aes.IV, 0, result, 0, aes.IV.Length);
+                    Buffer.BlockCopy(cipherText, 0, result, aes.IV.Length, cipherText.Length);
+
+                    return result;
                 }
             }
         }
     }
 
     // Decrypt a message using AES-128-CBC
-    public string Decrypt(byte[] cipherText, byte[] iv)
+    public string Decrypt(byte[] cipherTextWithIv)
     {
         using (Aes aes = Aes.Create())
         {
+            byte[] iv = new byte[16];
+            byte[] cipherText = new byte[cipherTextWithIv.Length - 16];
+
+            Buffer.BlockCopy(cipherTextWithIv, 0, iv, 0, iv.Length);
+            Buffer.BlockCopy(cipherTextWithIv, iv.Length, cipherText, 0, cipherText.Length);
+
             aes.Key = _aesKey;
             aes.IV = iv;
             aes.Mode = CipherMode.CBC;
