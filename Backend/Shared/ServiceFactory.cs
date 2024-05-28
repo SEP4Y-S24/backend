@@ -68,7 +68,10 @@ public static class ServiceFactory
     public static IClientFunc GetClent()
     {
         if (_clientFunc == null)
+        {
             _clientFunc = new Client();
+            _clientFunc.StartServer();
+        }
 
         return _clientFunc;
     }
