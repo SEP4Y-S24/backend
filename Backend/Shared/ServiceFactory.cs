@@ -7,6 +7,7 @@ using Shared.Helpers;
 using Shared.IDAO;
 using Shared.IService;
 using Shared.Service;
+using TCPClient;
 using TodoServices.DAOImplementation;
 
 namespace Shared;
@@ -33,6 +34,7 @@ public static class ServiceFactory
     private static IEventService _eventService = null;
     private static IMeasurementService _measurementService = null;
     private static IJwtUtils _JwtUtils = null;
+    private static IClientFunc _clientFunc = null;
 
     public static ClockContext GetContext()
     {
@@ -62,6 +64,13 @@ public static class ServiceFactory
             _userDao = new UserDAO(GetContext());
 
         return _userDao;
+    }
+    public static IClientFunc GetClent()
+    {
+        if (_clientFunc == null)
+            _clientFunc = new Client();
+
+        return _clientFunc;
     }
     public static IContactDAO GetContactDao()
     {

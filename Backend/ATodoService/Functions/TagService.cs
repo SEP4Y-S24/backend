@@ -36,6 +36,7 @@ public class TagService
         {
             Name = dto.Name,
             UserId = dto.UserId,
+            Colour = dto.Colour,
             Id = Guid.NewGuid()
         };
         Tag t = await service.CreateAsync(tag);
@@ -43,6 +44,7 @@ public class TagService
         {
             Name = t.Name,
             UserId = t.UserId,
+            Colour = t.Colour,
             Id = t.Id
         };
         return new OkObjectResult(respone);
@@ -64,6 +66,7 @@ public class TagService
             {
                 Name = tag.Name,  // Mapping the existing properties
                 UserId = tag.UserId,
+                Colour = tag.Colour,
                 Id = tag.Id
             };
             tagsDto.tags.Add(t);

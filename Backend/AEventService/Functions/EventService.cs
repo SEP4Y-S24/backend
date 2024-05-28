@@ -57,6 +57,7 @@ namespace AEventService.Functions
                     {
                         Id = tag.Id,
                         Name = tag.Name,
+                        Colour = tag.Colour,
                         UserId = tag.UserId
                     };
                     eventDto.tags.Add(tagDto);
@@ -114,6 +115,7 @@ namespace AEventService.Functions
                     {
                         Id = tag.Id,
                         Name = tag.Name,
+                        Colour = tag.Colour,
                         UserId = tag.UserId
                     };
                     eventDto.tags.Add(tagDto);
@@ -154,6 +156,7 @@ namespace AEventService.Functions
                 {
                     Id = tag.Id,
                     Name = tag.Name,
+                    Colour = tag.Colour,
                     UserId = tag.UserId
                 };
                 eventDto.tags.Add(tagDto);

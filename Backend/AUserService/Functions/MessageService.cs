@@ -35,6 +35,7 @@ namespace AUserService.Functions
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 var messageService = ServiceFactory.GetMessageService();
+                var client = ServiceFactory.GetClent();
                 SendMessageRequest sendMessageRequest = JsonConvert.DeserializeObject<SendMessageRequest>(requestBody);
                 Message message = new Message()
                 {

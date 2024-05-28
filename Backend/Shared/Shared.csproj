@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Models\Models.csproj" />
+      <ProjectReference Include="..\TCPClient\TCPClient.csproj" />
     </ItemGroup>
 
 

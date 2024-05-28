@@ -49,6 +49,7 @@ namespace ATodoService.Functions
                     {
                         Id = tag.Id,
                         Name = tag.Name,
+                        Colour = tag.Colour,
                         UserId = tag.UserId
                     };
                     todoDto.Tags.Add(tagDto);
@@ -115,6 +116,7 @@ namespace ATodoService.Functions
                 {
                     Id = tag.Id,
                     Name = tag.Name,
+                    Colour = tag.Colour,
                     UserId = tag.UserId
                 };
                 todoDto.Tags.Add(tagDto);

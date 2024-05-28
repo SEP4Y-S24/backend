@@ -1,6 +1,6 @@
 ﻿namespace TCPClient;
 
-public class IClientFunc
+public interface IClientFunc
 {
-    
+    Task<int> SendMessageAsync(string message,Guid clockId);
 }
