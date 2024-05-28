@@ -57,12 +57,13 @@ public class Encryption
             using (MemoryStream ms = new MemoryStream())
             {
                 using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                using (StreamWriter sw = new StreamWriter(cs))
                 {
-                    sw.Write(plainText);
-                }
+                    byte[] plainTextBytes = Encoding.ASCII.GetBytes(plainText);
+                    cs.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    cs.FlushFinalBlock();
 
-                return (ms.ToArray(), aes.IV);
+                    return (ms.ToArray(), aes.IV);
+                }
             }
         }
     }
@@ -79,9 +80,10 @@ public class Encryption
             using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
             using (MemoryStream ms = new MemoryStream(cipherText))
             using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-            using (StreamReader sr = new StreamReader(cs))
             {
-                return sr.ReadToEnd();
+                byte[] plainTextBytes = new byte[cipherText.Length];
+                int decryptedByteCount = cs.Read(plainTextBytes, 0, plainTextBytes.Length);
+                return Encoding.ASCII.GetString(plainTextBytes, 0, decryptedByteCount);
             }
         }
     }
