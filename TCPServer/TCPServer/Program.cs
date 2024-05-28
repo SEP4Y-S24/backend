@@ -1,163 +1,227 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Shared;
+using Shared.Context;
 using TCPServer;
 
 class Program
 {
-    
+    private static ConcurrentDictionary<Guid, Client> clients = new ConcurrentDictionary<Guid, Client>();
+    private static readonly ClockContext _context = ServiceFactory.GetContext();
     static async Task Main(string[] args)
     {
-        int port = 13000;
-        var listener = new TcpListener(IPAddress.Any, port);
-        listener.Start();
-        Console.WriteLine($"Server listening on port {port}");
-        
-
-        while (true)
+        TcpListener listener=null;
+        try
         {
-            var client = await listener.AcceptTcpClientAsync();
-            _ = HandleClientAsync(client);
+            int port = 13000;
+            listener = new TcpListener(IPAddress.Any, port);
+            listener.Start();
+            Console.WriteLine($"Server listening on port {port}");
+
+
+            while (true)
+            {
+                var client = await listener.AcceptTcpClientAsync();
+                _ = HandleClientAsync(client);
+            }
         }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            listener?.Stop();
+        }
+        
     }
 
-    private static async Task HandleClientAsync(TcpClient client)
+    private static async Task HandleClientAsync(TcpClient tcpClient)
     {
         Console.WriteLine("Client connected.");
-        using var networkStream = client.GetStream();
-        Encryption encryption = new Encryption();
+        Client clientObj = new Client(tcpClient);
+        
+        using var stream = clientObj.TcpClient.GetStream();
         var buffer = new byte[1024];
         int bytesRead;
         
-        while ((bytesRead = await networkStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+        try
         {
-            var receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            // Console.WriteLine($"Received: {receivedData}");
-            receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            if (receivedData == "\r\n")
+            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length))!=0)
             {
-                Console.WriteLine("Exiting...");
+                
+                var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                Console.WriteLine("RECEIVEDDATA: " + receivedData);
+                //check if not encrypted
+                if (receivedData.Substring(0, 2).ToUpper().Equals("CK"))
+                {
+                    // Clock Key response
+                    // handle clock key response
+                    KeyRequestHandle(receivedData, clientObj);
+                }
+                else if(bytesRead > 2)
+                {
+                    var data = buffer[..bytesRead];
+                    IdentifyCommand(data, clientObj);
+                }
             }
-            else if (receivedData.Length >= 2)
-            {
-                IdentifyCommand(receivedData, networkStream, encryption);
-            }
-            // var response = Encoding.UTF8.GetBytes($"Echo: {receivedText}");
-            // await networkStream.WriteAsync(response, 0, response.Length);
         }
-        
-        Console.WriteLine("Client disconnected.");
-        client.Close();
+        catch (IOException ex) when (ex.InnerException is SocketException socketException && socketException.SocketErrorCode == SocketError.ConnectionReset)
+        {
+            Console.WriteLine("Client forcibly closed the connection.");
+            clients.TryRemove(clientObj.Id, out _);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            Console.WriteLine("Client disconnected.");
+            clients.TryRemove(clientObj.Id, out _);
+            clientObj.TcpClient.Close();
+        }
+
     }
     
-    private static void IdentifyCommand(string receivedData, NetworkStream stream, Encryption encryption)
+    private static void IdentifyCommand(byte[] receivedData, Client client)
     {
-        if (receivedData.Substring(0, 2).ToUpper().Equals("CK"))
+        //decrypt
+        var decryptedText = client.Encryption.Decrypt(receivedData);
+        
+        //check command
+        switch (decryptedText.Substring(0,2).ToUpper())
         {
-            // Clock Key response
-            // handle clock key response
-            KeyRequestHandle(receivedData, stream, encryption);
-        }
-        else
-        {
-            var cipherText=Encoding.ASCII.GetBytes(receivedData.Substring(16));
-            var iv=Encoding.ASCII.GetBytes(receivedData.Substring(0,16));
-            var decryptedText = encryption.Decrypt(cipherText, iv);
-            switch (decryptedText.Substring(0,2).ToUpper())
-            {
-                case "TM":
-                    // Time request
-                    TimeRequestHandle(stream, encryption);
-                    break;
-                case "MS":
-                    // Message response
-                    // handle message response
-                    MessageResponseHandle(decryptedText, stream, encryption);
-                    break;
-                case "AU":
-                    // Authentication response
-                    // handle authentication response
-                    AuthenticationRequestHandle(decryptedText, stream, encryption);
-                    break;
-                default:
-                    // Unknown command
-                    throw new InvalidOperationException("Unknown command received.");
-            }   
-        }
+            case "TM":
+                // Time request
+                TimeRequestHandle(client);
+                break;
+            case "AU":
+                // Authentication response
+                // handle authentication response
+                AuthenticationRequestHandle(decryptedText, client);
+                break;
+            case "MS":
+                // Message response
+                // handle message response
+                MessageResponseHandle(decryptedText);
+                break;
+            default:
+                // Unknown command
+                throw new InvalidOperationException("Unknown command received.");
+        }   
     }
     
-    private static async void TimeRequestHandle(NetworkStream stream, Encryption encryption)
+    private static async void TimeRequestHandle(Client client)
     {
         try
         {
+            
             var time = DateTime.Now.ToString("HH:mm");
             time= "TM|1|4|" + time.Replace(":","") + "|";
-            byte[] timeBytes = Encoding.ASCII.GetBytes(time);
-            stream.Write(timeBytes, 0, timeBytes.Length);
+            var timeBytes = client.Encryption.Encrypt(time);
+            client.TcpClient.GetStream().Write(timeBytes, 0, timeBytes.Length);
             Console.WriteLine("Time request received.");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"Time request error: {e.Message}");
             throw;
         }
     }
     
     
-    private static void MessageResponseHandle(string decryptedText, NetworkStream stream, Encryption encryption)
+    private static void MessageResponseHandle(string decryptedText)
     {
         try
         {
             var message = decryptedText.Split("|");
+            var id=Guid.Parse(message[1]);
             var messageToSend = message[2];
             Console.WriteLine($"Message {messageToSend} request received.");
-            // stream.Write();
+            if (clients.TryGetValue(id, out Client clockClient))
+            {
+                messageToSend= $"MS|{messageToSend.Length}|{messageToSend}|";
+                var encryptedMessage = clockClient.Encryption.Encrypt(messageToSend);
+                clockClient.TcpClient.GetStream().Write(encryptedMessage, 0, encryptedMessage.Length);
+            }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"Message from server response error: {e.Message}");
             throw;
         }
         
     }
     
-   private static void KeyRequestHandle(string decryptedText, NetworkStream stream, Encryption encryption)
+   private static void KeyRequestHandle(string decryptedText, Client client)
     {
         try
         {
             var message = decryptedText.Split("|");
-            var clockPublicKey = Encryption.PublicKeyFromString(message[2]);
-            encryption.GenerateAesKey(clockPublicKey);
+            var receivedPublicKey = Encryption.PublicKeyFromString(message[2]);
+            client.Encryption.GenerateAesKey(receivedPublicKey);
             Console.WriteLine($"Clock Key request received.");
             
-            
             //Send SK response
-            var key = $"SK|{encryption.GetPublicKeyString().Length}|{encryption.GetPublicKeyString()}|";
-            stream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
+            var key = $"SK|{client.Encryption.GetPublicKeyString().Length}|{client.Encryption.GetPublicKeyString()}|";
+            client.TcpClient.GetStream().Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
             Console.WriteLine(key);
-            // byte[] bytes= Encoding.ASCII.GetBytes();
-            // stream.Write(bytes, 0, bytes.Length);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"Key request error: {e.Message}");
             throw;
         }
     }
 
-    private static void AuthenticationRequestHandle(string receivedData, NetworkStream stream, Encryption encryption)
+    private static void AuthenticationRequestHandle(string receivedData, Client client)
     {
         try
         {
-            
-            // stream.Write();
+            var stream=client.TcpClient.GetStream();
+            var message=receivedData.Split("|");
+            Guid clientId;
+            if (message[1].Equals("0") || _context.Clocks.Find(client.Id) == null)
+            {
+                
+                //generate client id
+                clientId= Guid.NewGuid();
+                while (clients.ContainsKey(clientId))
+                {
+                    clientId = Guid.NewGuid();
+                }
+                client.Id=clientId;
+                clients.TryAdd(clientId, client);
+                
+                //respond with client id
+                var key = $"AU|3|{clientId.ToString().Length}|{clientId.ToString()}|";
+                var encryptedKey=client.Encryption.Encrypt(key);
+                stream.Write(encryptedKey, 0, encryptedKey.Length);
+            }
+            else
+            {
+                //get client id
+                clientId = Guid.Parse(message[2]);
+                client.Id=clientId;
+                clients.TryAdd(clientId, client);
+                
+                //respond with authentication code
+                var encryptedKey=client.Encryption.Encrypt("AU|1|0||");
+                stream.Write(encryptedKey, 0, encryptedKey.Length);
+            }
+            Console.WriteLine($"Authentication request received for client: {clientId}.");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"Authentication request error: {e.Message}");
             throw;
         }
     }
