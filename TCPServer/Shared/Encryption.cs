@@ -32,6 +32,7 @@ public class Encryption
         return Convert.FromBase64String(publicKeyString);
     }
 
+    
     // Generate shared secret and derive AES key
     public void GenerateAesKey(byte[] otherPartyPublicKey)
     {
@@ -39,8 +40,14 @@ public class Encryption
         {
             ecdhTemp.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
             byte[] sharedSecret = _ecdh.DeriveKeyMaterial(ecdhTemp.PublicKey);
-            _aesKey = new byte[16];
-            Buffer.BlockCopy(sharedSecret, 0, _aesKey, 0, _aesKey.Length);
+            
+            // Hash the shared secret with SHA-256
+            using (SHA1 sha1 = SHA1.Create())
+            {
+                byte[] hashedSecret = sha1.ComputeHash(sharedSecret);
+                _aesKey = new byte[16];
+                Buffer.BlockCopy(hashedSecret, 0, _aesKey, 0, _aesKey.Length);
+            }
         }
     }
 
