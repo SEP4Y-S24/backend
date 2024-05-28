@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 using Models;
+using Shared.Helpers;
 using Shared.IDAO;
 using Shared.IService;
 
@@ -97,6 +98,23 @@ public class MeasurementService : IMeasurementService
             Console.WriteLine(e);
             throw;
         }    
+    }
+    public async Task<double> GetLAstByClockAsync(Guid clockId, MeasurementType type)
+    {
+        Clock? c = await _clockDao.GetByIdAsync(clockId);
+        if (c==null)
+        {
+            throw new Exception("Clock not found!");
+        }
+        IEnumerable<Measurement> m = await this.GetAllByClockIdAsync(clockId);
+        int day = DateTime.UtcNow.AddMinutes(c.TimeOffset).Day;
+        int month = DateTime.UtcNow.AddMinutes(c.TimeOffset).Month;
+        int year = DateTime.UtcNow.AddMinutes(c.TimeOffset).Year;
+        List<Measurement> ms = m.Where(a=>a.Type.Equals(type)).ToList();
+        IComparer<Measurement> dateComparer = new DateComparer();
+        ms.Sort(dateComparer);
+        Console.WriteLine(ms[0].TimeOfReading);
+        return ms.Last().Value;
     }
 
     public async Task<double> GetAvarageByClockTodayAsync(Guid clockId, MeasurementType type)

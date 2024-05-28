@@ -11,5 +11,7 @@ public interface IMeasurementService
     Task<IEnumerable<Measurement>> GetAllAsync();
     Task<IEnumerable<Measurement>> GetAllByClockIdAsync(Guid clockId);
     Task<double> GetAvarageByClockTodayAsync(Guid clockId, MeasurementType type);
+    Task<double> GetLAstByClockAsync(Guid clockId, MeasurementType type);
+
 
 }

@@ -54,30 +54,78 @@ public class MeasurementService
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "measurements/{clockId}/avarage")] HttpRequest req,
         Guid clockId, [FromQuery] string? type)
     {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
-        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        CreateMeasurementDto measurement = JsonConvert.DeserializeObject<CreateMeasurementDto?>(requestBody);
-        var persistenceService = ServiceFactory.GetMeasurementService();
-        MeasurementType m;
-        switch (type.ToLower())
+        try
         {
-            case "co2":
-                m = MeasurementType.CO2;
-                break;
-            case "humidity":
-                m = MeasurementType.Humidity;
-                break;
-            case "temperature":
-                m = MeasurementType.Temperature;
-                break;
-            case "aircondition":
-                m = MeasurementType.AirCondition;
-                break;
-            default:
-                return new BadRequestObjectResult("Measurement type not found!");
-        }
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            CreateMeasurementDto measurement = JsonConvert.DeserializeObject<CreateMeasurementDto?>(requestBody);
+            var persistenceService = ServiceFactory.GetMeasurementService();
+            MeasurementType m;
+            switch (type.ToLower())
+            {
+                case "co2":
+                    m = MeasurementType.CO2;
+                    break;
+                case "humidity":
+                    m = MeasurementType.Humidity;
+                    break;
+                case "temperature":
+                    m = MeasurementType.Temperature;
+                    break;
+                case "aircondition":
+                    m = MeasurementType.AirCondition;
+                    break;
+                default:
+                    return new BadRequestObjectResult("Measurement type not found!");
+            }
 
-        double result = await persistenceService.GetAvarageByClockTodayAsync(clockId, m);
-        return  new OkObjectResult(result);
+            double result = await persistenceService.GetAvarageByClockTodayAsync(clockId, m);
+            return  new OkObjectResult(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new BadHttpRequestException(e.Message);
+        }
     }
+    [Function("GetMeasurement")]
+    public async Task<IActionResult> GeMeasurement(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "measurements/{clockId}")] HttpRequest req,
+        Guid clockId, [FromQuery] string? type)
+    {
+        try
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            CreateMeasurementDto measurement = JsonConvert.DeserializeObject<CreateMeasurementDto?>(requestBody);
+            var persistenceService = ServiceFactory.GetMeasurementService();
+            MeasurementType m;
+            switch (type.ToLower())
+            {
+                case "co2":
+                    m = MeasurementType.CO2;
+                    break;
+                case "humidity":
+                    m = MeasurementType.Humidity;
+                    break;
+                case "temperature":
+                    m = MeasurementType.Temperature;
+                    break;
+                case "aircondition":
+                    m = MeasurementType.AirCondition;
+                    break;
+                default:
+                    return new BadRequestObjectResult("Measurement type not found!");
+            }
+
+            double result = await persistenceService.GetLAstByClockAsync(clockId, m);
+            return  new OkObjectResult(result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new BadHttpRequestException(e.Message);
+        }
+    }
+
 }

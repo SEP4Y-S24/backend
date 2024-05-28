@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMeasurementService", "AMea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AEventService", "AEventService\AEventService.csproj", "{666C6D73-3401-4EA3-B34A-C644054E8FFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCPClient", "TCPClient\TCPClient.csproj", "{AADF0218-3D04-4B9E-BCA8-0337FDE15FF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{666C6D73-3401-4EA3-B34A-C644054E8FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{666C6D73-3401-4EA3-B34A-C644054E8FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{666C6D73-3401-4EA3-B34A-C644054E8FFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADF0218-3D04-4B9E-BCA8-0337FDE15FF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADF0218-3D04-4B9E-BCA8-0337FDE15FF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADF0218-3D04-4B9E-BCA8-0337FDE15FF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADF0218-3D04-4B9E-BCA8-0337FDE15FF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
