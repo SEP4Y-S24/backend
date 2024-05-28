@@ -67,7 +67,7 @@ namespace AClockService.Functions
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                CreateClockDTO clock = JsonConvert.DeserializeObject<CreateClockDTO?>(requestBody);
+                ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 Clock c = await persistenceService.CreateClockAsync(clock);
                 ClockDTO clockDto = new ClockDTO()
@@ -77,7 +77,7 @@ namespace AClockService.Functions
                     TimeOffset = c.TimeOffset,
                     UserId = c.OwnerId
                 };
-                return new OkObjectResult(clockDto);
+                return new OkResult();
 
             }
             catch (Exception e)
