@@ -99,10 +99,11 @@ public class ClockService : IClockService
         }
     }
 
-    public async Task<string> GetClockTimeAsync()
+    public async Task<string> GetClockTimeAsync(Guid id)
     {
-        var offset=await _clockDao.GetOffsetByIdAsync(Guid.Parse("f656d97d-63b7-451a-91ee-0e620e652c9e"));//TODO resolve hardcode
-        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm:ss");
+        var offset=await _clockDao.GetOffsetByIdAsync(id);
+        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm");
+        time= "TM|1|4|" + time.Replace(":","") + "|";
         return await Task.FromResult(time);
     }
 }
