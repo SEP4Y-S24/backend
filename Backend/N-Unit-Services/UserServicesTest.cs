@@ -21,7 +21,7 @@ public class UserServicesTest
     {
         // Load configuration from appsettings.json
         var configurationBuilder = new ConfigurationBuilder()
-            .AddJsonFile("C:\\Users\\denim\\Documents\\VIA\\4-Semester\\SEP4\\backend\\Backend\\UserService\\appsettings.json",
+            .AddJsonFile("./host.json",
                 optional: false, reloadOnChange: true);
         _configuration = configurationBuilder.Build();
 
@@ -60,6 +60,9 @@ public class UserServicesTest
         var user = new User()
         {
             Id = new Guid(),
+            Email = "ek@gmail.com",
+            Name="Name",
+            PasswordHash = "cdsjlh"
         };
         var messages = new List<Message>();
         var result = await _userDao.CreateAsync(user);
@@ -79,7 +82,13 @@ public class UserServicesTest
         var user_dao = new UserDAO(_context);
         var clock_dao = new ClockDAO(_context);
 
-        var user = new User { Id = Guid.NewGuid() };
+        var user = new User()
+        {
+            Id = new Guid(),
+            Email = "ek@gmail.com",
+            Name="Name",
+            PasswordHash = "cdsjlh"
+        }; 
         await user_dao.CreateAsync(user);
         var messages = new List<Message>();
         var clock = new Clock()

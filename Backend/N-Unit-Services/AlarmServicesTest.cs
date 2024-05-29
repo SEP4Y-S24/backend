@@ -18,7 +18,7 @@ public class AlarmServicesTest
     {
         // Load configuration from appsettings.json
         var configurationBuilder = new ConfigurationBuilder()
-            .AddJsonFile("C:\\Users\\nural\\RiderProjects\\backend\\Backend\\AlarmServices\\appsettings.json",
+            .AddJsonFile("./host.json",
                 optional: false, reloadOnChange: true);
         _configuration = configurationBuilder.Build();
 
@@ -63,7 +63,8 @@ public class AlarmServicesTest
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
             SetOffTime = new TimeOnly(14, 30),
-            IsActive = false
+            IsActive = false,
+            Name = "Name"
         };
         var result = await _alarmDao.CreateAsync(alarm);
         
@@ -93,7 +94,8 @@ public class AlarmServicesTest
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
             SetOffTime = new TimeOnly(14, 30),
-            IsActive = false
+            IsActive = false,
+            Name = "Name"
         };
 
         await _context.Alarms.AddAsync(alarm);
@@ -122,7 +124,8 @@ public class AlarmServicesTest
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
             SetOffTime = new TimeOnly(14, 30),
-            IsActive = false
+            IsActive = false,
+            Name = "Name"
         };
 
         await _context.Alarms.AddAsync(alarm);
@@ -148,7 +151,9 @@ public class AlarmServicesTest
             Id = Guid.NewGuid(),
             ClockId = Guid.NewGuid(),
             SetOffTime = new TimeOnly(14, 30),
-            IsActive = false
+            IsActive = false,
+            Name = "Name"
+
         };
 
         // Add the original alarm to the database
@@ -162,6 +167,8 @@ public class AlarmServicesTest
             ClockId = originalAlarm.ClockId,
             SetOffTime = new TimeOnly(14, 30),
             IsActive = true,
+            Name = "Name"
+
         };
 
         // Act
