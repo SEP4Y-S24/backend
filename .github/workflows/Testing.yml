@@ -24,15 +24,14 @@ jobs:
         run: |
           pushd './Backend/N-Unit-Services'
           dotnet build --configuration Release --output ./output
-          popd 
+          popd
       - name: Upload coverage reports to Codecov
-          uses: codecov/codecov-action@v4.0.1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Test
         shell: pwsh
         run: |
           pushd './Backend/N-Unit-Services'
           dotnet test --configuration Release --output ./output
           popd
-
