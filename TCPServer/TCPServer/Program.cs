@@ -5,16 +5,19 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Shared.Context;
 using TCPServer;
 
 class Program
 {
     private static ConcurrentDictionary<Guid, Client> clients = new ConcurrentDictionary<Guid, Client>();
-    private static readonly ClockContext _context = new ClockContext();
+    
     private static List<Guid> _strings= new List<Guid>();
     static async Task Main(string[] args)
     {
+        Console.WriteLine(ServiceFactory.GetContext().Clocks.First(ck => ck.Id==Guid.Parse("7515d4bf-011e-4627-8a96-996e02a7ce55")).TimeOffset);
         TcpListener listener=null;
         try
         {
@@ -94,9 +97,10 @@ class Program
     
     private static void IdentifyCommand(byte[] receivedData, Client client)
     {
-        //decrypt
-        // var decryptedText = client.Encryption.Decrypt(receivedData);
-        
+        //Since the last version of Encryption does not work with IoT, the message sent will not be encrypted
+        //decrypt \/\/\/
+        //var decryptedText = client.Encryption.Decrypt(receivedData);
+        //replace with the decrypted text /\/\/\
         var text = Encoding.ASCII.GetString(receivedData);
         
         //check command
@@ -114,35 +118,58 @@ class Program
                 // Message response
                 MessageResponseHandle(text);
                 break;
+            case "TH":
+                // Time offset request
+                HumidityAndTemperatureRequestHandle(text, client);
+                break;
             case "IR":
                 // id request
                 IdRequestHandle(text, client);
                 break;
             default:
                 // Unknown command
+                var errMsg=text.Substring(0, 3)+"|2|0||";
+                SendMessage(Encoding.ASCII.GetBytes(errMsg), client);
                 throw new InvalidOperationException("Unknown command received.");
         }   
     }
 
+    
+    //Use when encryption is enabled
     private static void SendEncrypted(string message, Client client)
     {
         var encryptedMessage = client.Encryption.Encrypt(message);
         client.TcpClient.GetStream().Write(encryptedMessage, 0, encryptedMessage.Length);
     }
     
+    //Use when encryption is disabled
     private static void SendMessage(byte[] message, Client client)
     {
         client.TcpClient.GetStream().Write(message, 0, message.Length);
     }
-    
-    private static async void TimeRequestHandle(Client client)
+
+
+    private static void HumidityAndTemperatureRequestHandle(string data, Client client)
+    {
+        throw new NotImplementedException();
+    }
+    private static void TimeRequestHandle(Client client)
     {
         try
         {
-            var offset=_context.Clocks.Find(client.Id).TimeOffset;
-            var time = DateTime.Now.AddMinutes(offset).ToString("hh:mm");
-            time= "TM|1|4|" + time.Replace(":","") + "|";
-            var messageToSend = Encoding.ASCII.GetBytes(time);
+            Console.WriteLine(client.Id);
+            //get time offset
+            //Possibilities:
+            //-Connect to the database and get it from there
+            //-Get it from one the BackendServerClient
+            //-Get it by making a request to the ClockService
+            long offset = 0;    //TODO fix hardcoded value
+            // FOR DATABASE CONNECTION OPTION \/\/\/
+            // offset=ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
+            var time = DateTime.Now;
+            time=time.AddMinutes(offset);
+            var message= "TM|1|4|" + time.ToString("hh:mm").Replace(":","") + "|";
+            var messageToSend = Encoding.ASCII.GetBytes(message);
             SendMessage(messageToSend,client);
             Console.WriteLine("Time request received.");
         }
@@ -152,7 +179,8 @@ class Program
             throw;
         }
     }
-
+    
+    //request from BackendServerClient to confirm that the clients clock with the given id is registered
     private static void IdRequestHandle(string data, Client client)
     {
         try
@@ -160,11 +188,14 @@ class Program
             var message = data.Split("|");
             var id=Guid.Parse(message[1]);
             string messageToSend;
-            if (_strings.Contains(id))
+            
+            //try to get the client connection to confirm the id
+            if (_strings.Contains(id) && clients.TryGetValue(id, out Client clockClient))
             {
+                var messageToSendCk= "KV|0|";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSendCk), clockClient);   
                 _strings.Remove(id);
                 messageToSend = "IR|1|";
-                
             }
             else
             {
@@ -179,7 +210,7 @@ class Program
         }
     }
     
-    
+    //request from BackendServerClient to send a message to the client with the given id
     private static void MessageResponseHandle(string decryptedText)
     {
         try
@@ -222,7 +253,7 @@ class Program
             throw;
         }
     }
-
+   
     private static void AuthenticationRequestHandle(string receivedData, Client client)
     {
         try
@@ -230,7 +261,7 @@ class Program
             var stream=client.TcpClient.GetStream();
             var message=receivedData.Split("|");
             Guid clientId;
-            if (message[1].Equals("0") || _context.Clocks.Find(client.Id) == null)
+            if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.Find(client.Id) == null)
             {
                 
                 //generate client id
