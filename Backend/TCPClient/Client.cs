@@ -11,7 +11,7 @@ public class Client : IClientFunc
     public Client() 
     {
         encryption = new Encryption();
-        StartServer();
+    //    StartServer();
     }
 
     public async void StartServer()

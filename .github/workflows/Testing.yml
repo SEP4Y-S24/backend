@@ -30,9 +30,14 @@ jobs:
         shell: pwsh
         run: |
           pushd './Backend/N-Unit-Services'
-          dotnet test --collect "Code Coverage" --configuration Release --output ./output
+          dotnet test--collect "Code Coverage" --configuration Release --output ./output
           popd
       - name: Upload coverage reports to Codecov
-        uses: actions/upload-artifact@v4
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          path: ../Backend/N-Unit-Services/TestResults/
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
