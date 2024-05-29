@@ -12,11 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-  test_script:
-    - OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"./Backend/N-Unit-Services" -noshadow" -output:"./MyProject_coverage.xml"
-    - codecov -f "MyProject_coverage.xml
-
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -34,7 +29,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './Backend/N-Unit-Services'
-          dotnet test --collect "Code Coverage" --configuration Release --output ./output
+          dotnet test --collect:"XPlat Code Coverage" --configuration Release --output ./output
           popd
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
