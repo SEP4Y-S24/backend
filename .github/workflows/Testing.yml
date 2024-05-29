@@ -30,7 +30,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './Backend/N-Unit-Services'
-          dotnet test--collect "Code Coverage" --configuration Release --output ./output
+          dotnet test --collect "Code Coverage" --configuration Release --output ./output
           popd
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
