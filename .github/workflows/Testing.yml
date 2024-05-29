@@ -31,3 +31,7 @@ jobs:
           pushd './Backend/N-Unit-Services'
           dotnet test --configuration Release --output ./output
           popd
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
