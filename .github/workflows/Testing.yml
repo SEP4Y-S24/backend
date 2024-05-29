@@ -20,7 +20,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore ../../Backend/Backend.sln
+        shell: pwsh
+        run: |
+          pushd './Backend/N-Unit-Services'
+          dotnet build --configuration Release --output ./output
+          popd
       - name: Build
         run: dotnet build --no-restore
       - name: Test
