@@ -20,42 +20,24 @@ public class Client : IClientFunc
         {
             string serverAddress = "10.154.208.70";
             int serverPort = 13000;
-            var client = new TcpClient();
-            
-                 await client.ConnectAsync(serverAddress,serverPort);
-                _networkStream = client.GetStream();
-                
-                    // Send message to the server
-             //       var key = $"CK|{encryption.GetPublicKeyString().Length}|{}";
-                    
-               //     int len=key.Length+16;
-                 //   byte[] enc = Encoding.ASCII.GetBytes(key).Concat(encryption.GetPublicKey()).ToArray();
-                   // Console.WriteLine(enc.Length);
-                   // await _networkStream.WriteAsync(enc, 0, 70);
-                   /// Console.WriteLine(key);
-                    var bytesRead = 0;
-                    // Wait for the server response
-                    byte[] buffer = new byte[1024];
-                    bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
-                    Console.WriteLine("Bytes read");
-                        //var receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        // Console.WriteLine($"Received: {receivedData}");
-                        var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                        Console.WriteLine(receivedData);
-                        if (receivedData == "\r\n")
-                        {
-                            Console.WriteLine("Exiting...");
-                        }
-                        else if (receivedData.Length >= 2)
-                        {
-                            handleServerResponse(receivedData, encryption);
-                            Console.WriteLine("receivedData");
-
-                        }
-                        // var response = Encoding.UTF8.GetBytes($"Echo: {receivedText}");
-                        // await networkStream.WriteAsync(response, 0, response.Length);
-                                       
-                    string jsonResponse = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            var client = new TcpClient(); 
+            await client.ConnectAsync(serverAddress,serverPort);
+            _networkStream = client.GetStream();
+            var bytesRead = 0;
+            byte[] buffer = new byte[1024]; 
+            bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length); 
+            Console.WriteLine("Bytes read"); 
+            var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead); 
+            Console.WriteLine(receivedData); 
+            if (receivedData == "\r\n") 
+            { 
+                Console.WriteLine("Exiting...");
+            }
+            else if (receivedData.Length >= 2) 
+            { 
+                handleServerResponse(receivedData, encryption); 
+                Console.WriteLine("receivedData"); 
+            } 
         }
         catch (Exception ex)
         {
@@ -68,9 +50,6 @@ public class Client : IClientFunc
     {
         if (response.Substring(0, 2).ToUpper().Equals("SK"))
         {
-            // Clock Key response
-            // handle clock key response
-           // KeyRequestHandle(response, encryption);
            var publicKey = response.Split("|")[2];
            byte[] key = Convert.FromBase64String(publicKey);
            encryption.GenerateAesKey(key);
