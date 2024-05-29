@@ -35,7 +35,7 @@ jobs:
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          name: gcov-reports
           path: ../Backend/N-Unit-Services/TestResults/
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
