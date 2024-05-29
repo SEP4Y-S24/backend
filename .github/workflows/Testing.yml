@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+  test_script:
+    - OpenCover.Console.exe -register:user -target:"%xunit20%\xunit.console.x86.exe" -targetargs:"./Backend/N-Unit-Services" -noshadow" -output:"./MyProject_coverage.xml"
+    - codecov -f "MyProject_coverage.xml
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -40,4 +44,6 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
+          flags: smart-tests
+          verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
