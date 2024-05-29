@@ -98,7 +98,7 @@ namespace AClockService.Functions
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
+                CreateClockDTO clock = JsonConvert.DeserializeObject<CreateClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 // TODO Uncomment once the TCP Client to Server connection works and Server is on AzureVM
                 // var client = ServiceFactory.GetClient();
@@ -106,7 +106,8 @@ namespace AClockService.Functions
                 // {
                 //     return new BadRequestObjectResult("Wrong clock id!");
                 // }
-                Clock c = await persistenceService.UpdateClockAsync(clock,clock.Id);
+                // Clock c = await persistenceService.UpdateClockAsync(clock,clock.Id);
+                Clock c = await persistenceService.CreateClockAsync(clock);
                 ClockDTO clockDto = new ClockDTO()
                 {
                     Id = c.Id,
