@@ -13,14 +13,13 @@ using TCPServer;
 class Program
 {
     private static ConcurrentDictionary<Guid, Client> clients = new ConcurrentDictionary<Guid, Client>();
-    
-    private static List<Guid> _strings= new List<Guid>();
-    private static ClockContext _clockContext= null;
+
+    private static List<Guid> _strings = new List<Guid>();
+    private static ClockContext _clockContext = null;
     static async Task Main(string[] args)
     {
-        
-        Console.WriteLine(ServiceFactory.GetContext().Clocks.First(ck => ck.Id==Guid.Parse("7515d4bf-011e-4627-8a96-996e02a7ce55")).TimeOffset);
-        TcpListener listener=null;
+        Console.WriteLine(ServiceFactory.GetContext().Clocks.First(ck => ck.Id == Guid.Parse("7515d4bf-011e-4627-8a96-996e02a7ce55")).TimeOffset);
+        TcpListener listener = null;
         try
         {
             int port = 13000;
@@ -44,23 +43,23 @@ class Program
         {
             listener?.Stop();
         }
-        
+
     }
 
     private static async Task HandleClientAsync(TcpClient tcpClient)
     {
         Console.WriteLine("Client connected.");
         Client clientObj = new Client(tcpClient);
-        
+
         using var stream = clientObj.TcpClient.GetStream();
         var buffer = new byte[1024];
         int bytesRead;
-        
+
         try
         {
-            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length))!=0)
+            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
             {
-                
+
                 var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 Console.WriteLine("RECEIVEDDATA: " + receivedData);
                 //check if not encrypted
@@ -69,7 +68,7 @@ class Program
                     // Clock Key response
                     KeyRequestHandle(receivedData, clientObj);
                 }
-                else if(bytesRead > 2)
+                else if (bytesRead > 2)
                 {
                     var data = buffer[..bytesRead];
                     IdentifyCommand(data, clientObj);
@@ -96,7 +95,7 @@ class Program
         }
 
     }
-    
+
     private static void IdentifyCommand(byte[] receivedData, Client client)
     {
         //Since the last version of Encryption does not work with IoT, the message sent will not be encrypted
@@ -104,9 +103,9 @@ class Program
         //var decryptedText = client.Encryption.Decrypt(receivedData);
         //replace with the decrypted text /\/\/\
         var text = Encoding.ASCII.GetString(receivedData);
-        
+
         //check command
-        switch (text.Substring(0,2).ToUpper())
+        switch (text.Substring(0, 2).ToUpper())
         {
             case "TM":
                 // Time request
@@ -130,20 +129,20 @@ class Program
                 break;
             default:
                 // Unknown command
-                var errMsg=text.Substring(0, 3)+"|2|0||";
+                var errMsg = text.Substring(0, 3) + "|2|0||";
                 SendMessage(Encoding.ASCII.GetBytes(errMsg), client);
                 throw new InvalidOperationException("Unknown command received.");
-        }   
+        }
     }
 
-    
+
     //Use when encryption is enabled
     private static void SendEncrypted(string message, Client client)
     {
         var encryptedMessage = client.Encryption.Encrypt(message);
         client.TcpClient.GetStream().Write(encryptedMessage, 0, encryptedMessage.Length);
     }
-    
+
     //Use when encryption is disabled
     private static void SendMessage(byte[] message, Client client)
     {
@@ -166,13 +165,13 @@ class Program
             //-Get it from one the BackendServerClient
             //-Get it by making a request to the ClockService
             long offset = 0;    //TODO fix hardcoded value
-            // FOR DATABASE CONNECTION OPTION \/\/\/
-            // offset=ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
+                                // FOR DATABASE CONNECTION OPTION \/\/\/
+            offset = ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
             var time = DateTime.Now;
-            time=time.AddMinutes(offset);
-            var message= "TM|1|4|" + time.ToString("hh:mm").Replace(":","") + "|";
+            time = time.AddMinutes(offset);
+            var message = "TM|1|4|" + time.ToString("hh:mm").Replace(":", "") + "|";
             var messageToSend = Encoding.ASCII.GetBytes(message);
-            SendMessage(messageToSend,client);
+            SendMessage(messageToSend, client);
             Console.WriteLine("Time request received.");
         }
         catch (Exception e)
@@ -181,27 +180,27 @@ class Program
             throw;
         }
     }
-    
+
     //request from BackendServerClient to confirm that the clients clock with the given id is registered
     private static void IdRequestHandle(string data, Client client)
     {
         try
         {
             var message = data.Split("|");
-            var id=Guid.Parse(message[1]);
+            var id = Guid.Parse(message[1]);
             string messageToSend;
-            
+
             //try to get the client connection to confirm the id
             if (_strings.Contains(id) && clients.TryGetValue(id, out Client clockClient))
             {
-                var messageToSendCk= "KV|0|";
-                SendMessage(Encoding.ASCII.GetBytes(messageToSendCk), clockClient);   
+                var messageToSendCk = "KV|0|";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSendCk), clockClient);
                 _strings.Remove(id);
                 messageToSend = "IR|1|";
             }
             else
             {
-                messageToSend= "IR|0|";
+                messageToSend = "IR|0|";
             }
             SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
         }
@@ -211,7 +210,7 @@ class Program
             throw;
         }
     }
-    
+
     //request from BackendServerClient to send a message to the client with the given id
     private static void MessageResponseHandle(string decryptedText)
     {
@@ -219,13 +218,13 @@ class Program
         {
             var message = decryptedText.Split("|");
             if (message[1].Equals("1")) return;
-            var id=Guid.Parse(message[2]);
+            var id = Guid.Parse(message[2]);
             var messageToSend = message[3];
             Console.WriteLine($"Message {messageToSend} request received.");
             if (clients.TryGetValue(id, out Client clockClient))
             {
-                messageToSend= $"MS|{messageToSend.Length}|{messageToSend}|";
-                SendMessage(Encoding.ASCII.GetBytes(messageToSend), clockClient);   
+                messageToSend = $"MS|{messageToSend.Length}|{messageToSend}|";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSend), clockClient);
             }
         }
         catch (Exception e)
@@ -233,10 +232,10 @@ class Program
             Console.WriteLine($"Message from server response error: {e.Message}");
             throw;
         }
-        
+
     }
-    
-   private static void KeyRequestHandle(string data, Client client)
+
+    private static void KeyRequestHandle(string data, Client client)
     {
         try
         {
@@ -244,7 +243,7 @@ class Program
             var receivedPublicKey = Encryption.PublicKeyFromString(message[2]);
             client.Encryption.GenerateAesKey(receivedPublicKey);
             Console.WriteLine($"Clock Key request received.");
-            
+
             //Send SK response
             var key = $"SK|{client.Encryption.GetPublicKeyString().Length}|{client.Encryption.GetPublicKeyString()}|";
             client.TcpClient.GetStream().Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
@@ -256,29 +255,31 @@ class Program
             throw;
         }
     }
-   
+
     private static void AuthenticationRequestHandle(string receivedData, Client client)
     {
         try
         {
-            var stream=client.TcpClient.GetStream();
-            var message=receivedData.Split("|");
+            var stream = client.TcpClient.GetStream();
+            var message = receivedData.Split("|");
+            Guid id = Guid.Parse(message[2]);
+            ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(id));
             Guid clientId;
-            if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.Find(client.Id) == null)
+            if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(Guid.Parse(message[2]))) == null)
             {
-                
+
                 //generate client id
-                clientId= Guid.NewGuid();
+                clientId = Guid.NewGuid();
                 while (clients.ContainsKey(clientId))
                 {
                     clientId = Guid.NewGuid();
                 }
-                client.Id=clientId;
+                client.Id = clientId;
                 if (clients.TryAdd(clientId, client))
                 {
                     _strings.Add(clientId);
                 }
-                
+
                 //respond with client id
                 var key = $"AU|3|{clientId.ToString().Length}|{clientId.ToString()}|";
                 SendMessage(Encoding.ASCII.GetBytes(key), client);
@@ -287,12 +288,12 @@ class Program
             {
                 //get client id
                 clientId = Guid.Parse(message[2]);
-                client.Id=clientId;
+                client.Id = clientId;
                 if (clients.TryAdd(clientId, client))
                 {
                     _strings.Add(clientId);
                 }
-                
+
                 //respond with authentication code
                 var messageToSend = "AU|1|0||";
                 SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
