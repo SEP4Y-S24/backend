@@ -65,7 +65,7 @@ public static class ServiceFactory
 
         return _userDao;
     }
-    public static IClientFunc GetClent()
+    public static IClientFunc GetClient()
     {
         if (_clientFunc == null)
         {
