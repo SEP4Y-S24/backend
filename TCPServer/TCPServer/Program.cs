@@ -15,8 +15,10 @@ class Program
     private static ConcurrentDictionary<Guid, Client> clients = new ConcurrentDictionary<Guid, Client>();
     
     private static List<Guid> _strings= new List<Guid>();
+    private static ClockContext _clockContext= null;
     static async Task Main(string[] args)
     {
+        
         Console.WriteLine(ServiceFactory.GetContext().Clocks.First(ck => ck.Id==Guid.Parse("7515d4bf-011e-4627-8a96-996e02a7ce55")).TimeOffset);
         TcpListener listener=null;
         try
@@ -216,8 +218,9 @@ class Program
         try
         {
             var message = decryptedText.Split("|");
-            var id=Guid.Parse(message[1]);
-            var messageToSend = message[2];
+            if (message[1].Equals("1")) return;
+            var id=Guid.Parse(message[2]);
+            var messageToSend = message[3];
             Console.WriteLine($"Message {messageToSend} request received.");
             if (clients.TryGetValue(id, out Client clockClient))
             {

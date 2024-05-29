@@ -101,12 +101,11 @@ namespace AClockService.Functions
                 CreateClockDTO clock = JsonConvert.DeserializeObject<CreateClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 // TODO Uncomment once the TCP Client to Server connection works and Server is on AzureVM
-                // var client = ServiceFactory.GetClient();
-                // if( await client.CheckClockIdAsync(clock.Id)==false)
-                // {
-                //     return new BadRequestObjectResult("Wrong clock id!");
-                // }
-                // Clock c = await persistenceService.UpdateClockAsync(clock,clock.Id);
+                var client = ServiceFactory.GetClient();
+                if (await client.CheckClockIdAsync(clock.Id) == false)
+                {
+                    return new BadRequestObjectResult("Wrong clock id!");
+                }
                 Clock c = await persistenceService.CreateClockAsync(clock);
                 ClockDTO clockDto = new ClockDTO()
                 {

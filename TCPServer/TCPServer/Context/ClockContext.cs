@@ -5,7 +5,6 @@ namespace Shared.Context;
 
 public class ClockContext: DbContext
 {
-    public ClockContext() { }
     public ClockContext(DbContextOptions<ClockContext> options) : base(options)
     {
     }

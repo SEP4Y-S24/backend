@@ -61,7 +61,7 @@ public class ClockService : IClockService
         }
     }
 
-    public async Task<Clock> CreateClockAsync(CreateClockDTO clockToCreate)
+    public async Task<Clock> CreateClockAsync(ClockDTO clockToCreate)
     {
         User? user = await _userDao.GetByIdAsync(clockToCreate.UserId);
         if (user == null)
@@ -71,7 +71,7 @@ public class ClockService : IClockService
 
         Clock clock = new Clock()
         {
-            Id = clockToCreate.ClockId,
+            Id = clockToCreate.Id,
             OwnerId = clockToCreate.UserId,
             Name = clockToCreate.Name,
             TimeOffset = clockToCreate.TimeOffset,

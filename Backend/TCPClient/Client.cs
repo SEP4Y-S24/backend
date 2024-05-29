@@ -18,26 +18,11 @@ public class Client : IClientFunc
     {
         try
         {
-            string serverAddress = "10.154.208.70";
+            string serverAddress = "4.184.192.42";
             int serverPort = 13000;
             var client = new TcpClient(); 
             await client.ConnectAsync(serverAddress,serverPort);
             _networkStream = client.GetStream();
-            var bytesRead = 0;
-            byte[] buffer = new byte[1024]; 
-            bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length); 
-            Console.WriteLine("Bytes read"); 
-            var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead); 
-            Console.WriteLine(receivedData); 
-            if (receivedData == "\r\n") 
-            { 
-                Console.WriteLine("Exiting...");
-            }
-            else if (receivedData.Length >= 2) 
-            { 
-                handleServerResponse(receivedData, encryption); 
-                Console.WriteLine("receivedData"); 
-            } 
         }
         catch (Exception ex)
         {
@@ -45,16 +30,7 @@ public class Client : IClientFunc
             throw new InvalidOperationException("An error occurred while communicating with the socket server.", ex);
         }
     }
-
-    public void handleServerResponse(string response, Encryption encryption)
-    {
-        if (response.Substring(0, 2).ToUpper().Equals("SK"))
-        {
-           var publicKey = response.Split("|")[2];
-           byte[] key = Convert.FromBase64String(publicKey);
-           encryption.GenerateAesKey(key);
-        }
-    }
+    
 
     public async Task<int> SendTMAsync()
     {
@@ -128,7 +104,7 @@ public class Client : IClientFunc
             Thread.Sleep(1000);
         }
 
-        var key = $"SM|{message.Length+17}|{clockId.ToString()}|{message}|";
+        var key = $"MS|{message.Length+17}|{clockId.ToString()}|{message}|";
         _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
         Console.WriteLine(key);
         var bytesRead = 0;
