@@ -7,8 +7,9 @@ namespace Shared.IService;
 public interface IClockService
 {
     Task SetTimeZoneAsync(long timeOffset, Guid id);
-    Task<string> GetClockTimeAsync(Guid id);
-    Task<Clock> CreateClockAsync(ClockDTO clockToCreate);
+    Task<string> GetClockTimeAsync();
+    Task<Clock?> GetClockById(Guid clockId);
+    Task<Clock> CreateClockAsync(CreateClockDTO clockToCreate);
     Task<Clock> UpdateClockAsync(CreateClockDTO clockToUpdate, Guid id);
     Task DeleteAsync(Guid id);
 }

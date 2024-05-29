@@ -13,36 +13,66 @@ public class Encryption
         // Initialize ECDH with secp256r1 curve
         _ecdh = ECDiffieHellman.Create(ECCurve.NamedCurves.nistP256);
     }
+    
+    // Get the public key in raw format (64 bytes)
+    public byte[] GetPublicKey()
+    {
+        ECParameters ecParams = _ecdh.ExportParameters(false);
+        byte[] publicKey = new byte[64];
+        Buffer.BlockCopy(ecParams.Q.X, 0, publicKey, 0, 32);
+        Buffer.BlockCopy(ecParams.Q.Y, 0, publicKey, 32, 32);
+        return publicKey;
+    }
 
     // Get the public key to share with the other party
-    public byte[] GetPublicKey()
+    public byte[] GetPublicKeyX509()
     {
         return _ecdh.PublicKey.ExportSubjectPublicKeyInfo();
     }
-    
+    public bool IsAesKeyNull()
+    {
+        return _aesKey == null;
+    }
     // Convert public key to Base64 string
     public string GetPublicKeyString()
     {
-        return Convert.ToBase64String(GetPublicKey());
+        return Encoding.ASCII.GetString(GetPublicKey());
     }
 
     // Convert Base64 string back to public key byte array
     public static byte[] PublicKeyFromString(string publicKeyString)
     {
-        return Convert.FromBase64String(publicKeyString);
+        return Encoding.ASCII.GetBytes(publicKeyString);
     }
 
     // Generate shared secret and derive AES key
-    public void GenerateAesKey(byte[] otherPartyPublicKey)
-    {
-        using (ECDiffieHellman ecdhTemp = ECDiffieHellman.Create(ECCurve.NamedCurves.nistP256))
+        public void GenerateAesKey(byte[] otherPartyPublicKey)
         {
-            ecdhTemp.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
-            byte[] sharedSecret = _ecdh.DeriveKeyMaterial(ecdhTemp.PublicKey);
-            _aesKey = new byte[16];
-            Buffer.BlockCopy(sharedSecret, 0, _aesKey, 0, _aesKey.Length);
+            ECParameters ecParams = new ECParameters
+            {
+                Curve = ECCurve.NamedCurves.nistP256,
+                Q = new ECPoint
+                {
+                    X = new byte[32],
+                    Y = new byte[32]
+                }
+            };
+            Buffer.BlockCopy(otherPartyPublicKey, 0, ecParams.Q.X, 0, 32);
+            Buffer.BlockCopy(otherPartyPublicKey, 32, ecParams.Q.Y, 0, 32);
+    
+            using (ECDiffieHellman ecdhTemp = ECDiffieHellman.Create(ecParams))
+            {
+                byte[] sharedSecret = _ecdh.DeriveKeyMaterial(ecdhTemp.PublicKey);
+    
+                // Hash the shared secret with MD5
+                using (SHA1 sha1 = SHA1.Create())
+                {
+                    byte[] hashedSecret = sha1.ComputeHash(sharedSecret);
+                    _aesKey = new byte[16];
+                    Buffer.BlockCopy(hashedSecret, 0, _aesKey, 0, _aesKey.Length);
+                }
+            }
         }
-    }
 
     // Encrypt a message using AES-128-CBC
     public byte[] Encrypt(string plainText)
@@ -66,14 +96,11 @@ public class Encryption
                     byte[] result = new byte[aes.IV.Length + cipherText.Length];
                     Buffer.BlockCopy(aes.IV, 0, result, 0, aes.IV.Length);
                     Buffer.BlockCopy(cipherText, 0, result, aes.IV.Length, cipherText.Length);
+
                     return result;
                 }
             }
         }
-    }
-    public bool IsAesKeyNull()
-    {
-        return _aesKey == null;
     }
 
     // Decrypt a message using AES-128-CBC

@@ -7,7 +7,7 @@ namespace Shared.Service;
 
 public class ClockService : IClockService
 {
-    private readonly  IClockDAO _clockDao;
+    private readonly IClockDAO _clockDao;
     private readonly IUserDAO _userDao;
 
     public ClockService(IClockDAO clockDao, IUserDAO userDao)
@@ -25,25 +25,43 @@ public class ClockService : IClockService
             throw new Exception($"Clock with ID {id} not found!");
         }
 
-       /* User? user = null;
-        if (dto.OwnerId != null)
-        {
-            user = await userDao.GetById((int)dto.OwnerId);
-            if (user == null)
-            {
-                throw new Exception($"User with id {dto.OwnerId} was not found.");
-            }
-        }
-        User userToUse = user ?? existing.Owner;
-    */
-       existing.TimeOffset = timeOffset;
+        /* User? user = null;
+         if (dto.OwnerId != null)
+         {
+             user = await userDao.GetById((int)dto.OwnerId);
+             if (user == null)
+             {
+                 throw new Exception($"User with id {dto.OwnerId} was not found.");
+             }
+         }
+         User userToUse = user ?? existing.Owner;
+     */
+        existing.TimeOffset = timeOffset;
 
 
         await _clockDao.UpdateAsync(existing);
 
     }
 
-    public async Task<Clock> CreateClockAsync(ClockDTO clockToCreate)
+    public Task<string> GetClockTimeAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Clock?> GetClockById(Guid clockId)
+    {
+        try
+        {
+            return _clockDao.GetByIdAsync(clockId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception(e.Message);
+        }
+    }
+
+    public async Task<Clock> CreateClockAsync(CreateClockDTO clockToCreate)
     {
         User? user = await _userDao.GetByIdAsync(clockToCreate.UserId);
         if (user == null)
@@ -53,7 +71,7 @@ public class ClockService : IClockService
 
         Clock clock = new Clock()
         {
-            Id = clockToCreate.Id,
+            Id = clockToCreate.ClockId,
             OwnerId = clockToCreate.UserId,
             Name = clockToCreate.Name,
             TimeOffset = clockToCreate.TimeOffset,
@@ -101,9 +119,9 @@ public class ClockService : IClockService
 
     public async Task<string> GetClockTimeAsync(Guid id)
     {
-        var offset=await _clockDao.GetOffsetByIdAsync(id);
-        var time= DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm");
-        time= "TM|1|4|" + time.Replace(":","") + "|";
+        var offset = await _clockDao.GetOffsetByIdAsync(id);
+        var time = DateTime.UtcNow.Add(TimeSpan.FromMinutes(offset)).ToString("hh:mm");
+        time = "TM|1|4|" + time.Replace(":", "") + "|";
         return await Task.FromResult(time);
     }
 }

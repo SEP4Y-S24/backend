@@ -11,13 +11,14 @@ public class Client : IClientFunc
     public Client() 
     {
         encryption = new Encryption();
+        StartServer();
     }
 
     public async void StartServer()
     {
         try
         {
-            string serverAddress = "10.154.208.67";
+            string serverAddress = "10.154.208.70";
             int serverPort = 13000;
             var client = new TcpClient();
             
@@ -25,10 +26,13 @@ public class Client : IClientFunc
                 _networkStream = client.GetStream();
                 
                     // Send message to the server
-                    var key = $"CK|{encryption.GetPublicKeyString().Length}|{encryption.GetPublicKeyString()}|";
+             //       var key = $"CK|{encryption.GetPublicKeyString().Length}|{}";
                     
-                    await _networkStream.WriteAsync(Encoding.ASCII.GetBytes(key), 0, key.Length);
-                    Console.WriteLine(key);
+               //     int len=key.Length+16;
+                 //   byte[] enc = Encoding.ASCII.GetBytes(key).Concat(encryption.GetPublicKey()).ToArray();
+                   // Console.WriteLine(enc.Length);
+                   // await _networkStream.WriteAsync(enc, 0, 70);
+                   /// Console.WriteLine(key);
                     var bytesRead = 0;
                     // Wait for the server response
                     byte[] buffer = new byte[1024];
@@ -75,7 +79,7 @@ public class Client : IClientFunc
 
     public async Task<int> SendTMAsync()
     {
-        while (encryption.IsAesKeyNull())
+        while (_networkStream == null)
         {
             Thread.Sleep(1000);
         }
@@ -105,6 +109,37 @@ public class Client : IClientFunc
 
         return 400;
     }
+    public async Task<bool> CheckClockIdAsync(Guid clockId)
+    {
+        while (_networkStream == null)
+        {
+            Thread.Sleep(1000);
+        }
+
+        Console.WriteLine("CheckClockIdAsync...");
+        // Send message to the server
+        var key = $"IR|{clockId}|";
+        Console.WriteLine(key);
+//        Console.WriteLine(cipherText.Length);
+        _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
+        Console.WriteLine(key);
+        var bytesRead = 0;
+        // Wait for the server response
+        byte[] buffer = new byte[1024];
+        bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
+        var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+        if (receivedData == "\r\n")
+        {
+            Console.WriteLine("Exiting...");
+        }
+        else if (receivedData.Length >= 2)
+        {
+            if (receivedData.Split('|')[1].Equals("1")) return true;
+            else return false;
+        }
+
+        return false;
+    }
 
     public async Task<int> SendMessageAsync(string message,Guid clockId)
     {
@@ -115,9 +150,7 @@ public class Client : IClientFunc
         }
 
         var key = $"SM|{message.Length+17}|{clockId.ToString()}|{message}|";
-        encryption.Encrypt(key);
-
-        //      networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
+        _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
         Console.WriteLine(key);
         var bytesRead = 0;
         // Wait for the server response

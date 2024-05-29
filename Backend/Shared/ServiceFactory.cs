@@ -70,7 +70,6 @@ public static class ServiceFactory
         if (_clientFunc == null)
         {
             _clientFunc = new Client();
-            _clientFunc.StartServer();
         }
 
         return _clientFunc;

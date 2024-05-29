@@ -57,6 +57,37 @@ namespace AClockService.Functions
                 return new BadRequestObjectResult("Error setting time offset!");
             }
         }
+        [Function("GetClock")]
+        public async Task<IActionResult> GetClock(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "clock/{clockId}")]
+            HttpRequest req, Guid clockId)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger function processed a request.");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var persistenceService = ServiceFactory.GetClockService();
+                Clock? c = await persistenceService.GetClockById(clockId);
+                if (c == null)
+                {
+                    throw new Exception("Bad Id");
+                }
+                ClockDTO clockDto = new ClockDTO()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    TimeOffset = c.TimeOffset,
+                    UserId = c.OwnerId
+                };
+                return new OkObjectResult(clockDto);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new BadRequestObjectResult("Error creating clock!");
+            }
+        }
 
         [Function("CreateClock")]
         public async Task<IActionResult> CreateClock(
@@ -69,7 +100,12 @@ namespace AClockService.Functions
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
-                Clock c = await persistenceService.CreateClockAsync(clock);
+                var client = ServiceFactory.GetClent();
+                if( await client.CheckClockIdAsync(clock.ClockId)==false)
+                {
+                    return new BadRequestObjectResult("Wrong clock id!");
+                }
+                Clock c = await persistenceService.UpdateClockAsync(clock,clock.ClockId);
                 ClockDTO clockDto = new ClockDTO()
                 {
                     Id = c.Id,
