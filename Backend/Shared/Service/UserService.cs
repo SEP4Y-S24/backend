@@ -100,7 +100,8 @@ public class UserService : IUserService
         {
             throw new ArgumentNullException("There is no user with this id!");
         }
-        return user.Clocks.ToList();
+        IEnumerable<Clock> clocks = await _clockDao.GetAllByAsync(cl=>cl.OwnerId.Equals(id));
+        return clocks.ToList();
     }
 
     /*   public async Task<Clock> AddClock(CreateClockDTO clock, Guid userId)

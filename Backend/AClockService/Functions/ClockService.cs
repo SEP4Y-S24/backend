@@ -98,7 +98,7 @@ namespace AClockService.Functions
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                CreateClockDTO clock = JsonConvert.DeserializeObject<CreateClockDTO?>(requestBody);
+                ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 // TODO Uncomment once the TCP Client to Server connection works and Server is on AzureVM
                 var client = ServiceFactory.GetClient();
