@@ -17,6 +17,11 @@ class Program
     private static List<Guid> _strings= new List<Guid>();
     static async Task Main(string[] args)
     {
+<<<<<<< Updated upstream
+=======
+        // Ensure _context is initialized properly
+
+>>>>>>> Stashed changes
         Console.WriteLine(ServiceFactory.GetContext().Clocks.First(ck => ck.Id==Guid.Parse("7515d4bf-011e-4627-8a96-996e02a7ce55")).TimeOffset);
         TcpListener listener=null;
         try
@@ -165,7 +170,7 @@ class Program
             //-Get it by making a request to the ClockService
             long offset = 0;    //TODO fix hardcoded value
             // FOR DATABASE CONNECTION OPTION \/\/\/
-            // offset=ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
+             offset=ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
             var time = DateTime.Now;
             time=time.AddMinutes(offset);
             var message= "TM|1|4|" + time.ToString("hh:mm").Replace(":","") + "|";
@@ -260,8 +265,10 @@ class Program
         {
             var stream=client.TcpClient.GetStream();
             var message=receivedData.Split("|");
+            Guid id = Guid.Parse(message[2]);
+            ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(id));
             Guid clientId;
-            if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.Find(client.Id) == null)
+            if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.First(ck=>ck.Id.Equals(Guid.Parse(message[2]))) == null)
             {
                 
                 //generate client id
