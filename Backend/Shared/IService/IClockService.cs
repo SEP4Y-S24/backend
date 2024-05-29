@@ -10,6 +10,6 @@ public interface IClockService
     Task<string> GetClockTimeAsync();
     Task<Clock?> GetClockById(Guid clockId);
     Task<Clock> CreateClockAsync(CreateClockDTO clockToCreate);
-    Task<Clock> UpdateClockAsync(CreateClockDTO clockToUpdate, Guid id);
+    Task<Clock> UpdateClockAsync(ClockDTO clockToUpdate, Guid id);
     Task DeleteAsync(Guid id);
 }

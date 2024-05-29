@@ -101,11 +101,11 @@ namespace AClockService.Functions
                 ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 var client = ServiceFactory.GetClent();
-                if( await client.CheckClockIdAsync(clock.ClockId)==false)
+                if( await client.CheckClockIdAsync(clock.Id)==false)
                 {
                     return new BadRequestObjectResult("Wrong clock id!");
                 }
-                Clock c = await persistenceService.UpdateClockAsync(clock,clock.ClockId);
+                Clock c = await persistenceService.UpdateClockAsync(clock,clock.Id);
                 ClockDTO clockDto = new ClockDTO()
                 {
                     Id = c.Id,
@@ -132,7 +132,7 @@ namespace AClockService.Functions
             {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                CreateClockDTO clock = JsonConvert.DeserializeObject<CreateClockDTO?>(requestBody);
+                ClockDTO clock = JsonConvert.DeserializeObject<ClockDTO?>(requestBody);
                 var persistenceService = ServiceFactory.GetClockService();
                 Clock c = await persistenceService.UpdateClockAsync(clock, id);
                 ClockDTO clockDto = new ClockDTO()

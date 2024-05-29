@@ -80,7 +80,7 @@ public class ClockService : IClockService
         Clock created = await _clockDao.CreateAsync(clock);
         return created;
     }
-    public async Task<Clock> UpdateClockAsync(CreateClockDTO clockToUpdate, Guid id)
+    public async Task<Clock> UpdateClockAsync(ClockDTO clockToUpdate, Guid id)
     {
         Clock clock = new Clock()
         {
