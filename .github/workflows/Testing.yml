@@ -25,7 +25,5 @@ jobs:
           pushd './Backend/N-Unit-Services'
           dotnet build --configuration Release --output ./output
           popd
-      - name: Build
-        run: dotnet build --no-restore
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test
