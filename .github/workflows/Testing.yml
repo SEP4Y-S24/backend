@@ -26,4 +26,8 @@ jobs:
           dotnet build --configuration Release --output ./output
           popd
       - name: Test
-        run: dotnet test
+        shell: pwsh
+        run: |
+          pushd './Backend/N-Unit-Services'
+          dotnet test --configuration Release --output ./output
+          popd
