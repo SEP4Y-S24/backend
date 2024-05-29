@@ -5,14 +5,14 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Shared;
 using Shared.Context;
 using TCPServer;
 
 class Program
 {
     private static ConcurrentDictionary<Guid, Client> clients = new ConcurrentDictionary<Guid, Client>();
-    private static readonly ClockContext _context = ServiceFactory.GetContext();
+    private static readonly ClockContext _context = new ClockContext();
+    private static List<Guid> _strings= new List<Guid>();
     static async Task Main(string[] args)
     {
         TcpListener listener=null;
@@ -62,7 +62,6 @@ class Program
                 if (receivedData.Substring(0, 2).ToUpper().Equals("CK"))
                 {
                     // Clock Key response
-                    // handle clock key response
                     KeyRequestHandle(receivedData, clientObj);
                 }
                 else if(bytesRead > 2)
@@ -76,6 +75,7 @@ class Program
         {
             Console.WriteLine("Client forcibly closed the connection.");
             clients.TryRemove(clientObj.Id, out _);
+            _strings.Remove(clientObj.Id);
         }
         catch (Exception e)
         {
@@ -86,6 +86,7 @@ class Program
         {
             Console.WriteLine("Client disconnected.");
             clients.TryRemove(clientObj.Id, out _);
+            _strings.Remove(clientObj.Id);
             clientObj.TcpClient.Close();
         }
 
@@ -94,10 +95,12 @@ class Program
     private static void IdentifyCommand(byte[] receivedData, Client client)
     {
         //decrypt
-        var decryptedText = client.Encryption.Decrypt(receivedData);
+        // var decryptedText = client.Encryption.Decrypt(receivedData);
+        
+        var text = Encoding.ASCII.GetString(receivedData);
         
         //check command
-        switch (decryptedText.Substring(0,2).ToUpper())
+        switch (text.Substring(0,2).ToUpper())
         {
             case "TM":
                 // Time request
@@ -105,34 +108,73 @@ class Program
                 break;
             case "AU":
                 // Authentication response
-                // handle authentication response
-                AuthenticationRequestHandle(decryptedText, client);
+                AuthenticationRequestHandle(text, client);
                 break;
             case "MS":
                 // Message response
-                // handle message response
-                MessageResponseHandle(decryptedText);
+                MessageResponseHandle(text);
+                break;
+            case "IR":
+                // id request
+                IdRequestHandle(text, client);
                 break;
             default:
                 // Unknown command
                 throw new InvalidOperationException("Unknown command received.");
         }   
     }
+
+    private static void SendEncrypted(string message, Client client)
+    {
+        var encryptedMessage = client.Encryption.Encrypt(message);
+        client.TcpClient.GetStream().Write(encryptedMessage, 0, encryptedMessage.Length);
+    }
+    
+    private static void SendMessage(byte[] message, Client client)
+    {
+        client.TcpClient.GetStream().Write(message, 0, message.Length);
+    }
     
     private static async void TimeRequestHandle(Client client)
     {
         try
         {
-            
-            var time = DateTime.Now.ToString("HH:mm");
+            var offset=_context.Clocks.Find(client.Id).TimeOffset;
+            var time = DateTime.Now.AddMinutes(offset).ToString("hh:mm");
             time= "TM|1|4|" + time.Replace(":","") + "|";
-            var timeBytes = client.Encryption.Encrypt(time);
-            client.TcpClient.GetStream().Write(timeBytes, 0, timeBytes.Length);
+            var messageToSend = Encoding.ASCII.GetBytes(time);
+            SendMessage(messageToSend,client);
             Console.WriteLine("Time request received.");
         }
         catch (Exception e)
         {
             Console.WriteLine($"Time request error: {e.Message}");
+            throw;
+        }
+    }
+
+    private static void IdRequestHandle(string data, Client client)
+    {
+        try
+        {
+            var message = data.Split("|");
+            var id=Guid.Parse(message[1]);
+            string messageToSend;
+            if (_strings.Contains(id))
+            {
+                _strings.Remove(id);
+                messageToSend = "IR|1|";
+                
+            }
+            else
+            {
+                messageToSend= "IR|0|";
+            }
+            SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Id request from server response error: {e.Message}");
             throw;
         }
     }
@@ -149,8 +191,7 @@ class Program
             if (clients.TryGetValue(id, out Client clockClient))
             {
                 messageToSend= $"MS|{messageToSend.Length}|{messageToSend}|";
-                var encryptedMessage = clockClient.Encryption.Encrypt(messageToSend);
-                clockClient.TcpClient.GetStream().Write(encryptedMessage, 0, encryptedMessage.Length);
+                SendMessage(Encoding.ASCII.GetBytes(messageToSend), clockClient);   
             }
         }
         catch (Exception e)
@@ -161,11 +202,11 @@ class Program
         
     }
     
-   private static void KeyRequestHandle(string decryptedText, Client client)
+   private static void KeyRequestHandle(string data, Client client)
     {
         try
         {
-            var message = decryptedText.Split("|");
+            var message = data.Split("|");
             var receivedPublicKey = Encryption.PublicKeyFromString(message[2]);
             client.Encryption.GenerateAesKey(receivedPublicKey);
             Console.WriteLine($"Clock Key request received.");
@@ -199,23 +240,28 @@ class Program
                     clientId = Guid.NewGuid();
                 }
                 client.Id=clientId;
-                clients.TryAdd(clientId, client);
+                if (clients.TryAdd(clientId, client))
+                {
+                    _strings.Add(clientId);
+                }
                 
                 //respond with client id
                 var key = $"AU|3|{clientId.ToString().Length}|{clientId.ToString()}|";
-                var encryptedKey=client.Encryption.Encrypt(key);
-                stream.Write(encryptedKey, 0, encryptedKey.Length);
+                SendMessage(Encoding.ASCII.GetBytes(key), client);
             }
             else
             {
                 //get client id
                 clientId = Guid.Parse(message[2]);
                 client.Id=clientId;
-                clients.TryAdd(clientId, client);
+                if (clients.TryAdd(clientId, client))
+                {
+                    _strings.Add(clientId);
+                }
                 
                 //respond with authentication code
-                var encryptedKey=client.Encryption.Encrypt("AU|1|0||");
-                stream.Write(encryptedKey, 0, encryptedKey.Length);
+                var messageToSend = "AU|1|0||";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
             }
             Console.WriteLine($"Authentication request received for client: {clientId}.");
         }
