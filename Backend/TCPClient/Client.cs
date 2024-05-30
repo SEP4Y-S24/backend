@@ -8,10 +8,10 @@ public class Client : IClientFunc
 {
     private static NetworkStream _networkStream;
     private static Encryption encryption;
-    public Client() 
+    public Client()
     {
         encryption = new Encryption();
-    //    StartServer();
+        //    StartServer();
     }
 
     public async void StartServer()
@@ -20,8 +20,8 @@ public class Client : IClientFunc
         {
             string serverAddress = "4.184.192.42";
             int serverPort = 13000;
-            var client = new TcpClient(); 
-            await client.ConnectAsync(serverAddress,serverPort);
+            var client = new TcpClient();
+            await client.ConnectAsync(serverAddress, serverPort);
             _networkStream = client.GetStream();
         }
         catch (Exception ex)
@@ -30,7 +30,7 @@ public class Client : IClientFunc
             throw new InvalidOperationException("An error occurred while communicating with the socket server.", ex);
         }
     }
-    
+
 
     public async Task<int> SendTMAsync()
     {
@@ -42,10 +42,10 @@ public class Client : IClientFunc
         Console.WriteLine("Sending TM...");
         // Send message to the server
         var key = $"TM|";
-        var cipherText =encryption.Encrypt(key);
+        var cipherText = encryption.Encrypt(key);
         Console.WriteLine(key);
         Console.WriteLine(cipherText.Length);
-         _networkStream.Write(cipherText, 0, cipherText.Length);
+        _networkStream.Write(cipherText, 0, cipherText.Length);
         Console.WriteLine(key);
         var bytesRead = 0;
         // Wait for the server response
@@ -75,7 +75,7 @@ public class Client : IClientFunc
         // Send message to the server
         var key = $"IR|{clockId}|";
         Console.WriteLine(key);
-//        Console.WriteLine(cipherText.Length);
+        //        Console.WriteLine(cipherText.Length);
         _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
         Console.WriteLine(key);
         var bytesRead = 0;
@@ -96,30 +96,30 @@ public class Client : IClientFunc
         return false;
     }
 
-    public async Task<int> SendMessageAsync(string message,Guid clockId)
+    public async Task<int> SendMessageAsync(string message, Guid clockId)
     {
         // Send message to the server
-        while (_networkStream == null)
-        {
-            Thread.Sleep(1000);
-        }
 
-        var key = $"MS|{message.Length+17}|{clockId.ToString()}|{message}|";
-        _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
-        Console.WriteLine(key);
-        var bytesRead = 0;
-        // Wait for the server response
-        byte[] buffer = new byte[1024];
-        bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
-        var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-        if (receivedData == "\r\n")
+
+        if (_networkStream != null)
         {
-            Console.WriteLine("Exiting...");
-        }
-        else if (receivedData.Length >= 2)
-        {
-            if (receivedData.Substring(0, 2).ToUpper().Equals("OK")) return 200;
-            else return 400;
+            var key = $"MS|{message.Length + 17}|{clockId.ToString()}|{message}|";
+            _networkStream.Write(Encoding.ASCII.GetBytes(key), 0, key.Length);
+            Console.WriteLine(key);
+            var bytesRead = 0;
+            // Wait for the server response
+            byte[] buffer = new byte[1024];
+            bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
+            var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            if (receivedData == "\r\n")
+            {
+                Console.WriteLine("Exiting...");
+            }
+            else if (receivedData.Length >= 2)
+            {
+                if (receivedData.Substring(0, 2).ToUpper().Equals("OK")) return 200;
+                else return 400;
+            }
         }
 
         return 400;

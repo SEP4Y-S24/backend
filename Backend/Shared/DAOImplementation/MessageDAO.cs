@@ -74,6 +74,7 @@ public class MessageDAO : IMessageDao
         dbEntity.ClockId = message.ClockId;
         dbEntity.Clock = message.Clock;
         dbEntity.Sender = message.Sender;
+        dbEntity.Reciever = message.Reciever;
         
         _context.Update(dbEntity);
 

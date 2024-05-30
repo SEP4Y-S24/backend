@@ -35,15 +35,11 @@ namespace AUserService.Functions
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 var messageService = ServiceFactory.GetMessageService();
-                var client =  ServiceFactory.GetClient();
+                var client = ServiceFactory.GetClient();
                 SendMessageRequest sendMessageRequest = JsonConvert.DeserializeObject<SendMessageRequest>(requestBody);
                 Console.WriteLine("Before sending message");
-               int messageResponse = await client.SendMessageAsync(sendMessageRequest.message,sendMessageRequest.clockId);
-               Console.WriteLine("After sending message");
-                if(messageResponse== 400)
-                {
-                    return new BadRequestObjectResult("Error sending message");
-                }
+                int messageResponse = await client.SendMessageAsync(sendMessageRequest.message, sendMessageRequest.clockId);
+                Console.WriteLine("After sending message");
                 Message message = new Message()
                 {
                     Id = Guid.NewGuid(),
