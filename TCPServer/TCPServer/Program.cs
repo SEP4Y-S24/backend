@@ -301,8 +301,6 @@ class Program
         {
             var stream = client.TcpClient.GetStream();
             var message = receivedData.Split("|");
-            Guid id = Guid.Parse(message[2]);
-            ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(id));
             Guid clientId;
             if (message[1].Equals("0") || ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(Guid.Parse(message[2]))) == null)
             {
