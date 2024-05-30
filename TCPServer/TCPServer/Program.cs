@@ -203,8 +203,7 @@ class Program
             //-Connect to the database and get it from there
             //-Get it from one the BackendServerClient
             //-Get it by making a request to the ClockService
-            long offset = 0;    //TODO fix hardcoded value
-                                // FOR DATABASE CONNECTION OPTION \/\/\/
+            long offset = 0;    
             offset = ServiceFactory.GetContext().Clocks.FirstAsync(ck => ck.Id.Equals(client.Id)).Result.TimeOffset;
             var time = DateTime.Now;
             time = time.AddMinutes(offset);
@@ -232,16 +231,18 @@ class Program
             //try to get the client connection to confirm the id
             if (_strings.Contains(id) && clients.TryGetValue(id, out Client clockClient))
             {
+                messageToSend = "IR|1|";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
                 var messageToSendCk = "KV|0|";
+                Thread.Sleep(5000);
                 SendMessage(Encoding.ASCII.GetBytes(messageToSendCk), clockClient);
                 _strings.Remove(id);
-                messageToSend = "IR|1|";
             }
             else
             {
                 messageToSend = "IR|0|";
+                SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
             }
-            SendMessage(Encoding.ASCII.GetBytes(messageToSend), client);
         }
         catch (Exception e)
         {
