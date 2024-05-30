@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Models;
 using Shared.Context;
 using TCPServer;
 
@@ -152,7 +153,45 @@ class Program
 
     private static void HumidityAndTemperatureRequestHandle(string data, Client client)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string[] commands = data.Split("|");
+            string[] values = commands[2].Split("-");
+            double humidity = double.Parse(values[1]), temperature = double.Parse(values[3]);
+            Clock clock = ServiceFactory.GetContext().Clocks.First(ck => ck.Id.Equals(client.Id));
+            Measurement measurement1 = new Measurement()
+            {
+                ClockId = client.Id,
+                Id = Guid.NewGuid(),
+                TimeOfReading = DateTime.UtcNow,
+                Type = MeasurementType.Humidity,
+                Value = humidity
+            };
+            Measurement measurement2 = new Measurement()
+            {
+                ClockId = client.Id,
+                Id = Guid.NewGuid(),
+                TimeOfReading = DateTime.UtcNow,
+                Type = MeasurementType.Temperature,
+                Value = temperature
+            };
+            measurement1.Clock = clock;
+            measurement2.Clock = clock;
+            ServiceFactory.GetContext().Measurements.Add(measurement1);
+            ServiceFactory.GetContext().Measurements.Add(measurement2);
+            ServiceFactory.GetContext().SaveChanges();
+            Measurement m = ServiceFactory.GetContext().Measurements.First(m => m.Id.Equals(measurement2.Id));
+            Console.WriteLine(measurement1.Value + " " + measurement2.Value + " " + m.Value);
+            var message = "TH|1|";
+            var messageToSend = Encoding.ASCII.GetBytes(message);
+            SendMessage(messageToSend, client);
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     private static void TimeRequestHandle(Client client)
     {
