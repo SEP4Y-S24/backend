@@ -10,8 +10,8 @@ public class Client : IClientFunc
     private static Encryption encryption;
     public Client()
     {
-        encryption = new Encryption();
-        //    StartServer();
+        encryption = new Encryption(); 
+        StartServer();
     }
 
     public async void StartServer()
@@ -109,7 +109,7 @@ public class Client : IClientFunc
             var bytesRead = 0;
             // Wait for the server response
             byte[] buffer = new byte[1024];
-            bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
+            /*bytesRead = await _networkStream.ReadAsync(buffer, 0, buffer.Length);
             var receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
             if (receivedData == "\r\n")
             {
@@ -119,7 +119,7 @@ public class Client : IClientFunc
             {
                 if (receivedData.Substring(0, 2).ToUpper().Equals("OK")) return 200;
                 else return 400;
-            }
+            }*/
         }
 
         return 400;
