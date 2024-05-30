@@ -1,0 +1,15 @@
+{
+    "version": "2.0",
+    "logging": {
+        "applicationInsights": {
+            "samplingSettings": {
+                "isEnabled": true,
+                "excludedTypes": "Request"
+            },
+            "enableLiveMetricsFilters": true
+        }
+    },
+    "ConnectionStrings": {
+        "Database": "Host=clockcontext.postgres.database.azure.com;Port=5432;Database=ClockService;Username=clockcontext;Password=postgres123!;"
+    }
+}

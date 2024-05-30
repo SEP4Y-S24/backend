@@ -1,0 +1,44 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        shell: pwsh
+        run: |
+          pushd './Backend/N-Unit-Services'
+          dotnet build --configuration Release --output ./output
+          popd
+
+      - name: Test
+        shell: pwsh
+        run: |
+          pushd './Backend/N-Unit-Services'
+          dotnet test --collect:"XPlat Code Coverage" --configuration Release --output ./output
+          popd
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcov-reports
+          path: ./Backend/N-Unit-Services/TestResults/
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          flags: smart-tests
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
